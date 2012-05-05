@@ -1,0 +1,25 @@
+{
+    "name": "symfony-cmf/phpcr-browser-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony CMF PHPCR Browser Bundle",
+    "keywords": ["Symfony CMF", "tree", "phpcr"],
+    "homepage": "http://cmf.symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Symfony CMF Community",
+            "homepage": "https://github.com/symfony-cmf/PHPCRBrowserBundle/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.2",
+        "symfony/symfony": "2.1.*",
+        "symfony-cmf/tree-bundle" :"*"
+    },
+    "autoload":{
+        "psr-0":{
+            "Symfony\\Cmf\\Bundle\\PHPCRBrowserBundle": ""
+        }
+    },
+    "target-dir": "Symfony/Cmf/Bundle/PHPCRBrowserBundle"
+}
