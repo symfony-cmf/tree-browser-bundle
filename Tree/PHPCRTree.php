@@ -2,7 +2,7 @@
 
 namespace Symfony\Cmf\Bundle\PHPCRBrowserBundle\Tree;
 
-use PHPCR\SessionInterface;
+use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
 
 /**
  * A simple class to get PHPCR trees in JSON format
@@ -12,11 +12,15 @@ use PHPCR\SessionInterface;
  */
 class PHPCRTree implements TreeInterface
 {
+    private $manager;
+    private $sessionName;
     private $session;
-    
-    public function __construct(SessionInterface $session)
+
+    public function __construct(ManagerRegistry $manager, $sessionName)
     {
-        $this->session = $session;
+        $this->manager = $manager;
+        $this->sessionName = $sessionName;
+        $this->session = $this->manager->getConnection($sessionName);
     }
     
     public function getChildren($path)

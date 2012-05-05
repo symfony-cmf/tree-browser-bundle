@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('session_id')->defaultValue('doctrine_phpcr.session')->end()
+                ->scalarNode('session_name')->defaultValue('default')->end()
             ->end()
         ;
 
