@@ -67,13 +67,25 @@ class PHPCRTree implements TreeInterface
         return $resulting_path;
     }
 
+    /**
+     *
+     * Returns an array representation of a PHPCR node
+     *
+     * @param string $name
+     * @param NodeInterface $node
+     * @return array
+     *
+     * @todo Some fixes: see comments inline
+     */
     private function nodeToArray($name, $node)
     {
+        // TODO we should use hasChildren() method instead of counting children
         $has_children = (bool)count($node->getNodes('*'));
         return array(
             'data'  => $name,
             'attr'  => array(
                 'id' => $node->getPath(),
+                // TODO having children has nothing to do with being a folder node.
                 'rel' => $has_children ? 'folder' : 'default',
                 'classname' => $node->hasProperty('phpcr:class') ? $node->getProperty('phpcr:class')->getString() : null
             ),
