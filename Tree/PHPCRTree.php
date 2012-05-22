@@ -9,6 +9,7 @@ use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
  *
  * @author Jacopo 'Jakuza' Romei <jromei@gmail.com>
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
+ * @author Nacho Martín <nitram.ohcan@gmail.com>
  */
 class PHPCRTree implements TreeInterface
 {
