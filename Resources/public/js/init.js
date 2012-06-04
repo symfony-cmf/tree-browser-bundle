@@ -41,7 +41,7 @@ var AdminTree = (function () {
             "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd" ],
             "json_data": {
                 "ajax": {
-                    url:    Routing.generate('symfony_cmf_phpcr_browser_children'),
+                    url:    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
                     data:   function (node) {
                         return { 'root' : jQuery(node).attr('id') };
                     }
@@ -101,7 +101,7 @@ var AdminTree = (function () {
             var target = data.rslt.r;
 
             $.post(
-                Routing.generate('symfony_cmf_phpcr_browser_move'),
+                Routing.generate('symfony_cmf_tree_browser.phpcr_move'),
                 { "dropped": dropped.attr("id"), "target": target.attr("id") },
                 function (data) {
                     dropped.attr("id", data);

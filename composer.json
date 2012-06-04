@@ -1,27 +1,34 @@
 {
-    "name": "symfony-cmf/phpcr-browser-bundle",
+    "name": "symfony-cmf/tree-browser-bundle",
     "type": "symfony-bundle",
-    "description": "Symfony CMF PHPCR Browser Bundle",
+    "description": "Symfony CMF Tree Browser Bundle",
     "keywords": ["Symfony CMF", "tree", "phpcr"],
     "homepage": "http://cmf.symfony.com",
     "license": "MIT",
     "authors": [
         {
             "name": "Symfony CMF Community",
-            "homepage": "https://github.com/symfony-cmf/PHPCRBrowserBundle/contributors"
+            "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle/contributors"
         }
     ],
     "require": {
         "php": ">=5.3.2",
         "symfony/symfony": "2.1.*",
-        "doctrine/phpcr-bundle": "dev-master",
         "friendsofsymfony/jsrouting-bundle": "dev-master",
         "symfony-cmf/tree-bundle": "dev-master"
     },
+    "require-dev": {
+        "doctrine/phpcr-bundle": "dev-master",
+        "doctrine/phpcr-odm": "dev-master"
+    },
+    "suggest": {
+        "doctrine/phpcr-bundle": "dev-master",
+        "doctrine/phpcr-odm": "dev-master"
+    },
     "autoload":{
         "psr-0":{
-            "Symfony\\Cmf\\Bundle\\PHPCRBrowserBundle": ""
+            "Symfony\\Cmf\\Bundle\\TreeBrowserBundle": ""
         }
     },
-    "target-dir": "Symfony/Cmf/Bundle/PHPCRBrowserBundle"
+    "target-dir": "Symfony/Cmf/Bundle/TreeBrowserBundle"
 }

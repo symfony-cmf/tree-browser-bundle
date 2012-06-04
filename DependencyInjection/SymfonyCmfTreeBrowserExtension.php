@@ -1,6 +1,6 @@
 <?php
 
-namespace Symfony\Cmf\Bundle\PHPCRBrowserBundle\DependencyInjection;
+namespace Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection;
 
 use Symfony\Component\Config\FileLocator,
     Symfony\Component\HttpKernel\DependencyInjection\Extension,
@@ -12,7 +12,7 @@ use Symfony\Component\Config\FileLocator,
 /**
   * @author Lukas Kahwe Smith <smith@pooteeweet.org>
   */
-class SymfonyCmfPHPCRBrowserExtension extends Extension
+class SymfonyCmfTreeBrowserExtension extends Extension
 {
     /**
      * Loads the services based on your application configuration.
@@ -25,9 +25,9 @@ class SymfonyCmfPHPCRBrowserExtension extends Extension
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('services.xml');
+        $loader->load('phpcr.xml');
 
-        $tree = $container->getDefinition('symfony_cmf_phpcr_browser.tree');
+        $tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
         $tree->replaceArgument(1, $config['session_name']);
     }
 }

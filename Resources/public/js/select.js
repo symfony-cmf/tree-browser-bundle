@@ -12,7 +12,7 @@ var SelectTree = (function () {
             "plugins": [ "themes", "types", "ui", "json_data"],
             "json_data": {
                 "ajax": {
-                    url:    Routing.generate('symfony_cmf_phpcr_browser_children'),
+                    url:    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
                     data:   function (node) {
                         if(node == -1) {
                             return { 'root' : config.rootNode };
@@ -40,7 +40,7 @@ var SelectTree = (function () {
                         }
                     }
                 }
-            },
+            }
         })
         .bind("select_node.jstree", function (event, data) {
             jQuery(config.output).val(data.rslt.obj.attr("id"));

@@ -5,7 +5,7 @@
     <server name="KERNEL_DIR" value="../../../../../../../app" />
   </php>
   <testsuites>
-    <testsuite name="PHPCRBrowserBundle Test Suite">
+    <testsuite name="TreeBrowserBundle Test Suite">
       <directory suffix="Test.php">./Tests</directory>
     </testsuite>
   </testsuites>
