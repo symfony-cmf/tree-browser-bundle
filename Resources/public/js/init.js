@@ -41,9 +41,13 @@ var AdminTree = (function () {
             "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd" ],
             "json_data": {
                 "ajax": {
-                    url:    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
-                    data:   function (node) {
-                        return { 'root' : jQuery(node).attr('id') };
+                    "url":    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
+                    "data":   function (node) {
+                        if(node == -1) {
+                            return { 'root' : config.rootNode };
+                        } else {
+                            return { 'root' : jQuery(node).attr('id') };
+                        }
                     }
                 }
             },
@@ -73,7 +77,7 @@ var AdminTree = (function () {
                     "ccp":      null,
                     "create": {
                         "label":    "Create",
-                        "submenu": config.doctypes,
+                        "submenu": config.doctypes
                     },
                     "delete": {
                         "label":    "Delete",
