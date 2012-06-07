@@ -1,3 +1,6 @@
+/**
+ * define a tree used to see all content, move nodes and select things to edit
+ */
 var AdminTree = (function () {
 
     var my = {};
@@ -43,7 +46,7 @@ var AdminTree = (function () {
             "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd" ],
             "json_data": {
                 "ajax": {
-                    "url":    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
+                    "url":    config.ajax.children_url,
                     "data":   function (node) {
                         if (node == -1) {
                             return { 'root' : config.rootNode };
@@ -107,7 +110,7 @@ var AdminTree = (function () {
             var target = data.rslt.r;
 
             $.post(
-                Routing.generate('symfony_cmf_tree_browser.phpcr_move'),
+                config.ajax.move_url,
                 { "dropped": dropped.attr("id"), "target": target.attr("id") },
                 function (data) {
                     dropped.attr("id", data);
