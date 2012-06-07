@@ -32,7 +32,9 @@ var AdminTree = (function () {
     };
 
     my.initTree = function (config) {
-
+        if (! 'rootNode' in config) {
+            config.rootNode = "/";
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
