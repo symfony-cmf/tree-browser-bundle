@@ -14,7 +14,7 @@ var SelectTree = (function () {
                 "ajax": {
                     url:    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
                     data:   function (node) {
-                        if(node == -1) {
+                        if (node == -1) {
                             return { 'root' : config.rootNode };
                         } else {
                             return { 'root' : jQuery(node).attr('id') };
