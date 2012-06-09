@@ -40,7 +40,11 @@ var SelectTree = (function () {
                         }
                     }
                 }
+            },
+            "ui": {
+                "initially_select" : [ config.selected ]
             }
+
         })
         .bind("select_node.jstree", function (event, data) {
             jQuery(config.output).val(data.rslt.obj.attr("id"));
