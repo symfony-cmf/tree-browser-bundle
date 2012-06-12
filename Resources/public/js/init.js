@@ -35,6 +35,9 @@ var AdminTree = (function () {
         if (! 'rootNode' in config) {
             config.rootNode = "/";
         }
+        if (! 'selected' in config) {
+            config.selected = config.rootNode;
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
@@ -72,6 +75,9 @@ var AdminTree = (function () {
                     }
                 }
             },
+            "ui": {
+                "initially_select" : [ config.selected ]
+            },
             "contextmenu": {
                 "items": {
                     "rename":   null,
@@ -100,7 +106,9 @@ var AdminTree = (function () {
             }
         })
         .bind("select_node.jstree", function (event, data) {
-            window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
+            if (data.rslt.obj.attr("id") != config.selected) {
+                window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
+            }
         })
         .bind("move_node.jstree", function (event, data) {
             var dropped = data.rslt.o;
