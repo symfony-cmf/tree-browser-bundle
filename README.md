@@ -40,7 +40,8 @@ Both have the following options when creating:
 * config.ajax.move_url: Url to the controller that handles the move operation
 * config.doctypes: array to manage creating new nodes
 * config.routecollection: array indexed with the className attribute of nodes
-    that maps to route prefix that get appended .routes.edit and .routes.delete
+    plus .routes.edit and .routes.delete that maps to routes for the edit and
+    remove operations.
 
 
 ## Samples

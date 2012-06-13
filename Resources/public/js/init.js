@@ -38,6 +38,16 @@ var AdminTree = (function () {
         if (! 'rootNode' in config) {
             config.rootNode = "/";
         }
+        if (! 'types' in config) {
+            config.types = {
+                "default": {
+                    "valid_children": "none",
+                    "icon": {
+                        "image": config.icon.document
+                    }
+                }
+            }
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
@@ -60,20 +70,7 @@ var AdminTree = (function () {
                 "max_depth":        -2,
                 "max_children":     -2,
                 "valid_children":  [ "folder" ],
-                "types": {
-                    "default": {
-                        "valid_children": "none",
-                        "icon": {
-                            "image": config.icon.document
-                        }
-                    },
-                    "folder": {
-                        "valid_children": [ "default", "folder" ],
-                        "icon": {
-                            "image": config.icon.folder
-                        }
-                    }
-                }
+                "types": config.types
             },
             "contextmenu": {
                 "items": {
@@ -103,7 +100,12 @@ var AdminTree = (function () {
             }
         })
         .bind("select_node.jstree", function (event, data) {
-            window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
+            if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection) {
+                window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
+            } else {
+                // TODO: overlay?
+                console.log('This node is not editable');
+            }
         })
         .bind("move_node.jstree", function (event, data) {
             var dropped = data.rslt.o;
