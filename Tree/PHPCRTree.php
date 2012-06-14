@@ -3,6 +3,7 @@
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
+
 use PHPCR\Util\NodeHelper;
 use PHPCR\PropertyType;
 
@@ -16,15 +17,14 @@ use PHPCR\PropertyType;
  */
 class PHPCRTree implements TreeInterface
 {
-    private $manager;
-    private $sessionName;
+    /**
+     * @var \PHPCR\SessionInterface
+     */
     private $session;
 
     public function __construct(ManagerRegistry $manager, $sessionName)
     {
-        $this->manager = $manager;
-        $this->sessionName = $sessionName;
-        $this->session = $this->manager->getConnection($sessionName);
+        $this->session = $manager->getConnection($sessionName);
     }
 
     public function getChildren($path)
@@ -39,8 +39,8 @@ class PHPCRTree implements TreeInterface
             }
             $child = $this->nodeToArray($name, $node);
 
-            foreach ($node as $name => $grandson) {
-                $child['children'][] = $this->nodeToArray($name, $grandson);
+            foreach ($node as $childname => $grandson) {
+                $child['children'][] = $this->nodeToArray($childname, $grandson);
             }
 
             $children[] = $child;
@@ -86,6 +86,7 @@ class PHPCRTree implements TreeInterface
         return $properties;
     }
 
+    // TODO: this should be part of the interface. and the target should include the name to allow renames
     public function move($moved_path, $target_path)
     {
         $resulting_path = $target_path.'/'.basename($moved_path);
@@ -114,15 +115,15 @@ class PHPCRTree implements TreeInterface
      * Returns an array representation of a PHPCR node
      *
      * @param string $name
-     * @param NodeInterface $node
+     * @param \PHPCR\NodeInterface $node
+     *
      * @return array
      *
      * @todo Some fixes: see comments inline
      */
     private function nodeToArray($name, $node)
     {
-        // TODO we should use hasChildren() method instead of counting children
-        $has_children = (bool)count($node->getNodes('*'));
+        $has_children = $node->hasNodes();
         return array(
             'data'  => $name,
             'attr'  => array(

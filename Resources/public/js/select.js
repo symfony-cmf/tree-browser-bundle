@@ -1,9 +1,14 @@
+/**
+ * define a tree used to select a node
+ */
 var SelectTree = (function () {
 
     var my = {};
 
     my.initTree = function (config) {
-
+        if (! 'rootNode' in config) {
+            config.rootNode = "/";
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
@@ -12,8 +17,8 @@ var SelectTree = (function () {
             "plugins": [ "themes", "types", "ui", "json_data"],
             "json_data": {
                 "ajax": {
-                    url:    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
-                    data:   function (node) {
+                    "url":    config.ajax.children_url,
+                    "data":   function (node) {
                         if (node == -1) {
                             return { 'root' : config.rootNode };
                         } else {
