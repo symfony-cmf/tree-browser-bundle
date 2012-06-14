@@ -45,12 +45,26 @@ var SelectTree = (function () {
                         }
                     }
                 }
+            },
+            "ui": {
+                "initially_select" : [ config.selected ]
             }
+
         })
         .bind("select_node.jstree", function (event, data) {
             jQuery(config.output).val(data.rslt.obj.attr("id"));
         })
         .delegate("a", "click", function (event, data) { event.preventDefault(); });
+
+        jQuery(config.reset).bind("click", function(e) {
+            jQuery(config.selector).jstree("deselect_all");
+            jQuery(config.output).val("");
+            if (config.selectRootNode) {
+                jQuery(config.selector).jstree("select", config.rootNode);
+                jQuery(config.output).val(config.rootNode);
+            }
+            e.preventDefault();
+        });
     };
 
     return my;

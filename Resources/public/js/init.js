@@ -48,6 +48,9 @@ var AdminTree = (function () {
                 }
             }
         }
+        if (! 'selected' in config) {
+            config.selected = config.rootNode;
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
@@ -71,6 +74,9 @@ var AdminTree = (function () {
                 "max_children":     -2,
                 "valid_children":  [ "folder" ],
                 "types": config.types
+            },
+            "ui": {
+                "initially_select" : [ config.selected ]
             },
             "contextmenu": {
                 "items": {
@@ -100,7 +106,8 @@ var AdminTree = (function () {
             }
         })
         .bind("select_node.jstree", function (event, data) {
-            if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection) {
+            if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection
+                && data.rslt.obj.attr("id") != config.selected) {
                 window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
             } else {
                 // TODO: overlay?
