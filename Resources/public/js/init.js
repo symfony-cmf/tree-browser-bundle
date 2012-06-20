@@ -1,3 +1,6 @@
+/**
+ * define a tree used to see all content, move nodes and select things to edit
+ */
 var AdminTree = (function () {
 
     var my = {};
@@ -35,6 +38,16 @@ var AdminTree = (function () {
         if (! 'rootNode' in config) {
             config.rootNode = "/";
         }
+        if (! 'types' in config) {
+            config.types = {
+                "default": {
+                    "valid_children": "none",
+                    "icon": {
+                        "image": config.icon.document
+                    }
+                }
+            }
+        }
         if (! 'selected' in config) {
             config.selected = config.rootNode;
         }
@@ -46,7 +59,7 @@ var AdminTree = (function () {
             "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd" ],
             "json_data": {
                 "ajax": {
-                    "url":    Routing.generate('symfony_cmf_tree_browser.phpcr_children'),
+                    "url":    config.ajax.children_url,
                     "data":   function (node) {
                         if (node == -1) {
                             return { 'root' : config.rootNode };
@@ -60,20 +73,7 @@ var AdminTree = (function () {
                 "max_depth":        -2,
                 "max_children":     -2,
                 "valid_children":  [ "folder" ],
-                "types": {
-                    "default": {
-                        "valid_children": "none",
-                        "icon": {
-                            "image": config.icon.document
-                        }
-                    },
-                    "folder": {
-                        "valid_children": [ "default", "folder" ],
-                        "icon": {
-                            "image": config.icon.folder
-                        }
-                    }
-                }
+                "types": config.types
             },
             "ui": {
                 "initially_select" : [ config.selected ]
@@ -106,8 +106,12 @@ var AdminTree = (function () {
             }
         })
         .bind("select_node.jstree", function (event, data) {
-            if (data.rslt.obj.attr("id") != config.selected) {
+            if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection
+                && data.rslt.obj.attr("id") != config.selected) {
                 window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("id") });
+            } else {
+                // TODO: overlay?
+                console.log('This node is not editable');
             }
         })
         .bind("move_node.jstree", function (event, data) {
@@ -115,7 +119,7 @@ var AdminTree = (function () {
             var target = data.rslt.r;
 
             $.post(
-                Routing.generate('symfony_cmf_tree_browser.phpcr_move'),
+                config.ajax.move_url,
                 { "dropped": dropped.attr("id"), "target": target.attr("id") },
                 function (data) {
                     dropped.attr("id", data);
