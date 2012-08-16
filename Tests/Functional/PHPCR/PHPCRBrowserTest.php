@@ -1,25 +1,20 @@
 <?php
 
-namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional;
+namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\PHPCR;
 
-use Liip\FunctionalTestBundle\Test\WebTestCase as BaseWebTestCase;
+use Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\BaseTestCase;
 
 /**
  * Functional test for PHPCRBrowser
  *
- * @todo This test is based on default sandbox fixtures. Though it is a read-only test it would be good to make it standalone with its own fixtures.
- * @todo This test relies on an overall routing that is not enforced at single test level.
- *
  * @author Jacopo Jakuza Romei <jromei@gmail.com>
  */
-class PHPCRBrowserTest extends BaseWebTestCase
+class PHPCRBrowserTest extends BaseTestCase
 {
-
     public function testGetChildrenListFromRoot()
     {
         $client = $this->createClient();
 
-        // TODO This is fragile, depending on project overall routing configuration
         $crawler = $client->request('GET', '/children');
 
         $this->assertEquals(
@@ -32,7 +27,6 @@ class PHPCRBrowserTest extends BaseWebTestCase
     {
         $client = $this->createClient();
 
-        // TODO This is fragile, depending on project overall routing configuration
         $crawler = $client->request('GET', '/children?root=%2Fcms%2Fcontent');
 
         $this->assertEquals(
@@ -45,7 +39,6 @@ class PHPCRBrowserTest extends BaseWebTestCase
     {
         $client = $this->createClient();
 
-        // TODO This is fragile, depending on project overall routing configuration
         $crawler = $client->request('GET', '/properties?root=%2Fcms%2Fcontent%2Fstatic%2Fhome');
 
         $this->assertStringStartsWith(

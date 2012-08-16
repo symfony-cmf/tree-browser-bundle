@@ -33,13 +33,13 @@ class PHPCRTree implements TreeInterface
 
         $children = array();
 
-        foreach ($root as $name => $node) {
+        foreach ($root->getNodes() as $name => $node) {
             if (NodeHelper::isSystemItem($node)) {
                 continue;
             }
             $child = $this->nodeToArray($name, $node);
 
-            foreach ($node as $childname => $grandson) {
+            foreach ($node->getNodes() as $childname => $grandson) {
                 $child['children'][] = $this->nodeToArray($childname, $grandson);
             }
 
@@ -59,7 +59,7 @@ class PHPCRTree implements TreeInterface
                 "name" => $name,
                 "type" => PropertyType::nameFromValue($property->getType())
             );
-            switch($property->getType()) {
+            switch ($property->getType()) {
                 case PropertyType::BINARY:
                     break;
                 case PropertyType::BOOLEAN:

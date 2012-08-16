@@ -1,0 +1,17 @@
+language: php
+
+php:
+    - 5.3
+    - 5.4
+
+before_script:
+  - composer install --dev
+  - cp ./Tests/Functional/config/parameters.yml.dist ./Tests/Functional/config/parameters.yml
+  - php Tests/Functional/console doctrine:phpcr:init:dbal
+  - php Tests/Functional/console doctrine:phpcr:register-system-node-types
+
+script: phpunit --coverage-text
+
+notifications:
+  irc: "irc.freenode.org#symfony-cmf"
+  email: "symfony-cmf-devs@googlegroups.com"

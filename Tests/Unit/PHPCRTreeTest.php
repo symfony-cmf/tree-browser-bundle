@@ -2,8 +2,9 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Unit;
 
-use \PHPCR;
-use \Jackalope;
+use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree;
+
+use PHPCR\PropertyType;
 
 /**
  * Unit test for PHPCRTree class
@@ -29,7 +30,16 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 with('/com')->
                 will($this->returnValue($this->com));
 
-        $this->tree = new \Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree($this->session);
+        $this->registry = $this->getMockBuilder('Doctrine\Bundle\PHPCRBundle\ManagerRegistry')->
+            disableOriginalConstructor()->
+            getMock();
+
+        $this->registry->expects($this->any())->
+            method('getConnection')->
+            with('default')->
+            will($this->returnValue($this->session));
+
+        $this->tree = new PHPCRTree($this->registry, 'default');
     }
 
     public function testPHPCRChildren()
@@ -98,15 +108,17 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'data'      => 'anonimarmonisti',
                 'attr'      => array(
                                 'id' =>     '/com/anonimarmonisti',
-                                'rel' =>    'folder',
+                                'rel' =>    'default',
+                                'classname' => null,
                             ),
-                'state'     =>  'closed',
+                'state'     =>  null,
                 'children'  => array(
                     array(
                         'data'      => 'grandson',
                         'attr'      => array(
                                         'id' =>     '/com/anonimarmonisti/grandson',
                                         'rel' =>    'default',
+                                        'classname' => null,
                                     ),
                         'state' =>  null,
                     ),
@@ -117,6 +129,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id' =>     '/com/romereview',
                     'rel' =>    'default',
+                    'classname' => null,
                 ),
                 'state' => null,
             ),
@@ -125,6 +138,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id' =>     '/com/5etto',
                     'rel' =>    'default',
+                    'classname' => null,
                 ),
                 'state' => null,
             ),
@@ -133,6 +147,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id' =>     '/com/wordpress',
                     'rel' =>    'default',
+                    'classname' => null,
                 ),
                 'state' => null,
             )
@@ -145,28 +160,62 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
     {
         $date = new \DateTime("2011-08-31 11:02:39");
 
+        $user = $this->getMockBuilder('Jackalope\Property')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getType', 'getString'))
+            ->getMock();
+        $user->expects($this->any())
+            ->method('getType')
+            ->will($this->returnValue(PropertyType::STRING));
+        $user->expects($this->any())
+            ->method('getString')
+            ->will($this->returnValue('user'));
+        $created = $this->getMockBuilder('Jackalope\Property')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getType', 'getString'))
+            ->getMock();
+        $created->expects($this->any())
+            ->method('getType')
+            ->will($this->returnValue(PropertyType::DATE));
+        $created->expects($this->any())
+            ->method('getString')
+            ->will($this->returnValue($date));
+        $type = $this->getMockBuilder('Jackalope\Property')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getType', 'getString'))
+            ->getMock();
+        $type->expects($this->any())
+            ->method('getType')
+            ->will($this->returnValue(PropertyType::STRING));
+        $type->expects($this->any())
+            ->method('getString')
+            ->will($this->returnValue('nt:folder'));
+
         $properties = array(
-            'jcr:createdBy'     => 'user',
-            'jcr:created'       => $date,
-            'jcr:primaryType'   => 'nt:folder',
+            'jcr:createdBy'     => $user,
+            'jcr:created'       => $created,
+            'jcr:primaryType'   => $type,
         );
 
         $this->com->expects($this->any())->
-                method('getPropertiesValues')->
+                method('getProperties')->
                 will($this->returnValue($properties));
 
         $expected = array (
             array (
                 'name' => 'jcr:createdBy',
                 'value' => 'user',
+                'type' => 'String',
             ),
             array (
                 'name' => 'jcr:created',
                 'value' =>  $date,
+                'type' => 'Date',
             ),
             array (
                 'name' => 'jcr:primaryType',
                 'value' => 'nt:folder',
+                'type' => 'String',
             ),
         );
 
@@ -180,9 +229,13 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
             setMethods(array('move'))->
             getMock();
 
-        $this->session->expects($this->once())->
-            method('getWorkspace')->
-            with(array('/mother/litigated_son', '/father/litigated_son'));
+        $workspace->expects($this->once())
+            ->method('move')
+            ->with('/mother/litigated_son', '/father/litigated_son');
+
+        $this->session->expects($this->once())
+            ->method('getWorkspace')
+            ->will($this->returnValue($workspace));
 
         $this->tree->move('/mother/litigated_son', '/father');
     }

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="../../../../../../../app/bootstrap.php.cache">
-  <php>
-    <server name="SYMFONY" value="../../../../../../symfony/src" />
-    <server name="KERNEL_DIR" value="../../../../../../../app" />
-  </php>
+<phpunit bootstrap="./Tests/bootstrap.php">
   <testsuites>
     <testsuite name="TreeBrowserBundle Test Suite">
       <directory suffix="Test.php">./Tests</directory>
