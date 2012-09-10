@@ -56,7 +56,7 @@ var AdminTree = (function () {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded
             },
-            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd" ],
+            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd", "cookies" ],
             "json_data": {
                 "ajax": {
                     "url":    config.ajax.children_url,
@@ -103,6 +103,9 @@ var AdminTree = (function () {
                 "move": {
 
                 }
+            },
+            "cookies": {
+                "save_selected": false
             }
         })
         .bind("select_node.jstree", function (event, data) {
