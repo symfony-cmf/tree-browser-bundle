@@ -107,18 +107,20 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
             array (
                 'data'      => 'anonimarmonisti',
                 'attr'      => array(
-                                'id' =>     '/com/anonimarmonisti',
-                                'rel' =>    'default',
-                                'classname' => null,
+                                'id'            => '/com/anonimarmonisti',
+                                'url_safe_id'   => 'com/anonimarmonisti',
+                                'rel'           => 'default',
+                                'classname'     => null,
                             ),
                 'state'     =>  null,
                 'children'  => array(
                     array(
                         'data'      => 'grandson',
                         'attr'      => array(
-                                        'id' =>     '/com/anonimarmonisti/grandson',
-                                        'rel' =>    'default',
-                                        'classname' => null,
+                                        'id'            => '/com/anonimarmonisti/grandson',
+                                        'url_safe_id'   => 'com/anonimarmonisti/grandson',
+                                        'rel'           => 'default',
+                                        'classname'     => null,
                                     ),
                         'state' =>  null,
                     ),
@@ -127,27 +129,30 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
             array (
                 'data' => 'romereview',
                 'attr' => array(
-                    'id' =>     '/com/romereview',
-                    'rel' =>    'default',
-                    'classname' => null,
+                    'id'            => '/com/romereview',
+                    'url_safe_id'   => 'com/romereview',
+                    'rel'           => 'default',
+                    'classname'     => null,
                 ),
                 'state' => null,
             ),
             array (
                 'data' => '5etto',
                 'attr' => array(
-                    'id' =>     '/com/5etto',
-                    'rel' =>    'default',
-                    'classname' => null,
+                    'id'            => '/com/5etto',
+                    'url_safe_id'   => 'com/5etto',
+                    'rel'           => 'default',
+                    'classname'     => null,
                 ),
                 'state' => null,
             ),
             array (
                 'data' => 'wordpress',
                 'attr' => array(
-                    'id' =>     '/com/wordpress',
-                    'rel' =>    'default',
-                    'classname' => null,
+                    'id'            => '/com/wordpress',
+                    'url_safe_id'   => 'com/wordpress',
+                    'rel'           => 'default',
+                    'classname'     => null,
                 ),
                 'state' => null,
             )
