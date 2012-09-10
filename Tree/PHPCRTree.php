@@ -128,6 +128,7 @@ class PHPCRTree implements TreeInterface
             'data'  => $name,
             'attr'  => array(
                 'id' => $node->getPath(),
+                'url_safe_id' => substr($node->getPath(), 1),
                 // TODO having children has nothing to do with being a folder node.
                 'rel' => $has_children ? 'folder' : 'default',
                 'classname' => $node->hasProperty('phpcr:class') ? $node->getProperty('phpcr:class')->getString() : null
