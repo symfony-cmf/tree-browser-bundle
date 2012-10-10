@@ -29,5 +29,7 @@ class SymfonyCmfTreeBrowserExtension extends Extension
 
         $tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
         $tree->replaceArgument(1, $config['session_name']);
+
+        $loader->load('services_browser.xml');
     }
 }
