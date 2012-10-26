@@ -15,4 +15,4 @@ This is part of the Symfony Cmf: <https://github.com/symfony-cmf/symfony-cmf>
 
 ## Documentation
 
-http://symfony-cmf.readthedocs.org/en/latest/bundles/tree-browser.html
+http://symfony.com/doc/master/cmf/bundles/tree-browser.html
