@@ -90,7 +90,7 @@ var AdminTree = (function () {
                     "delete": {
                         "label":    "Delete",
                         "action":   function (node) {
-                            window.location = Routing.generate(config.routecollection[node.attr("className").replace(/\\/g, '')].routes.delete, { "id": node.attr("url_safe_id") });
+                            window.location = Routing.generate(config.routecollection[node.attr("className").replace(/\\/g, '')].routes['delete'], { "id": node.attr("url_safe_id") });
                         }
                     }
                 }
