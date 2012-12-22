@@ -51,6 +51,9 @@ var AdminTree = (function () {
         if (! 'selected' in config) {
             config.selected = config.rootNode;
         }
+        if (! 'routing_defaults' in config) {
+            config.routing_defaults = {};
+        }
         jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
@@ -90,7 +93,9 @@ var AdminTree = (function () {
                     "delete": {
                         "label":    "Delete",
                         "action":   function (node) {
-                            window.location = Routing.generate(config.routecollection[node.attr("className").replace(/\\/g, '')].routes['delete'], { "id": node.attr("url_safe_id") });
+                            routing_defaults = config.routing_defaults;
+                            routing_defaults["id"] = node.attr("url_safe_id");
+                            window.location = Routing.generate(config.routecollection[node.attr("className").replace(/\\/g, '')].routes['delete'], routing_defaults);
                         }
                     }
                 }
@@ -110,8 +115,11 @@ var AdminTree = (function () {
         })
         .bind("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection
-                && data.rslt.obj.attr("id") != config.selected) {
-                window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, { "id": data.rslt.obj.attr("url_safe_id") });
+                && data.rslt.obj.attr("id") != config.selected
+            ) {
+                routing_defaults = config.routing_defaults;
+                routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
+                window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, routing_defaults);
             } else {
                 // TODO: overlay?
                 console.log('This node is not editable');
