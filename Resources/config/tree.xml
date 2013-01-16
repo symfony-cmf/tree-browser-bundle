@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+
+        <service id="symfony_cmf_tree_browser.controller_prototype" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Controller\TreeBrowserController" abstract="true">
+            <argument/> <!-- tree implementation -->
+        </service>
+
+        <service id="symfony_cmf_tree_browser.route_loader" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Route\TreeControllerRoutesLoader">
+            <tag name="routing.loader" />
+            <argument>%symfony_cmf_tree_browser.tree_controllers%</argument>
+        </service>
+
+    </services>
+</container>

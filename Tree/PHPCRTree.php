@@ -94,7 +94,41 @@ class PHPCRTree implements TreeInterface
         $workspace = $this->session->getWorkspace();
         $workspace->move($moved_path, $target_path.'/'.basename($moved_path));
 
-        return $resulting_path;
+        return array('id' => $resulting_path, 'url_safe_id' => ltrim($resulting_path, '/'));
+    }
+
+    /**
+     * Reorder $moved (child of $parent) before or after $target
+     *
+     * @param string $parent the id of the parent
+     * @param string $moved the id of the child being moved
+     * @param string $target the id of the target node
+     * @param bool $before insert before or after the target
+     * @return void
+     */
+    public function reorder($parent, $moved, $target, $before)
+    {
+        $parentNode = $this->session->getNode($parent);
+        $targetName = basename($target);
+        if (!$before) {
+            $nodesIterator = $parentNode->getNodes();
+            $nodesIterator->rewind();
+            while ($nodesIterator->valid()) {
+                if ($nodesIterator->key() == $targetName) {
+                    break;
+                }
+                $nodesIterator->next();
+            }
+            $targetName = null;
+            if ($nodesIterator->valid()) {
+                $nodesIterator->next();
+                if ($nodesIterator->valid()) {
+                    $targetName = $nodesIterator->key();
+                }
+            }
+        }
+        $parentNode->orderBefore(basename($moved), $targetName);
+        $this->session->save();
     }
 
 
@@ -118,8 +152,6 @@ class PHPCRTree implements TreeInterface
      * @param \PHPCR\NodeInterface $node
      *
      * @return array
-     *
-     * @todo Some fixes: see comments inline
      */
     private function nodeToArray($name, $node)
     {
@@ -129,12 +161,65 @@ class PHPCRTree implements TreeInterface
             'attr'  => array(
                 'id' => $node->getPath(),
                 'url_safe_id' => substr($node->getPath(), 1),
-                // TODO having children has nothing to do with being a folder node.
-                'rel' => $has_children ? 'folder' : 'default',
-                'classname' => $node->hasProperty('phpcr:class') ? $node->getProperty('phpcr:class')->getString() : null
+                'rel' => 'node'
             ),
             'state' => $has_children ? 'closed' : null,
         );
+    }
+
+    /**
+     * Get the id of the initially selected node
+     *
+     * @return string
+     */
+    public function getSelectedNode()
+    {
+        return '/';
+    }
+
+    /**
+     * Get the id of the root node
+     *
+     * @return string
+     */
+    public function getRootNode()
+    {
+        return '/';
+    }
+
+    /**
+     * Get the alias for this tree
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        return 'phpcr_tree';
+    }
+
+    /**
+     * Get an array describing the available node types
+     *
+     * @return array
+     */
+    public function getNodeTypes()
+    {
+        return array(
+            'node' => array(
+                'valid_children' => array('node'),
+                'label' => 'Node',
+            )
+        );
+    }
+
+    /**
+     * Get an array for labels.
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        return array();
     }
 
 }
