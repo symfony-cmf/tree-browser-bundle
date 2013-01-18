@@ -122,6 +122,7 @@ var AdminTree = (function () {
         .bind("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("rel") in config.types
                 && data.rslt.obj.attr("id") != config.selected
+                && undefined != config.types[data.rslt.obj.attr("rel")].routes.select_route
             ) {
                 routing_defaults = config.routing_defaults;
                 routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
