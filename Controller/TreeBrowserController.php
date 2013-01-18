@@ -4,6 +4,7 @@ namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\TreeInterface;
 
@@ -45,10 +46,7 @@ class TreeBrowserController
             $path = '/';
         }
 
-        return new Response(json_encode($this->tree->$method($path)),
-            200,
-            array('Content-Type' => 'application/json')
-        );
+        return new JsonResponse($this->tree->$method($path));
     }
 
     /**
@@ -96,7 +94,7 @@ class TreeBrowserController
         $moved = $request->request->get('dropped');
         $target = $request->request->get('target');
 
-        return new Response(json_encode($this->tree->move($moved, $target)), 200, array('Content-Type' => 'application/json'));
+        return new JsonResponse($this->tree->move($moved, $target));
     }
 
     /**
