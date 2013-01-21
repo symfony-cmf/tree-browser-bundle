@@ -4,6 +4,7 @@ namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\TreeInterface;
 
@@ -45,10 +46,7 @@ class TreeBrowserController
             $path = '/';
         }
 
-        return new Response(json_encode($this->tree->$method($path)),
-            200,
-            array('Content-Type' => 'application/json')
-        );
+        return new JsonResponse($this->tree->$method($path));
     }
 
     /**
@@ -96,6 +94,29 @@ class TreeBrowserController
         $moved = $request->request->get('dropped');
         $target = $request->request->get('target');
 
-        return new Response($this->tree->move($moved, $target));
+        return new JsonResponse($this->tree->move($moved, $target));
+    }
+
+    /**
+     * Handle request to reorder a node from src to target path.
+     *
+     * Should only be configured for POST requests to avoid manipulations.
+     *
+     * @param Request $request with the parameters dropped and target,
+     *      containing the path to move from resp. to
+     *
+     * @return Response returning a plain text result with the new path of the
+     *      node.
+     */
+    public function reorderAction(Request $request)
+    {
+        $parent = $request->request->get('parent');
+        $moved = $request->request->get('dropped');
+        $target = $request->request->get('target');
+        $position = $request->request->get('position');
+
+        $this->tree->reorder($parent, $moved, $target, 'before' == $position);
+
+        return new Response();
     }
 }
