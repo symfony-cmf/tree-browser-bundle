@@ -38,16 +38,6 @@ var AdminTree = (function () {
         if (! 'rootNode' in config) {
             config.rootNode = "/";
         }
-        if (! 'types' in config) {
-            config.types = {
-                "default": {
-                    "valid_children": "none",
-                    "icon": {
-                        "image": config.icon.document
-                    }
-                }
-            }
-        }
         if (! 'selected' in config) {
             config.selected = config.rootNode;
         }
@@ -59,11 +49,11 @@ var AdminTree = (function () {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded
             },
-            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd", "cookies" ],
+            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd", "crrm", "cookies" ],
             "json_data": {
                 "ajax": {
-                    "url":    config.ajax.children_url,
-                    "data":   function (node) {
+                    "url": config.ajax.children_url,
+                    "data": function (node) {
                         if (node == -1) {
                             return { 'root' : config.rootNode };
                         } else {
@@ -73,70 +63,109 @@ var AdminTree = (function () {
                 }
             },
             "types": {
-                "max_depth":        -2,
-                "max_children":     -2,
-                "valid_children":  [ "folder" ],
+                "max_depth":        -1,
+                "max_children":     -1,
+                "valid_children":  [ "all"],
                 "types": config.types
             },
             "ui": {
                 "initially_select" : [ config.selected ]
             },
             "contextmenu": {
-                "items": {
-                    "rename":   null,
-                    "remove":   null,
-                    "ccp":      null,
-                    "create": {
-                        "label":    "Create",
-                        "submenu": config.doctypes
-                    },
-                    "delete": {
-                        "label":    "Delete",
-                        "action":   function (node) {
-                            routing_defaults = config.routing_defaults;
-                            routing_defaults["id"] = node.attr("url_safe_id");
-                            window.location = Routing.generate(config.routecollection[node.attr("className").replace(/\\/g, '')].routes['delete'], routing_defaults);
+                "items": function(node) {
+                    var result = {};
+                    var nodetype = node.attr("rel");
+                    if (nodetype in config.types) {
+                        var createItem = {};
+                        var found = false;
+                        createItem.label = config.labels.createItem;
+                        createItem.submenu = {};
+                        $.each(config.types[nodetype].valid_children, function(i, val) {
+                            if (val in config.types) {
+                                createItem.submenu[val] = {};
+                                createItem.submenu[val].label = config.types[val].label;
+                                createItem.submenu[val].action = function (node) {
+                                    routing_defaults = config.routing_defaults;
+                                    routing_defaults["id"] = node.attr("url_safe_id");
+                                    window.location = Routing.generate(config.types[val].routes.create_route, routing_defaults);
+                                };
+                                found = true;
+                            }
+                        });
+                        if (found) {
+                            result.createItem = createItem;
                         }
                     }
+                    if (undefined !== config.types[node.attr("rel")].routes.delete_route) {
+                        result.deleteItem = {};
+                        result.deleteItem.label = config.labels.deleteItem;
+                        result.deleteItem.action = function (node) {
+                            routing_defaults = config.routing_defaults;
+                            routing_defaults["id"] = node.attr("url_safe_id");
+                            window.location = Routing.generate(config.types[node.attr("rel")].routes.delete_route, routing_defaults);
+                        };
+                    }
+                    return result;
                 }
             },
-            "dnd": {
+            "dnd" : {
                 "drop_target" : false,
                 "drag_target" : false
             },
             "crrm": {
-                "move": {
-
-                }
+                "move": { }
             },
             "cookies": {
                 "save_selected": false
             }
         })
         .bind("select_node.jstree", function (event, data) {
-            if (data.rslt.obj.attr("className").replace(/\\/g, '') in config.routecollection
+            if (data.rslt.obj.attr("rel") in config.types
                 && data.rslt.obj.attr("id") != config.selected
+                && undefined != config.types[data.rslt.obj.attr("rel")].routes.select_route
             ) {
                 routing_defaults = config.routing_defaults;
                 routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
-                window.location = Routing.generate(config.routecollection[data.rslt.obj.attr("className").replace(/\\/g, '')].routes.edit, routing_defaults);
+                window.location = Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults);
             } else {
                 // TODO: overlay?
                 console.log('This node is not editable');
             }
         })
+        .bind("before.jstree", function (e, data) {
+            if (data.func === "move_node" && data.plugin === "crrm" && data.args[1] == false) {
+                var confirmEvent = jQuery.Event('symfony_cmf_tree.move', data.inst);
+                $(this).trigger(confirmEvent);
+                if (confirmEvent.isDefaultPrevented()) {
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+            }
+        })
         .bind("move_node.jstree", function (event, data) {
             var dropped = data.rslt.o;
             var target = data.rslt.r;
+            var position = data.rslt.p;
+            var oldParent = data.rslt.op;
+            var newParent = data.rslt.np;
 
-            $.post(
-                config.ajax.move_url,
-                { "dropped": dropped.attr("id"), "target": target.attr("id") },
-                function (data) {
-                    dropped.attr("id", data);
-                }
-            );
+            if (!oldParent.is(newParent)) {
+                $.post(
+                    config.ajax.move_url,
+                    { "dropped": dropped.attr("id"), "target": newParent.attr("id") },
+                    function (data) {
+                        dropped.attr("id", data.id);
+                        dropped.attr("url_safe_id", data.url_safe_id);
+                    }
+                );
+            } else {
+                $.post(
+                    config.ajax.reorder_url,
+                    { "dropped": dropped.attr("id"), "target": target.attr("id"), "parent": newParent.attr("id"), "position": position }
+                );
+            }
         })
+
         .delegate("a", "click", function (event, data) { event.preventDefault(); });
     };
 

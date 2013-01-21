@@ -28,23 +28,10 @@ var SelectTree = (function () {
                 }
             },
             "types": {
-                "max_depth":        -2,
-                "max_children":     -2,
-                "valid_children":  [ "folder" ],
-                "types": {
-                    "default": {
-                        "valid_children": "none",
-                        "icon": {
-                            "image": config.icon.document
-                        }
-                    },
-                    "folder": {
-                        "valid_children": [ "default", "folder" ],
-                        "icon": {
-                            "image": config.icon.folder
-                        }
-                    }
-                }
+                "max_depth":        -1,
+                "max_children":     -1,
+                "valid_children":  [ "all"],
+                "types": config.types
             },
             "ui": {
                 "initially_select" : [ config.selected ]

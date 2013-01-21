@@ -25,10 +25,15 @@ class SymfonyCmfTreeBrowserExtension extends Extension
         $config = $this->processConfiguration(new Configuration(), $configs);
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        // TODO: make phpcr optional
-        $loader->load('phpcr.xml');
 
-        $tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
-        $tree->replaceArgument(1, $config['session_name']);
+        $bundles = $container->getParameter('kernel.bundles');
+
+        if (isset($bundles['DoctrinePHPCRBundle'])) {
+            $loader->load('phpcr.xml');
+            $phpcr_tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
+            $phpcr_tree->replaceArgument(1, $config['session_name']);
+        }
+
+        $loader->load('tree.xml');
     }
 }
