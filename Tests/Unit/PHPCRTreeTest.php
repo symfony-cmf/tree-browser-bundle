@@ -109,8 +109,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr'      => array(
                                 'id'            => '/com/anonimarmonisti',
                                 'url_safe_id'   => 'com/anonimarmonisti',
-                                'rel'           => 'default',
-                                'classname'     => null,
+                                'rel'           => 'node',
                             ),
                 'state'     =>  null,
                 'children'  => array(
@@ -119,8 +118,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                         'attr'      => array(
                                         'id'            => '/com/anonimarmonisti/grandson',
                                         'url_safe_id'   => 'com/anonimarmonisti/grandson',
-                                        'rel'           => 'default',
-                                        'classname'     => null,
+                                        'rel'           => 'node',
                                     ),
                         'state' =>  null,
                     ),
@@ -131,8 +129,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id'            => '/com/romereview',
                     'url_safe_id'   => 'com/romereview',
-                    'rel'           => 'default',
-                    'classname'     => null,
+                    'rel'           => 'node',
                 ),
                 'state' => null,
             ),
@@ -141,8 +138,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id'            => '/com/5etto',
                     'url_safe_id'   => 'com/5etto',
-                    'rel'           => 'default',
-                    'classname'     => null,
+                    'rel'           => 'node',
                 ),
                 'state' => null,
             ),
@@ -151,80 +147,13 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 'attr' => array(
                     'id'            => '/com/wordpress',
                     'url_safe_id'   => 'com/wordpress',
-                    'rel'           => 'default',
-                    'classname'     => null,
+                    'rel'           => 'node',
                 ),
                 'state' => null,
             )
         );
 
         $this->assertEquals($expected, $this->tree->getChildren('/com'));
-    }
-
-    public function testPHPCRProperties()
-    {
-        $date = new \DateTime("2011-08-31 11:02:39");
-
-        $user = $this->getMockBuilder('Jackalope\Property')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getType', 'getString'))
-            ->getMock();
-        $user->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue(PropertyType::STRING));
-        $user->expects($this->any())
-            ->method('getString')
-            ->will($this->returnValue('user'));
-        $created = $this->getMockBuilder('Jackalope\Property')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getType', 'getString'))
-            ->getMock();
-        $created->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue(PropertyType::DATE));
-        $created->expects($this->any())
-            ->method('getString')
-            ->will($this->returnValue($date));
-        $type = $this->getMockBuilder('Jackalope\Property')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getType', 'getString'))
-            ->getMock();
-        $type->expects($this->any())
-            ->method('getType')
-            ->will($this->returnValue(PropertyType::STRING));
-        $type->expects($this->any())
-            ->method('getString')
-            ->will($this->returnValue('nt:folder'));
-
-        $properties = array(
-            'jcr:createdBy'     => $user,
-            'jcr:created'       => $created,
-            'jcr:primaryType'   => $type,
-        );
-
-        $this->com->expects($this->any())->
-                method('getProperties')->
-                will($this->returnValue($properties));
-
-        $expected = array (
-            array (
-                'name' => 'jcr:createdBy',
-                'value' => 'user',
-                'type' => 'String',
-            ),
-            array (
-                'name' => 'jcr:created',
-                'value' =>  $date,
-                'type' => 'Date',
-            ),
-            array (
-                'name' => 'jcr:primaryType',
-                'value' => 'nt:folder',
-                'type' => 'String',
-            ),
-        );
-
-        $this->assertEquals($expected, $this->tree->getProperties('/com'));
     }
 
     public function testMoveNodes()
