@@ -132,6 +132,16 @@ var AdminTree = (function () {
                 console.log('This node is not editable');
             }
         })
+        .bind("before.jstree", function (e, data) {
+            if (data.func === "move_node" && data.plugin === "crrm" && data.args[1] == false) {
+                var confirmEvent = jQuery.Event('symfony_cmf_tree.move', data.inst);
+                $(this).trigger(confirmEvent);
+                if (confirmEvent.isDefaultPrevented()) {
+                    e.stopImmediatePropagation();
+                    return false;
+                }
+            }
+        })
         .bind("move_node.jstree", function (event, data) {
             var dropped = data.rslt.o;
             var target = data.rslt.r;
