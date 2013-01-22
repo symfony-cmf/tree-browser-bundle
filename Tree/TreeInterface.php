@@ -41,20 +41,6 @@ interface TreeInterface
     public function reorder($parent, $moved, $target, $before);
 
     /**
-     * Get the id of the initially selected node
-     *
-     * @return string
-     */
-    public function getSelectedNode();
-
-    /**
-     * Get the id of the root node
-     *
-     * @return string
-     */
-    public function getRootNode();
-
-    /**
      * Get the alias for this tree
      *
      * @return string
