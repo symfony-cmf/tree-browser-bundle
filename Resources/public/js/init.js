@@ -86,7 +86,7 @@ var AdminTree = (function () {
                                 createItem.submenu[val].label = config.types[val].label;
                                 createItem.submenu[val].action = function (node) {
                                     routing_defaults = config.routing_defaults;
-                                    routing_defaults["id"] = node.attr("url_safe_id");
+                                    routing_defaults["parent"] = node.attr("url_safe_id");
                                     window.location = Routing.generate(config.types[val].routes.create_route, routing_defaults);
                                 };
                                 found = true;
