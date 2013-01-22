@@ -168,26 +168,6 @@ class PHPCRTree implements TreeInterface
     }
 
     /**
-     * Get the id of the initially selected node
-     *
-     * @return string
-     */
-    public function getSelectedNode()
-    {
-        return '/';
-    }
-
-    /**
-     * Get the id of the root node
-     *
-     * @return string
-     */
-    public function getRootNode()
-    {
-        return '/';
-    }
-
-    /**
      * Get the alias for this tree
      *
      * @return string
