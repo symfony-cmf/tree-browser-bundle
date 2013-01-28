@@ -3,6 +3,7 @@
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
+
 use PHPCR\Util\NodeHelper;
 use PHPCR\PropertyType;
 
@@ -16,15 +17,14 @@ use PHPCR\PropertyType;
  */
 class PHPCRTree implements TreeInterface
 {
-    private $manager;
-    private $sessionName;
+    /**
+     * @var \PHPCR\SessionInterface
+     */
     private $session;
 
     public function __construct(ManagerRegistry $manager, $sessionName)
     {
-        $this->manager = $manager;
-        $this->sessionName = $sessionName;
-        $this->session = $this->manager->getConnection($sessionName);
+        $this->session = $manager->getConnection($sessionName);
     }
 
     public function getChildren($path)
@@ -33,14 +33,14 @@ class PHPCRTree implements TreeInterface
 
         $children = array();
 
-        foreach ($root as $name => $node) {
+        foreach ($root->getNodes() as $name => $node) {
             if (NodeHelper::isSystemItem($node)) {
                 continue;
             }
             $child = $this->nodeToArray($name, $node);
 
-            foreach ($node as $name => $grandson) {
-                $child['children'][] = $this->nodeToArray($name, $grandson);
+            foreach ($node->getNodes() as $childname => $grandson) {
+                $child['children'][] = $this->nodeToArray($childname, $grandson);
             }
 
             $children[] = $child;
@@ -59,7 +59,7 @@ class PHPCRTree implements TreeInterface
                 "name" => $name,
                 "type" => PropertyType::nameFromValue($property->getType())
             );
-            switch($property->getType()) {
+            switch ($property->getType()) {
                 case PropertyType::BINARY:
                     break;
                 case PropertyType::BOOLEAN:
@@ -86,6 +86,7 @@ class PHPCRTree implements TreeInterface
         return $properties;
     }
 
+    // TODO: this should be part of the interface. and the target should include the name to allow renames
     public function move($moved_path, $target_path)
     {
         $resulting_path = $target_path.'/'.basename($moved_path);
@@ -93,7 +94,41 @@ class PHPCRTree implements TreeInterface
         $workspace = $this->session->getWorkspace();
         $workspace->move($moved_path, $target_path.'/'.basename($moved_path));
 
-        return $resulting_path;
+        return array('id' => $resulting_path, 'url_safe_id' => ltrim($resulting_path, '/'));
+    }
+
+    /**
+     * Reorder $moved (child of $parent) before or after $target
+     *
+     * @param string $parent the id of the parent
+     * @param string $moved the id of the child being moved
+     * @param string $target the id of the target node
+     * @param bool $before insert before or after the target
+     * @return void
+     */
+    public function reorder($parent, $moved, $target, $before)
+    {
+        $parentNode = $this->session->getNode($parent);
+        $targetName = basename($target);
+        if (!$before) {
+            $nodesIterator = $parentNode->getNodes();
+            $nodesIterator->rewind();
+            while ($nodesIterator->valid()) {
+                if ($nodesIterator->key() == $targetName) {
+                    break;
+                }
+                $nodesIterator->next();
+            }
+            $targetName = null;
+            if ($nodesIterator->valid()) {
+                $nodesIterator->next();
+                if ($nodesIterator->valid()) {
+                    $targetName = $nodesIterator->key();
+                }
+            }
+        }
+        $parentNode->orderBefore(basename($moved), $targetName);
+        $this->session->save();
     }
 
 
@@ -114,25 +149,57 @@ class PHPCRTree implements TreeInterface
      * Returns an array representation of a PHPCR node
      *
      * @param string $name
-     * @param NodeInterface $node
-     * @return array
+     * @param \PHPCR\NodeInterface $node
      *
-     * @todo Some fixes: see comments inline
+     * @return array
      */
     private function nodeToArray($name, $node)
     {
-        // TODO we should use hasChildren() method instead of counting children
-        $has_children = (bool)count($node->getNodes('*'));
+        $has_children = $node->hasNodes();
         return array(
             'data'  => $name,
             'attr'  => array(
                 'id' => $node->getPath(),
-                // TODO having children has nothing to do with being a folder node.
-                'rel' => $has_children ? 'folder' : 'default',
-                'classname' => $node->hasProperty('phpcr:class') ? $node->getProperty('phpcr:class')->getString() : null
+                'url_safe_id' => substr($node->getPath(), 1),
+                'rel' => 'node'
             ),
             'state' => $has_children ? 'closed' : null,
         );
+    }
+
+    /**
+     * Get the alias for this tree
+     *
+     * @return string
+     */
+    public function getAlias()
+    {
+        return 'phpcr_tree';
+    }
+
+    /**
+     * Get an array describing the available node types
+     *
+     * @return array
+     */
+    public function getNodeTypes()
+    {
+        return array(
+            'node' => array(
+                'valid_children' => array('node'),
+                'label' => 'Node',
+            )
+        );
+    }
+
+    /**
+     * Get an array for labels.
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        return array();
     }
 
 }

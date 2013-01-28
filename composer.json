@@ -11,24 +11,34 @@
             "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle/contributors"
         }
     ],
+    "minimum-stability": "dev",
     "require": {
         "php": ">=5.3.2",
-        "symfony/symfony": "2.1.*",
-        "friendsofsymfony/jsrouting-bundle": "dev-master",
-        "symfony-cmf/tree-bundle": "dev-master"
+        "symfony/framework-bundle": ">=2.1,<2.3-dev",
+        "friendsofsymfony/jsrouting-bundle": "dev-master"
     },
     "require-dev": {
-        "doctrine/phpcr-bundle": "dev-master",
-        "doctrine/phpcr-odm": "dev-master"
+        "symfony/class-loader": ">=2.1,<2.3-dev",
+        "doctrine/doctrine-bundle": "dev-master",
+        "symfony/yaml": ">=2.1,<2.3-dev",
+        "symfony/finder": ">=2.1,<2.3-dev",
+        "jackalope/jackalope-doctrine-dbal": "1.0.*",
+        "doctrine/phpcr-odm": "1.0.*",
+        "doctrine/phpcr-bundle": "1.0.*"
     },
     "suggest": {
-        "doctrine/phpcr-bundle": "dev-master",
-        "doctrine/phpcr-odm": "dev-master"
+        "doctrine/phpcr-bundle": "1.0.*",
+        "doctrine/phpcr-odm": "1.0.*"
     },
     "autoload":{
         "psr-0":{
             "Symfony\\Cmf\\Bundle\\TreeBrowserBundle": ""
         }
     },
-    "target-dir": "Symfony/Cmf/Bundle/TreeBrowserBundle"
+    "target-dir": "Symfony/Cmf/Bundle/TreeBrowserBundle",
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
 }
