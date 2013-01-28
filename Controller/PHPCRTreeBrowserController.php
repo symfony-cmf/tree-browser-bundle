@@ -2,6 +2,7 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Controller;
 
+use Sonata\AdminBundle\Admin\Pool as SonataAdminPool;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -12,11 +13,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree;
+use Symfony\Cmf\Bundle\TreeBrowserBundle\Form\PhpcrNodeType;
+use Symfony\Cmf\Bundle\TreeBrowserBundle\Model\PhpcrNode;
+
 
 /**
  * @author David Buchmann <mail@davidbu.ch>
+ * @author Daniel Leech <daniel@dantleech.com>
  */
-class BrowserController
+class PHPCRTreeBrowserController
 {
     /**
      * @var PHPCRTree
@@ -38,6 +43,10 @@ class BrowserController
      * @var SessionInterface
      */
     protected $phpcr;
+    /**
+     * @var SonataAdminPool
+     */
+    protected $adminPool;
 
     /**
      * @param EngineInterface $templating the templating instance to render the
@@ -45,18 +54,32 @@ class BrowserController
      *
      * @param SessionInterface $phpcr
      */
-    public function __construct(PHPCRTree $tree, EngineInterface $templating, FormFactoryInterface $formFactory, RouterInterface $router, SessionInterface $phpcr)
+    public function __construct(
+        PHPCRTree $tree, 
+        EngineInterface $templating, 
+        FormFactoryInterface $formFactory, 
+        RouterInterface $router, 
+        SessionInterface $phpcr,
+        SonataAdminPool $adminPool
+    )
     {
         $this->tree = $tree;
         $this->templating = $templating;
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->phpcr = $phpcr;
+        $this->adminPool = $adminPool;
     }
 
     public function indexAction(Request $request)
     {
-        return new Response($this->templating->render('SymfonyCmfTreeBrowserBundle:Browser:index.html.twig'));
+        return new Response($this->templating->render(
+            'SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:index.html.twig', array(
+                // NOTE: This seemss like a good way to get the admin template
+                //       but it couples this controller to Sonata.
+                'admin_pool' => $this->adminPool
+            )
+        ));
     }
 
     /**
@@ -64,18 +87,17 @@ class BrowserController
      *
      * @param Request $request
      */
-    public function formAction(Request $request)
+    public function nodeFormAction(Request $request)
     {
         $path = $request->query->get('root');
         $node = $this->tree->getSession()->getNode($path);
+        $model = new PhpcrNode($node);
 
-        $formBuilder = $this->formFactory->createBuilder('form', $node->getPropertiesValues());
-        foreach($node->getProperties() as $name => $property) {
-            $formBuilder->add($name);
-        }
-        $formBuilder->add('/new_property');
+        $form = $this->formFactory->create(new PhpcrNodeType, $model);
 
-        $html = $this->templating->render('SymfonyCmfTreeBrowserBundle:Browser:form.html.twig', array('node'=>$node));
+        $html = $this->templating->render('SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form.html.twig', array(
+            'form' => $form->createView()
+        ));
 
         return new Response($html);
     }

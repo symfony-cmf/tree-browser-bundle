@@ -6,11 +6,13 @@
 
     <services>
 
-        <service id="symfony_cmf_phpcr_browser.frontend_controller" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Controller\BrowserController">
-            <argument type="service" id="symfony_cmf_phpcr_browser.tree" />
+        <service id="symfony_cmf_phpcr_browser.frontend_controller" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Controller\PHPCRTreeBrowserController">
+            <argument type="service" id="symfony_cmf_tree_browser.phpcr_tree" />
             <argument type="service" id="templating" />
+            <argument type="service" id="form.factory" />
             <argument type="service" id="router"/>
             <argument type="service" id="doctrine_phpcr.default_session"/>
+            <argument type="service" id="sonata.admin.pool"/>
         </service>
 
     </services>

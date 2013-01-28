@@ -1,0 +1,45 @@
+{% extends admin_pool.getTemplate('layout') %}
+{% block javascripts %}
+    {{ parent() }}
+    {% include "SymfonyCmfTreeBrowserBundle:Base:tree.html.twig" %}
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block sonata_admin_content %}
+    <h1>{% trans %}PHPCR Tree Browser{% endtrans %}</h1>
+    <div class="row">
+        <div class="span6">
+            {% render 
+                'sonata.admin.doctrine_phpcr.tree_controller:treeAction'
+                with { 'root': '/' } 
+            %}
+        </div>
+        <div class="span6" id="node_form">
+            Hello this is a form
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#tree').unbind('select_node.jstree');
+            $('#tree').bind('select_node.jstree', function (event, data) {
+                $('#node_form').empty();
+                var data = {
+                    root: data.rslt.obj.attr('id')
+                }
+                $.ajax({
+                    url: '{{ path('symfony_cmf_phpcr_browser_node_form') }}',
+                    type: 'get',
+                    data: data,
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#node_form').html(data);
+                    }
+                })
+            });
+        });
+    </script>
+{% endblock %}
+
