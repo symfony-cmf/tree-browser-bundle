@@ -96,7 +96,8 @@ class PHPCRTreeBrowserController
         $form = $this->formFactory->create(new PhpcrNodeType, $model);
 
         $html = $this->templating->render('SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form.html.twig', array(
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'node' => $node,
         ));
 
         return new Response($html);

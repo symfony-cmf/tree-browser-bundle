@@ -1,1 +1,33 @@
-{{ form_widget(form) }}
+<h2>{{ node.name }}</h2>
+<form class="form-horizontal">
+    {% if form.local|length > 0 %}
+        <fieldset>
+            <legend>Local properties</legend>
+            {% for key, type in form.local %}
+                <div class="control-group">
+                    <label class="control-label">{{ key }}</label>
+                    <div class="controls">
+                        {{ form_widget(type) }}
+                    </div>
+                </div>
+            {% endfor %}
+        </fieldset>
+    {% endif %}
+
+    <fieldset>
+        <legend>Namespaced properties</legend>
+        {% for ns, form in form.namespaces %}
+            {% for key, type in form %}
+                <div class="control-group">
+                    <label class="control-label"><i>{{ ns }}</i>:{{ key }}</label>
+                    <div class="controls">
+                        {{ form_widget(type) }}
+                    </div>
+                </div>
+            {% endfor %}
+        {% endfor %}
+    </fieldset>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary">Update Node</button>
+    </div>
+</form>

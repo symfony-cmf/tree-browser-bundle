@@ -18,26 +18,38 @@ class PhpcrNodeType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $named = $builder->create('named', 'form');
-        $local = $builder->create('local', 'form');
-        foreach($builder->getData()->getProperties() as $name => $property) {
+        $names = $builder->create('namespaces', 'form');
+        $names->setPropertyPath('[namespaces]');
 
-            if (preg_match('&^(.*?):(.*)$&', $name, $matches)) {
-                list($namespace, $localName) = array($matches[1], $matches[2]);
-                if (!$named->has($namespace)) {
-                    $nsForm = $builder->create($namespace, 'form');
+        $props = $builder->getData()->getProperties();
+
+        foreach ($props['namespaces'] as $ns => $keyVal) {
+            if (!$names->has($ns)) {
+                $nsForm = $builder->create($ns, 'form');
+                $nsForm->setPropertyPath('['.$ns.']');
+                $names->add($nsForm);
+            }
+
+            $nsForm = $names->get($ns);
+            foreach ($keyVal as $key => $val) {
+                if (is_scalar($val)) {
+                    $nsForm->add($key);
                 }
-
-                $nsForm = $named->get($namespace);
-                $nsForm->add($localName);
-            } else {
-                $local->add($field);
-                //$field->setPropertyPath('['.$name.']');
             }
         }
 
-        $builder->add($named);
-        $builder->add($local);
+        $builder->add($names);
+
+        $localForm = $builder->create('local', 'form');
+        $localForm->setPropertyPath('[local]');
+
+        foreach ($props['local'] as $key => $val) {
+            if (is_scalar($val)) {
+                $localForm->add($key);
+            }
+        }
+
+        $builder->add($localForm);
     }
 
     public function getDefaultOptions(array $options)

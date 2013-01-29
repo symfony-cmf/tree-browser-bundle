@@ -12,28 +12,55 @@ use PHPCR\NodeInterface;
 class PhpcrNode implements \ArrayAccess
 {
     protected $node;
+    protected $properties = array(
+        'namespaces' => array(),
+        'local' => array(),
+    );
 
     public function __construct(NodeInterface $node)
     {
         $this->node = $node;
+        $this->groupProperties($node);
+    }
+
+    private function groupProperties($node)
+    {
+        $properties = $node->getProperties();
+        foreach ($properties as $name => $property) {
+            $val = $property->getValue();
+
+            if (preg_match('&^(.*?):(.*)$&', $name, $matches)) {
+
+                list($namespace, $localName) = array($matches[1], $matches[2]);
+
+                if (!isset($this->properties['namespaces'][$namespace])) {
+                    $this->properties['namespaces'][$namespace] = array();
+                }
+
+                if ($val instanceOf NodeInterface) {
+                    continue;
+                }
+               
+                $this->properties['namespaces'][$namespace][$localName] = $val;
+            } else {
+                $this->properties['local'][$name] = $val;
+            }
+        }
     }
 
     public function getProperties()
     {
-        return $this->node->getProperties();
+        return $this->properties;
     }
 
     public function offsetExists($offset)
     {
-        return $this->node->hasProperty($offset);
+        return isset($this->properties[$offset]);
     }
 
     public function offsetGet($offset)
     {
-        $val = $this->node->getProperty($offset)->getValue();
-        if (is_object($val)) {
-            return null;
-        }
+        $val = $this->properties[$offset];
         return $val;
     }
 

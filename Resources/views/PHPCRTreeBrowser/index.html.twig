@@ -11,14 +11,14 @@
 {% block sonata_admin_content %}
     <h1>{% trans %}PHPCR Tree Browser{% endtrans %}</h1>
     <div class="row">
-        <div class="span6">
+        <div class="span4">
             {% render 
                 'sonata.admin.doctrine_phpcr.tree_controller:treeAction'
                 with { 'root': '/' } 
             %}
         </div>
-        <div class="span6" id="node_form">
-            Hello this is a form
+        <div class="well span8" id="node_form">
+            Click on a node to view and edit its properties.
         </div>
     </div>
     <script type="text/javascript">
@@ -26,6 +26,7 @@
             $('#tree').unbind('select_node.jstree');
             $('#tree').bind('select_node.jstree', function (event, data) {
                 $('#node_form').empty();
+                $('#node_form').html('<div>Loading ...</div>');
                 var data = {
                     root: data.rslt.obj.attr('id')
                 }
@@ -36,6 +37,9 @@
                     dataType: 'html',
                     success: function (data) {
                         $('#node_form').html(data);
+                    },
+                    error: function (data) {
+                        alert(data);
                     }
                 })
             });
