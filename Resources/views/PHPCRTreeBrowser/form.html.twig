@@ -4,12 +4,7 @@
         <fieldset>
             <legend>Local properties</legend>
             {% for key, type in form.local %}
-                <div class="control-group">
-                    <label class="control-label">{{ key }}</label>
-                    <div class="controls">
-                        {{ form_widget(type) }}
-                    </div>
-                </div>
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:_widget.html.twig" %}
             {% endfor %}
         </fieldset>
     {% endif %}
@@ -18,12 +13,7 @@
         <legend>Namespaced properties</legend>
         {% for ns, form in form.namespaces %}
             {% for key, type in form %}
-                <div class="control-group">
-                    <label class="control-label"><i>{{ ns }}</i>:{{ key }}</label>
-                    <div class="controls">
-                        {{ form_widget(type) }}
-                    </div>
-                </div>
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:_widget.html.twig" %}
             {% endfor %}
         {% endfor %}
     </fieldset>

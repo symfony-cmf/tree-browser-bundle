@@ -44,9 +44,9 @@ class PHPCRTreeBrowserController
      */
     protected $phpcr;
     /**
-     * @var SonataAdminPool
+     * @var BaseTemplate
      */
-    protected $adminPool;
+    protected $baseTemplate;
 
     /**
      * @param EngineInterface $templating the templating instance to render the
@@ -60,7 +60,7 @@ class PHPCRTreeBrowserController
         FormFactoryInterface $formFactory, 
         RouterInterface $router, 
         SessionInterface $phpcr,
-        SonataAdminPool $adminPool
+        $baseTemplate
     )
     {
         $this->tree = $tree;
@@ -68,16 +68,14 @@ class PHPCRTreeBrowserController
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->phpcr = $phpcr;
-        $this->adminPool = $adminPool;
+        $this->baseTemplate = $baseTemplate;
     }
 
     public function indexAction(Request $request)
     {
         return new Response($this->templating->render(
             'SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:index.html.twig', array(
-                // NOTE: This seemss like a good way to get the admin template
-                //       but it couples this controller to Sonata.
-                'admin_pool' => $this->adminPool
+                'base_template' => $this->baseTemplate
             )
         ));
     }

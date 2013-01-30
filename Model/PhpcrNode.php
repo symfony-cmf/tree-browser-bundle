@@ -12,6 +12,7 @@ use PHPCR\NodeInterface;
 class PhpcrNode implements \ArrayAccess
 {
     protected $node;
+
     protected $properties = array(
         'namespaces' => array(),
         'local' => array(),
@@ -51,6 +52,11 @@ class PhpcrNode implements \ArrayAccess
     public function getProperties()
     {
         return $this->properties;
+    }
+
+    public function getNode()
+    {
+        return $this->node;
     }
 
     public function offsetExists($offset)

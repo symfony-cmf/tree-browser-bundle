@@ -12,7 +12,7 @@
             <argument type="service" id="form.factory" />
             <argument type="service" id="router"/>
             <argument type="service" id="doctrine_phpcr.default_session"/>
-            <argument type="service" id="sonata.admin.pool"/>
+            <argument>SonataAdminBundle::standard_layout.html.twig</argument>
         </service>
 
     </services>
