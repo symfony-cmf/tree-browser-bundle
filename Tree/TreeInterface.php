@@ -3,7 +3,7 @@
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 /**
- * The Tree interface describes how a class feeding data for a tree representation of a PHPCR repository shall look like.
+ * The Tree interface describes how a class feeding data for a tree representation shall look like.
  *
  * @author Jacopo Jakuza Romei <jromei@gmail.com>
  * @author cirpo <alessandro.cinelli@gmail.com>
@@ -21,13 +21,19 @@ interface TreeInterface
     public function getChildren($path);
 
     /**
-     * Move the node at $path to $target
+     * Move the node with $id to become a child of node with id $target
      *
-     * @param string $path
-     * @param string $target
+     * Note that this is different from the PHPCR move operation, where the
+     * target includes the new node name as well, allowing to rename. In the
+     * context of the tree, renaming is considered an edit operation and out of
+     * scope here.
+     *
+     * @param string $id id of element to be moved
+     * @param string $target id of future parent element
+     *
      * @return array the new id of the moved node at $target and the url_safe_id
      */
-    public function move($path, $target);
+    public function move($id, $target);
 
     /**
      * Reorder $moved (child of $parent) before or after $target
