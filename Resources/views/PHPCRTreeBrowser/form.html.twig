@@ -4,7 +4,7 @@
         <fieldset>
             <legend>Local properties</legend>
             {% for key, type in form.local %}
-                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:_widget.html.twig" %}
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form_widget.html.twig" %}
             {% endfor %}
         </fieldset>
     {% endif %}
@@ -13,11 +13,12 @@
         <legend>Namespaced properties</legend>
         {% for ns, form in form.namespaces %}
             {% for key, type in form %}
-                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:_widget.html.twig" %}
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form_widget.html.twig" %}
             {% endfor %}
         {% endfor %}
     </fieldset>
+    <input type="hiddden" name="phpcr_node_id" value="{{ node.identifier }}"/>
     <div class="form-actions">
-        <button type="submit" class="btn btn-primary">Update Node</button>
+        <button id="submit_form" type="submit" class="btn btn-primary">Update Node</button>
     </div>
 </form>

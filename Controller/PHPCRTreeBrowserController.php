@@ -15,6 +15,8 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree;
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Form\PhpcrNodeType;
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Model\PhpcrNode;
+use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
 /**
@@ -71,6 +73,29 @@ class PHPCRTreeBrowserController
         $this->baseTemplate = $baseTemplate;
     }
 
+    protected function getNode(Request $request)
+    {
+        $id = $request->get('id');
+        if (!$id) {
+            throw new NotFoundHttpException('Missing parameter "id" parameter');
+        }
+
+        $node = $this->phpcr->getNode($id);
+        if (!$node) {
+            throw new NotFoundHttpException(sprintf('Cannot find node with id "%s"', $id));
+        }
+
+        return $node;
+    }
+
+    protected function createNodeForm($node)
+    {
+        $model = new PhpcrNode($node);
+        $form = $this->formFactory->create(new PhpcrNodeType, $model);
+
+        return $form;
+    }
+
     public function indexAction(Request $request)
     {
         return new Response($this->templating->render(
@@ -87,11 +112,8 @@ class PHPCRTreeBrowserController
      */
     public function nodeFormAction(Request $request)
     {
-        $path = $request->query->get('root');
-        $node = $this->tree->getSession()->getNode($path);
-        $model = new PhpcrNode($node);
-
-        $form = $this->formFactory->create(new PhpcrNodeType, $model);
+        $node = $this->getNode($request);
+        $form = $this->createNodeForm($node);
 
         $html = $this->templating->render('SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form.html.twig', array(
             'form' => $form->createView(),
@@ -103,41 +125,19 @@ class PHPCRTreeBrowserController
 
     public function submitAction(Request $request)
     {
-        if (! $request->request->has('/id')) {
-            throw new \Symfony\Component\HttpKernel\Exception\HttpException(400, 'missing parameter /id');
+        $node = $this->getNode($request);
+
+        $form = $this->createForm($node);
+
+        // @todo handle  changing node types / primary node types
+
+        $form->bindRequest($request);
+
+        if ($form->isValid()) {
+
         }
-        $id = $request->request->get('/id');
-        $request->request->remove('/id');
-        $node = $this->phpcr->getNode($id);
-        $expecting = array();
-        foreach ($node->getProperties() as $name => $value) {
-            $expecting[$name] = true;
-        }
-        foreach ($request->request as $name => $value) {
-            if ('jcr:primaryType' == $name) {
-                if ($node->getPrimaryNodeType()->getName() != $value) {
-                    $node->setPrimaryType($value);
-                }
-            } elseif ('jcr:mixinTypes' == $name) {
-                // TODO: handle mixins
-            } else {
-                $type = null;
-                if ($node->hasProperty($name)) {
-                    // preserve type of existing properties (i.e. (weak)reference )
-                    $type = $node->getProperty($name)->getType();
-                }
-                if ($node->hasProperty($name) && $node->getProperty($name)->isMultiple() && is_string($value) && 'true' == $value ) {
-                    // if an empty multivalue property is edited, the value will be the non-array "true"
-                    $value = array();
-                }
-                $node->setProperty($name, $value, $type);
-            }
-            unset($expecting[$name]);
-        }
-        foreach ($expecting as $name => $dummy) {
-            $node->setProperty($name, null);
-        }
-        $this->phpcr->save();
+
+        // $this->phpcr->save();
 
         return new RedirectResponse($this->router->generate('symfony_cmf_phpcr_browser_frontend', array('id'=>$id)));
     }

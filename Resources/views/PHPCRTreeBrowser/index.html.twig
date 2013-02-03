@@ -23,12 +23,35 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function () {
+            // setup error handling 
+            // http://www.unseenrevolution.com/jquery-ajax-error-handling-function
+            $.ajaxSetup({
+                error: function(jqXHR, exception) {
+                    if (jqXHR.status === 0) {
+                        alert('Not connect.\n Verify Network.');
+                    } else if (jqXHR.status == 404) {
+                        alert('Requested page not found. [404]');
+                    } else if (jqXHR.status == 500) {
+                        alert('Internal Server Error [500].');
+                    } else if (exception === 'parsererror') {
+                        alert('Requested JSON parse failed.');
+                    } else if (exception === 'timeout') {
+                        alert('Time out error.');
+                    } else if (exception === 'abort') {
+                        alert('Ajax request aborted.');
+                    } else {
+                        alert('Uncaught Error.\n' + jqXHR.responseText);
+                    }
+                }
+            });
+
+            // reassign node tree click action
             $('#tree').unbind('select_node.jstree');
             $('#tree').bind('select_node.jstree', function (event, data) {
                 $('#node_form').empty();
                 $('#node_form').html('<div>Loading ...</div>');
                 var data = {
-                    root: data.rslt.obj.attr('id')
+                    id: data.rslt.obj.attr('id')
                 }
                 $.ajax({
                     url: '{{ path('symfony_cmf_phpcr_browser_node_form') }}',
@@ -37,12 +60,31 @@
                     dataType: 'html',
                     success: function (data) {
                         $('#node_form').html(data);
+                        init_form();
                     },
                     error: function (data) {
-                        alert(data);
+                        alert('Error, see concole for details.');
+                        console.log(data);
                     }
                 })
             });
+
+            // initialize new form
+            function init_form() {
+                $('#submit_form').bind('click', function () {
+                    var data = $('#node_form').serialize();
+                    $.ajax({
+                        url: '{{ path('symfony_cmf_phpcr_browser_node_form_submit') }}',
+                        type: 'post',
+                        data: data,
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log(data);
+                        }
+                    });
+                    return false;
+                });
+            }
         });
     </script>
 {% endblock %}
