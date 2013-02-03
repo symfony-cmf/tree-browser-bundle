@@ -1,0 +1,24 @@
+<h2>{{ node.name }}</h2>
+<form class="form-horizontal">
+    {% if form.local|length > 0 %}
+        <fieldset>
+            <legend>Local properties</legend>
+            {% for key, type in form.local %}
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form_widget.html.twig" %}
+            {% endfor %}
+        </fieldset>
+    {% endif %}
+
+    <fieldset>
+        <legend>Namespaced properties</legend>
+        {% for ns, form in form.namespaces %}
+            {% for key, type in form %}
+                {% include "SymfonyCmfTreeBrowserBundle:PHPCRTreeBrowser:form_widget.html.twig" %}
+            {% endfor %}
+        {% endfor %}
+    </fieldset>
+    <input type="hiddden" name="phpcr_node_id" value="{{ node.identifier }}"/>
+    <div class="form-actions">
+        <button id="submit_form" type="submit" class="btn btn-primary">Update Node</button>
+    </div>
+</form>

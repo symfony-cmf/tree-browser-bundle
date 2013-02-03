@@ -6,3 +6,5 @@ framework:
     router:
         resource: %kernel.root_dir%/config/routing.yml
     default_locale: "en"
+    templating:      { engines: ['php'] } #assets_version: SomeVersionScheme
+    form:            true

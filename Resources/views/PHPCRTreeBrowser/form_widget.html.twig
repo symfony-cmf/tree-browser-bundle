@@ -1,0 +1,17 @@
+<div class="control-group">
+    {% if ns is defined %}
+        <label class="control-label"><i>{{ ns }}</i>:{{ key }}</label>
+    {% else %}
+        <label class="control-label">{{ key }}</label>
+    {% endif %}
+
+    <div class="controls">
+        {% if type.children %}
+            {% for child in type.children %}
+            <div>{{ form_widget(child) }}</div>
+            {% endfor %}
+        {% else %}
+            {{ form_widget(type) }}
+        {% endif %}
+    </div>
+</div>
