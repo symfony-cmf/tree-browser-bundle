@@ -40,6 +40,7 @@ var SelectTree = (function () {
         })
         .bind("select_node.jstree", function (event, data) {
             jQuery(config.output).val(data.rslt.obj.attr("id"));
+            jQuery(config.output).trigger('change');
         })
         .delegate("a", "click", function (event, data) { event.preventDefault(); });
 
