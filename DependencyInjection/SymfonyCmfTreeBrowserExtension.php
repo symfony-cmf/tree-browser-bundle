@@ -26,6 +26,11 @@ class SymfonyCmfTreeBrowserExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        $tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
+        $tree->replaceArgument(1, $config['session_name']);
+
+        $loader->load('services_browser.xml');
+
         $bundles = $container->getParameter('kernel.bundles');
 
         if (isset($bundles['DoctrinePHPCRBundle'])) {
