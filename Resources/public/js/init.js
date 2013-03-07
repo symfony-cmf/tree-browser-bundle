@@ -3,7 +3,32 @@
  */
 var AdminTree = (function () {
 
-    var my = {};
+    var my = {},
+        generateDialog;
+
+    generateDialog = function (url, closeCallback) {
+        var treeDialog = jQuery("<iframe id='tree_dialog'></iframe>");// iframe is needed because the delivered form might need some additional JS
+
+        jQuery(document.body).append(treeDialog);
+        treeDialog.attr('src', url);
+
+        treeDialog.dialog({
+            width: 800,
+            modal: true,
+            autoOpen: true,
+            resizable: true,
+            close: function(event, ui) {
+                if (closeCallback) {
+                    closeCallback(event, ui);
+                }
+            },
+            zIndex: 9999
+        });
+
+        treeDialog.attr('style', 'height: 500px');
+
+        return treeDialog;
+    };
 
     my.generateTreeStateArray = function (path) {
 
@@ -44,7 +69,7 @@ var AdminTree = (function () {
         if (! 'routing_defaults' in config) {
             config.routing_defaults = {};
         }
-        jQuery(config.selector).jstree({
+        var treeInst = jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded
@@ -87,7 +112,17 @@ var AdminTree = (function () {
                                 createItem.submenu[val].action = function (node) {
                                     routing_defaults = config.routing_defaults;
                                     routing_defaults["parent"] = node.attr("url_safe_id");
-                                    window.location = Routing.generate(config.types[val].routes.create_route, routing_defaults);
+
+                                    if (config.createInOverlay) {
+                                        generateDialog(
+                                            Routing.generate(config.types[val].routes.create_route, routing_defaults),
+                                            function () {
+                                                treeInst.jstree('refresh', node);
+                                            }
+                                        );
+                                    } else {
+                                        window.location = Routing.generate(config.types[val].routes.create_route, routing_defaults);
+                                    }
                                 };
                                 found = true;
                             }
@@ -118,15 +153,26 @@ var AdminTree = (function () {
             "cookies": {
                 "save_selected": false
             }
-        })
-        .bind("select_node.jstree", function (event, data) {
+        });
+
+        treeInst.bind("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("rel") in config.types
                 && data.rslt.obj.attr("id") != config.selected
                 && undefined != config.types[data.rslt.obj.attr("rel")].routes.select_route
             ) {
                 routing_defaults = config.routing_defaults;
                 routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
-                window.location = Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults);
+
+                if (config.editInOverlay) {
+                    generateDialog(
+                        Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults),
+                        function () {
+                            treeInst.jstree('refresh');
+                        }
+                    );
+                } else {
+                    window.location = Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults);
+                }
             } else {
                 // TODO: overlay?
                 console.log('This node is not editable');
