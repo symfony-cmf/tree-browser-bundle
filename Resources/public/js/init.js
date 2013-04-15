@@ -74,7 +74,7 @@ var AdminTree = (function () {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded
             },
-            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "dnd", "crrm", "cookies" ],
+            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "crrm", "dnd", "cookies" ],
             "json_data": {
                 "ajax": {
                     "url": config.ajax.children_url,
@@ -90,7 +90,7 @@ var AdminTree = (function () {
             "types": {
                 "max_depth":        -1,
                 "max_children":     -1,
-                "valid_children":  [ "all"],
+                "valid_children":  "all",
                 "types": config.types
             },
             "ui": {
@@ -195,10 +195,16 @@ var AdminTree = (function () {
             var oldParent = data.rslt.op;
             var newParent = data.rslt.np;
 
+            // parent could be the tree
+            var parent = newParent.attr("id");
+            if (treeInst.is(newParent)) {
+                parent = config.rootNode;
+            }
+
             if (!oldParent.is(newParent)) {
                 $.post(
                     config.ajax.move_url,
-                    { "dropped": dropped.attr("id"), "target": newParent.attr("id") },
+                    { "dropped": dropped.attr("id"), "target": parent },
                     function (data) {
                         dropped.attr("id", data.id);
                         dropped.attr("url_safe_id", data.url_safe_id);
@@ -207,7 +213,7 @@ var AdminTree = (function () {
             } else {
                 $.post(
                     config.ajax.reorder_url,
-                    { "dropped": dropped.attr("id"), "target": target.attr("id"), "parent": newParent.attr("id"), "position": position }
+                    { "dropped": dropped.attr("id"), "target": target.attr("id"), "parent": parent, "position": position }
                 );
             }
         })
