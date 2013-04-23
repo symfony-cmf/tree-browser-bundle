@@ -165,10 +165,7 @@ var AdminTree = (function () {
 
                 if (config.editInOverlay) {
                     generateDialog(
-                        Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults),
-                        function () {
-                            treeInst.jstree('refresh');
-                        }
+                        Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults)
                     );
                 } else {
                     window.location = Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults);
