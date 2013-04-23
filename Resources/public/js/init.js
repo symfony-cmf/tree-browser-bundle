@@ -164,12 +164,14 @@ var AdminTree = (function () {
                 routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
 
                 if (config.editInOverlay) {
-                    generateDialog(
-                        Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults),
-                        function () {
-                            treeInst.jstree('refresh');
-                        }
-                    );
+                    if (2 < data.args.length){ // only generateDialog() when the tree has received a click, not on refresh
+                        generateDialog(
+                            Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults),
+                            function () {
+                                treeInst.jstree('refresh');
+                            }
+                        );
+                    }
                 } else {
                     window.location = Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults);
                 }
