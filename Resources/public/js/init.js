@@ -137,7 +137,16 @@ var AdminTree = (function () {
                         result.deleteItem.action = function (node) {
                             routing_defaults = config.routing_defaults;
                             routing_defaults["id"] = node.attr("url_safe_id");
-                            window.location = Routing.generate(config.types[node.attr("rel")].routes.delete_route, routing_defaults);
+                            if (config.deleteInOverlay) {
+                                generateDialog(
+                                    Routing.generate(config.types[node.attr("rel")].routes.delete_route, routing_defaults),
+                                    function () {
+                                        treeInst.jstree('refresh');
+                                    }
+                                );
+                            } else {
+                                window.location = Routing.generate(config.types[node.attr("rel")].routes.delete_route, routing_defaults);
+                            }
                         };
                     }
                     return result;
