@@ -6,8 +6,8 @@
 
     <services>
 
-        <service id="symfony_cmf_tree_browser.phpcr_tree" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree">
-            <tag name="symfony_cmf.tree" alias="phpcr_tree" />
+        <service id="cmf_tree_browser.phpcr_tree" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree">
+            <tag name="cmf.tree" alias="phpcr_tree" />
             <argument type="service" id="doctrine_phpcr"/>
             <argument />
         </service>

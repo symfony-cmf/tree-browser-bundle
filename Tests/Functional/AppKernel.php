@@ -32,7 +32,7 @@ class AppKernel extends Kernel
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new \Doctrine\Bundle\PHPCRBundle\DoctrinePHPCRBundle(),
-            new \Symfony\Cmf\Bundle\TreeBrowserBundle\SymfonyCmfTreeBrowserBundle(),
+            new \Symfony\Cmf\Bundle\TreeBrowserBundle\CmfTreeBrowserBundle(),
         );
     }
 
@@ -43,6 +43,6 @@ class AppKernel extends Kernel
 
     public function getCacheDir()
     {
-        return sys_get_temp_dir().'/SymfonyCmfTreeBrowserBundle';
+        return sys_get_temp_dir().'/CmfTreeBrowserBundle';
     }
 }

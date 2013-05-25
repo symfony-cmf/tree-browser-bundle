@@ -5,13 +5,13 @@
 
     <services>
 
-        <service id="symfony_cmf_tree_browser.controller_prototype" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Controller\TreeBrowserController" abstract="true">
+        <service id="cmf_tree_browser.controller_prototype" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Controller\TreeBrowserController" abstract="true">
             <argument/> <!-- tree implementation -->
         </service>
 
-        <service id="symfony_cmf_tree_browser.route_loader" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Route\TreeControllerRoutesLoader">
+        <service id="cmf_tree_browser.route_loader" class="Symfony\Cmf\Bundle\TreeBrowserBundle\Route\TreeControllerRoutesLoader">
             <tag name="routing.loader" />
-            <argument>%symfony_cmf_tree_browser.tree_controllers%</argument>
+            <argument>%cmf_tree_browser.tree_controllers%</argument>
         </service>
 
     </services>
