@@ -39,10 +39,10 @@ class TreeControllerRoutesLoader extends FileLoader
                 $requirements = array(
                     '_method' => $definition['method']
                 );
-                $pattern = '_symfony_cmf_tree/'.$controller['alias'].'/'.$definition['pattern'];
+                $pattern = '_cmf_tree/'.$controller['alias'].'/'.$definition['pattern'];
 
                 $route = new Route($pattern, $defaults, $requirements, array('expose' => true));
-                $collection->add('_symfony_cmf_tree_'.$controller['alias'].'_'.$name, $route);
+                $collection->add('_cmf_tree_'.$controller['alias'].'_'.$name, $route);
             }
         }
         return $collection;
@@ -59,7 +59,7 @@ class TreeControllerRoutesLoader extends FileLoader
      */
     public function supports($resource, $type = null)
     {
-        if ($type == 'symfony_cmf_tree') {
+        if ($type == 'cmf_tree') {
             return true;
         }
 

@@ -18,7 +18,7 @@ class AddTreesCompilerPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $trees = $container->findTaggedServiceIds('symfony_cmf.tree');
+        $trees = $container->findTaggedServiceIds('cmf.tree');
         $controllers = array();
         foreach ($trees as $treeId => $tag) {
             $tree = $container->getDefinition($treeId);
@@ -26,12 +26,12 @@ class AddTreesCompilerPass implements CompilerPassInterface
                 ? $tag[0]['alias']
                 : $treeId;
 
-            $controller = new DefinitionDecorator('symfony_cmf_tree_browser.controller_prototype');
+            $controller = new DefinitionDecorator('cmf_tree_browser.controller_prototype');
             $controller->replaceArgument(0, $tree);
-            $container->setDefinition($alias.'.symfony_cmf_tree_controller', $controller);
-            $controllers[] = array('id' => $alias.'.symfony_cmf_tree_controller', 'alias' => $alias);
+            $container->setDefinition($alias.'.cmf_tree_controller', $controller);
+            $controllers[] = array('id' => $alias.'.cmf_tree_controller', 'alias' => $alias);
         }
-        $container->setParameter('symfony_cmf_tree_browser.tree_controllers', $controllers);
+        $container->setParameter('cmf_tree_browser.tree_controllers', $controllers);
     }
 
 }

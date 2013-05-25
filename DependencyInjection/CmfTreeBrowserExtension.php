@@ -12,7 +12,7 @@ use Symfony\Component\Config\FileLocator,
 /**
   * @author Lukas Kahwe Smith <smith@pooteeweet.org>
   */
-class SymfonyCmfTreeBrowserExtension extends Extension
+class CmfTreeBrowserExtension extends Extension
 {
     /**
      * Loads the services based on your application configuration.
@@ -30,7 +30,7 @@ class SymfonyCmfTreeBrowserExtension extends Extension
 
         if (isset($bundles['DoctrinePHPCRBundle'])) {
             $loader->load('phpcr.xml');
-            $phpcr_tree = $container->getDefinition('symfony_cmf_tree_browser.phpcr_tree');
+            $phpcr_tree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
             $phpcr_tree->replaceArgument(1, $config['session_name']);
         }
 
