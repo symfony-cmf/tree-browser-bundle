@@ -24,7 +24,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('symfony_cmf_tree_browser');
+        $rootNode = $treeBuilder->root('cmf_tree_browser');
 
         $rootNode
             ->children()

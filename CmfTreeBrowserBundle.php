@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection\Compiler\AddTreesCompilerPass;
 
-class SymfonyCmfTreeBrowserBundle extends Bundle
+class CmfTreeBrowserBundle extends Bundle
 {
     public function build(ContainerBuilder $container)
     {

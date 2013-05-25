@@ -2,6 +2,6 @@ symfony_route:
     pattern:  /symfony_route_test
     defaults: { _controller: Test:controller }
 
-symfony_cmf_tree:
+cmf_tree:
     resource: .
-    type: 'symfony_cmf_tree'
+    type: 'cmf_tree'

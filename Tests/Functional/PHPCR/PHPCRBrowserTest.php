@@ -18,7 +18,7 @@ class PHPCRBrowserTest extends BaseTestCase
 
         $client = $this->createClient();
 
-        $client->request('GET', '/_symfony_cmf_tree/phpcr_tree/children');
+        $client->request('GET', '/_cmf_tree/phpcr_tree/children');
 
         $this->assertEquals(
             $client->getResponse()->getContent(),
@@ -32,7 +32,7 @@ class PHPCRBrowserTest extends BaseTestCase
 
         $client = $this->createClient();
 
-        $crawler = $client->request('GET', '/_symfony_cmf_tree/phpcr_tree/children?root=%2Fcms%2Fcontent');
+        $crawler = $client->request('GET', '/_cmf_tree/phpcr_tree/children?root=%2Fcms%2Fcontent');
 
         $this->assertEquals(
             $client->getResponse()->getContent(),
