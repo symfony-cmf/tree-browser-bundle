@@ -36,4 +36,19 @@ class CmfTreeBrowserExtension extends Extension
 
         $loader->load('tree.xml');
     }
+
+    /**
+     * Returns the base path for the XSD files.
+     *
+     * @return string The XSD base path
+     */
+    public function getXsdValidationBasePath()
+    {
+        return __DIR__.'/../Resources/config/schema';
+    }
+
+    public function getNamespace()
+    {
+        return 'http://cmf.symfony.com/schema/dic/treebrowser';
+    }
 }
