@@ -8,10 +8,8 @@ use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Templating\Helper\CoreAssetsHelper;
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\TreeInterface;
 
-use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\Common\Util\ClassUtils;
-
-use Sonata\DoctrinePHPCRAdminBundle\Model\ModelManager;
+use Doctrine\ODM\PHPCR\DocumentManager;
 use Doctrine\ODM\PHPCR\Document\Generic;
 
 /**
@@ -94,11 +92,11 @@ class PhpcrOdmTree implements TreeInterface
                 continue;
             }
 
-            $child = $this->documentToArray($document);
+            $child = $this->documentToArray($child);
 
             // can probably optimize this with fetch depth above
             // somehow.
-            $grandChildren = $this->dm->getChildren($document);
+            $grandChildren = $this->dm->getChildren($child);
 
             foreach ($grandChildren as $grandChild) {
                 $child['children'][] = $this->documentToArray($grandChild);
@@ -138,11 +136,11 @@ class PhpcrOdmTree implements TreeInterface
      */
     private function documentToArray($document)
     {
+        $className = ClassUtils::getClass($document);
         $node = $this->dm->getNodeForDocument($document);
         $id = $node->getIdentifier();
-
-        throw new \Exception('How to get URL safe id?');
         $urlSafeId = $id;
+        $label = $this->getDocumentLabel($document);
 
         $rel = in_array($className, array_keys($this->validClasses)) ? $className : 'undefined';
         $rel = $this->normalizeClassname($rel);
@@ -158,24 +156,46 @@ class PhpcrOdmTree implements TreeInterface
         );
     }
 
+    private function getDocumentLabel($document)
+    {
+        $label = '';
+
+        if (method_exists($document, '__toString')) {
+            $label = (string)$document;
+        }
+
+        if (strlen($label) > 18) {
+            // TODO: tooltip with full name?
+            $label = substr($label, 0, 17) . '...';
+        }
+
+        $label .= ' <not editable>';
+
+        return $label;
+    }
+
+
     /**
      * @param $document - Parent document
      * @param $child    - Child document
      *
      * @return bool TRUE if valid, FALSE if not vaild
      */
-    private function isValidDocumentChild($className, $childClassName)
+    private function isValidDocumentChild($parent, $child)
     {
-        if (!isset($this->validClasses[$className])) {
+        $parentClassName = ClassUtils::getClass($parent);
+        $childClassName = ClassUtils::getClass($child);
+
+        if (!isset($this->validClasses[$parentClassName])) {
             // no mapping means no valid children
             return false;
         }
 
-        $validClass = $this->validClasses[$className];
+        $validClass = $this->validClasses[$parentClassName];
 
         $showAll = false;
         if (isset($validClass['valid_children'][0])) {
-            $showAll = $this->validClasses['valid_children'][0] === self::VALID_CLASS_ALL;
+            $showAll = $validClass['valid_children'][0] === self::VALID_CLASS_ALL;
         }
 
         $isValidChild = in_array($childClassName, $validClass['valid_children']);
@@ -188,7 +208,7 @@ class PhpcrOdmTree implements TreeInterface
      */
     public function reorder($parentPath, $sourcePath, $targetPath, $before)
     {
-        $parentDocument = $this->dm->find(null, $parent);
+        $parentDocument = $this->dm->find(null, $parentPath);
 
         $this->dm->reorder(
             $parentDocument, 
@@ -235,8 +255,8 @@ class PhpcrOdmTree implements TreeInterface
 
             $icon = $this->icons['folder'];;
 
-            if (!empty($children['image'])) {
-                $icon = $children['image'];
+            if (!empty($classConfig['image'])) {
+                $icon = $classConfig['image'];
             }
 
             $routes = array();
