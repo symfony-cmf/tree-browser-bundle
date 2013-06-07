@@ -18,14 +18,7 @@
         "friendsofsymfony/jsrouting-bundle": "dev-master"
     },
     "require-dev": {
-        "symfony/class-loader": "~2.1",
-        "symfony/browser-kit": "~2.1",
-        "doctrine/doctrine-bundle": "1.*",
-        "symfony/yaml": "~2.1",
-        "symfony/finder": "~2.1",
-        "jackalope/jackalope-doctrine-dbal": "1.0.*",
-        "doctrine/phpcr-odm": "1.0.*",
-        "doctrine/phpcr-bundle": "1.0.*"
+        "symfony-cmf/testing": "dev-master"
     },
     "suggest": {
         "doctrine/phpcr-bundle": "1.0.*",

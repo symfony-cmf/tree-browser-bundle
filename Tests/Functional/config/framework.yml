@@ -1,8 +1,0 @@
-framework:
-    secret: test
-    test: ~
-    session:
-        storage_id: session.storage.filesystem
-    router:
-        resource: %kernel.root_dir%/config/routing.yml
-    default_locale: "en"
