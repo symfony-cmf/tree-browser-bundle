@@ -1,5 +1,4 @@
 vendor
 composer.lock
 composer.phar
-Tests/Functional/config/parameters.yml
-Tests/Functional/app.sqlite
+Tests/Resources/app/cache
