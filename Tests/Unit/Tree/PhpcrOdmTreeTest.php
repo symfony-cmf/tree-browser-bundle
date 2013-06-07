@@ -26,13 +26,13 @@ class PhpcrOdmTreeTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    protected function getTreeInstance($validClasses = array())
+    protected function getTreeInstance($mapping = array())
     {
         return new PhpcrOdmTree(
             $this->dm,
             $this->translator,
             $this->assetsHelper,
-            $validClasses
+            $mapping
         );
     }
 
@@ -222,9 +222,77 @@ class PhpcrOdmTreeTest extends \PHPUnit_Framework_TestCase
         $this->getTreeInstance()->reorder($parentPath, $sourcePath, $targetPath, $before);
     }
 
-    public function testGetNodeTypes()
+    public function provideGetNodeTypes()
     {
-        $this->markTestIncomplete();
+        return array(
+
+            // test with 0 mappings
+            array(array(
+                'mapping' => array(),
+                'expected' => array(
+                    'undefined' => array(
+                        'icon' => array(
+                            'image'=> 'bundles/cmftreebrowser/images/folder.png'
+                        ),
+                        'valid_children' => 'all',
+                        'routes' => array(),
+                    )
+                ),
+            )),
+
+            // test with 1 mapping
+            array(array(
+                'mapping' => array(
+                    'stdClass' => array(
+                        'valid_children' => array('stdClass'),
+                    ),
+                ),
+
+                'expected' => array(
+                    // note undefined has no label -- why?
+                    'undefined' => array(
+                        'icon' => array(
+                            'image'=> 'bundles/cmftreebrowser/images/folder.png'
+                        ),
+                        'valid_children' => 'all',
+                        'routes' => array(),
+                    ),
+                    'stdClass' => array(
+                        'icon' => array(
+                            'image'=> 'bundles/cmftreebrowser/images/folder.png'
+                        ),
+                        'valid_children' => array(
+                            'stdClass',
+                        ),
+                        'routes' => array(),
+                        'label' => 'stdClass',
+                    ),
+                ),
+            )),
+        );
+    }
+
+    /**
+     * @dataProvider provideGetNodeTypes
+     */
+    public function testGetNodeTypes($options)
+    {
+        $this->assetsHelper->expects($this->any())
+            ->method('getUrl')
+            ->will($this->returnCallback(function ($url) {
+                return $url;
+            }));
+
+        $res = $this->getTreeInstance($options['mapping'])->getNodeTypes();
+
+        $this->assertEquals($options['expected'], $res);
+    }
+
+    public function testGetLabels()
+    {
+        // not sure what uses this.
+        $res = $this->getTreeInstance()->getLabels();
+        $this->assertInternalType('array', $res);
     }
 }
 

@@ -50,19 +50,19 @@ class PhpcrOdmTree implements TreeInterface
      * List of the valid class names that may be used as tree "ref" fields
      * @var array
      */
-    private $validClasses;
+    private $mapping;
 
     public function __construct(
         DocumentManager $dm, 
         TranslatorInterface $translator, 
         CoreAssetsHelper $assetHelper, 
-        array $validClasses
+        array $mapping
     )
     {
         $this->dm = $dm;
         $this->translator = $translator;
         $this->assetHelper = $assetHelper;
-        $this->validClasses = $validClasses;
+        $this->mapping = $mapping;
     }
 
     /**
@@ -87,7 +87,7 @@ class PhpcrOdmTree implements TreeInterface
                 continue;
             }
 
-            // ignore classes not found in validClasses
+            // ignore classes not found in mapping
             if (false === $this->isValidDocumentChild($root, $child)) {
                 continue;
             }
@@ -142,7 +142,7 @@ class PhpcrOdmTree implements TreeInterface
         $urlSafeId = $id;
         $label = $this->getDocumentLabel($document);
 
-        $rel = in_array($className, array_keys($this->validClasses)) ? $className : 'undefined';
+        $rel = in_array($className, array_keys($this->mapping)) ? $className : 'undefined';
         $rel = $this->normalizeClassname($rel);
 
         return array(
@@ -186,12 +186,12 @@ class PhpcrOdmTree implements TreeInterface
         $parentClassName = ClassUtils::getClass($parent);
         $childClassName = ClassUtils::getClass($child);
 
-        if (!isset($this->validClasses[$parentClassName])) {
+        if (!isset($this->mapping[$parentClassName])) {
             // no mapping means no valid children
             return false;
         }
 
-        $validClass = $this->validClasses[$parentClassName];
+        $validClass = $this->mapping[$parentClassName];
 
         $showAll = false;
         if (isset($validClass['valid_children'][0])) {
@@ -240,17 +240,19 @@ class PhpcrOdmTree implements TreeInterface
                 'image' => $this->assetHelper->getUrl($this->icons['undefined']),
             ),
             'valid_children' => 'all',
-            'routes' => array()
+            'routes' => array(),
         );
 
-        foreach ($this->validClasses as $className => $classConfig) {
+        foreach ($this->mapping as $className => $classConfig) {
 
             $normalizedClassName = $this->normalizeClassname($className);
 
-            $validChildren = array();
+            $mapping = array();
 
-            foreach ($classConfig['valid_children'] as $validChild) {
-                $validChildren[] = $this->normalizeClassname($validChild);
+            if (isset($classConfig['valid_children'])) {
+                foreach ($classConfig['valid_children'] as $validChild) {
+                    $mapping[] = $this->normalizeClassname($validChild);
+                }
             }
 
             $icon = $this->icons['folder'];;
@@ -261,13 +263,10 @@ class PhpcrOdmTree implements TreeInterface
 
             $routes = array();
 
-            // todo: sane way to register routes
-            $routes['edit'] = null;
-
             $result[$normalizedClassName] = array(
                 'icon' => array('image' => $this->assetHelper->getUrl($icon)),
-                'label' => (null !== $admin) ? $admin->trans($admin->getLabel()) : $className,
-                'valid_children' => $validChildren,
+                'label' => $className,
+                'valid_children' => $mapping,
                 'routes' => $routes
             );
         }
