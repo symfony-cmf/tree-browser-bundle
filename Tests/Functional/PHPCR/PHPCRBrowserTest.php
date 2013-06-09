@@ -2,7 +2,8 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\PHPCR;
 
-use Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\BaseTestCase;
+
+use Symfony\Cmf\Component\Testing\Functional\BaseTestCase;
 
 /**
  * Functional test for PHPCRBrowser
@@ -19,10 +20,13 @@ class PHPCRBrowserTest extends BaseTestCase
         $client = $this->createClient();
 
         $client->request('GET', '/_cmf_tree/phpcr_tree/children');
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertEquals(
-            $client->getResponse()->getContent(),
-            '[{"data":"cms","attr":{"id":"\/cms","url_safe_id":"cms","rel":"node"},"state":"closed","children":[{"data":"content","attr":{"id":"\/cms\/content","url_safe_id":"cms\/content","rel":"node"},"state":"closed"}]},{"data":"menus","attr":{"id":"\/menus","url_safe_id":"menus","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/menus\/test","url_safe_id":"menus\/test","rel":"node"},"state":null}]}]'
+            '[{"data":"cms","attr":{"id":"\/cms","url_safe_id":"cms","rel":"node"},"state":"closed","children":[{"data":"content","attr":{"id":"\/cms\/content","url_safe_id":"cms\/content","rel":"node"},"state":"closed"}]},{"data":"menus","attr":{"id":"\/menus","url_safe_id":"menus","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/menus\/test","url_safe_id":"menus\/test","rel":"node"},"state":null}]}]',
+            $client->getResponse()->getContent()
         );
     }
 
@@ -33,20 +37,19 @@ class PHPCRBrowserTest extends BaseTestCase
         $client = $this->createClient();
 
         $crawler = $client->request('GET', '/_cmf_tree/phpcr_tree/children?root=%2Fcms%2Fcontent');
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
 
         $this->assertEquals(
-            $client->getResponse()->getContent(),
-            '[{"data":"static","attr":{"id":"\/cms\/content\/static","url_safe_id":"cms\/content\/static","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/cms\/content\/static\/test","url_safe_id":"cms\/content\/static\/test","rel":"node"},"state":null}]}]'
+            '[{"data":"static","attr":{"id":"\/cms\/content\/static","url_safe_id":"cms\/content\/static","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/cms\/content\/static\/test","url_safe_id":"cms\/content\/static\/test","rel":"node"},"state":null}]}]',
+            $client->getResponse()->getContent()
         );
     }
 
     protected function loadFixtures()
     {
-        self::$kernel = self::createKernel();
-        self::$kernel->init();
-        self::$kernel->boot();
-
-        $session = self::$kernel->getContainer()->get('doctrine_phpcr.session');
+        $session = $this->getContainer()->get('doctrine_phpcr.session');
         if ($session->nodeExists("/cms")) {
             $session->getNode("/cms")->remove();
         }
