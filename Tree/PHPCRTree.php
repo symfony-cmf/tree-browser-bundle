@@ -4,8 +4,9 @@ namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
 
-use PHPCR\Util\NodeHelper;
 use PHPCR\PropertyType;
+use PHPCR\Util\NodeHelper;
+use PHPCR\Util\PathHelper;
 
 /**
  * A simple class to get PHPCR trees in JSON format
@@ -89,10 +90,10 @@ class PHPCRTree implements TreeInterface
     // TODO: this should be part of the interface. and the target should include the name to allow renames
     public function move($moved_path, $target_path)
     {
-        $resulting_path = $target_path.'/'.basename($moved_path);
+        $resulting_path = $target_path.'/'.PathHelper::getNodeName($moved_path);
 
         $workspace = $this->session->getWorkspace();
-        $workspace->move($moved_path, $target_path.'/'.basename($moved_path));
+        $workspace->move($moved_path, $target_path.'/'.PathHelper::getNodeName($moved_path));
 
         return array('id' => $resulting_path, 'url_safe_id' => ltrim($resulting_path, '/'));
     }
@@ -109,7 +110,7 @@ class PHPCRTree implements TreeInterface
     public function reorder($parent, $moved, $target, $before)
     {
         $parentNode = $this->session->getNode($parent);
-        $targetName = basename($target);
+        $targetName = PathHelper::getNodeName($target);
         if (!$before) {
             $nodesIterator = $parentNode->getNodes();
             $nodesIterator->rewind();
@@ -127,7 +128,7 @@ class PHPCRTree implements TreeInterface
                 }
             }
         }
-        $parentNode->orderBefore(basename($moved), $targetName);
+        $parentNode->orderBefore(PathHelper::getNodeName($moved), $targetName);
         $this->session->save();
     }
 
