@@ -1,0 +1,38 @@
+{% include 'CmfTreeBrowserBundle:Base:javascripts.html.twig' %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        var treeState = AdminTree.generateTreeStateArray("{{ selected_node }}");
+
+        AdminTree.initTree({
+            "selector": "#tree",
+            "rootNode": "{{ root_node }}",
+            "selected": "{{ selected_node }}",
+            "labels": {{ tree.labels | json_encode() | raw}},
+            "ajax": {
+                "children_url": "",
+                "move_url": "",
+                "reorder_url": "",
+            },
+            "path": {
+                "expanded":     treeState,
+                "preloaded":    treeState
+            },
+            "types": {{ tree.nodeTypes | json_encode() | raw}},
+
+            "createInOverlay": "{{ create_in_overlay }}",
+            "editInOverlay": "{{ edit_in_overlay }}"
+        });
+
+        {% if confirm_move is defined and confirm_move %}
+        $('#tree').on('cmf_tree.move', function(e) {
+            if (!confirm('{{ 'confirm_move_node' | trans({}, 'CmfTreeBrowserBundle') }}')) {
+                e.preventDefault();
+            }
+        });
+        {% endif %}
+    });
+</script>
+
+<div id="tree"></div>
+

@@ -30,8 +30,10 @@ class CmfTreeBrowserExtension extends Extension
 
         if (isset($bundles['DoctrinePHPCRBundle'])) {
             $loader->load('phpcr.xml');
-            $phpcr_tree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
-            $phpcr_tree->replaceArgument(1, $config['session_name']);
+            $loader->load('tree-phpcr-odm.xml');
+
+            $phpcrTree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
+            $phpcrTree->replaceArgument(1, $config['session_name']);
         }
 
         $loader->load('tree.xml');
