@@ -15,10 +15,10 @@
     "require": {
         "php": ">=5.3.3",
         "symfony/framework-bundle": "~2.1",
-        "friendsofsymfony/jsrouting-bundle": "dev-master"
+        "friendsofsymfony/jsrouting-bundle": "~1.1"
     },
     "require-dev": {
-        "symfony-cmf/testing": "dev-master"
+        "symfony-cmf/testing": "1.0.*"
     },
     "suggest": {
         "doctrine/phpcr-bundle": "1.0.*",
