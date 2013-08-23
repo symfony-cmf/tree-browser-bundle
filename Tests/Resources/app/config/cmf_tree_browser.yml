@@ -1,0 +1,5 @@
+cmf_tree_browser:
+    persistence:
+        phpcr:
+            enabled: true
+            session_name: 'default'
