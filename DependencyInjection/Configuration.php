@@ -24,11 +24,18 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode = $treeBuilder->root('cmf_tree_browser');
-
-        $rootNode
+        $treeBuilder->root('cmf_tree_browser')
             ->children()
-                ->scalarNode('session_name')->defaultValue('default')->end()
+                ->arrayNode('persistence')
+                    ->children()
+                        ->arrayNode('phpcr')
+                            ->children()
+                                ->scalarNode('enabled')->defaultValue(true)->end()
+                                ->scalarNode('session_name')->defaultValue('default')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 
