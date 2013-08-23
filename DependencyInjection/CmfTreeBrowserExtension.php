@@ -2,12 +2,12 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection;
 
-use Symfony\Component\Config\FileLocator,
-    Symfony\Component\HttpKernel\DependencyInjection\Extension,
-    Symfony\Component\DependencyInjection\Reference,
-    Symfony\Component\DependencyInjection\ContainerInterface,
-    Symfony\Component\DependencyInjection\ContainerBuilder,
-    Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\Config\FileLocator;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 
 /**
   * @author Lukas Kahwe Smith <smith@pooteeweet.org>
@@ -28,10 +28,12 @@ class CmfTreeBrowserExtension extends Extension
 
         $bundles = $container->getParameter('kernel.bundles');
 
-        if (isset($bundles['DoctrinePHPCRBundle'])) {
-            $loader->load('phpcr.xml');
-            $phpcr_tree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
-            $phpcr_tree->replaceArgument(1, $config['session_name']);
+        if (isset($bundles['DoctrinePHPCRBundle'])
+            && !empty($config['persistence']['phpcr']['enabled'])) {
+
+            $loader->load('tree-phpcr.xml');
+            $phpcrTree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
+            $phpcrTree->replaceArgument(1, $config['persistence']['phpcr']['session_name']);
         }
 
         $loader->load('tree.xml');
