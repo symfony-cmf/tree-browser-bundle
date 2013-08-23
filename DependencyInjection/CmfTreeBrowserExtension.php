@@ -29,7 +29,8 @@ class CmfTreeBrowserExtension extends Extension
         $bundles = $container->getParameter('kernel.bundles');
 
         if (isset($bundles['DoctrinePHPCRBundle'])
-            && !empty($config['persistence']['phpcr']['enabled'])) {
+            && !empty($config['persistence']['phpcr']['enabled'])
+        ) {
 
             $loader->load('tree-phpcr.xml');
             $phpcrTree = $container->getDefinition('cmf_tree_browser.phpcr_tree');
