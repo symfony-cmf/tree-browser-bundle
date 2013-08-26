@@ -16,6 +16,7 @@ interface TreeInterface
      * Returns an array representation of children nodes of a node
      *
      * @param string $path The path of any PHPCR node
+     *
      * @return array children list
      */
     public function getChildren($path);
@@ -42,6 +43,7 @@ interface TreeInterface
      * @param string $moved the id of the child being moved
      * @param string $target the id of the target node
      * @param bool $before insert before or after the target
+     *
      * @return void
      */
     public function reorder($parent, $moved, $target, $before);
@@ -57,7 +59,7 @@ interface TreeInterface
      * Get an array describing the available node types
      *
      * Example:
-     *
+     *    TODO
      *
      * @return array
      */
