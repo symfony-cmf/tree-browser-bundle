@@ -3,56 +3,59 @@
  */
 var AdminTree = (function () {
 
-    var my = {},
-        generateDialog;
+    'use strict';
 
-    generateDialog = function (url, closeCallback) {
-        var treeDialog = jQuery("<iframe id='tree_dialog'></iframe>");// iframe is needed because the delivered form might need some additional JS
+    var my = {};
 
-        jQuery(document.body).append(treeDialog);
+    var generateDialog = function (url, closeCallback) {
+        // iframe is needed because the delivered form might need some additional JS
+        var treeDialog = jQuery("<iframe id='tree_dialog'></iframe>");
         treeDialog.attr('src', url);
+        treeDialog.css('height', '500px');
 
         treeDialog.dialog({
-            width: 800,
-            modal: true,
-            autoOpen: true,
+            width:     800,
+            modal:     true,
+            autoOpen:  true,
             resizable: true,
-            close: function(event, ui) {
+            zIndex:    9999,
+            close:     function (e, ui) {
                 if (closeCallback) {
-                    closeCallback(event, ui);
+                    closeCallback(e, ui);
                 }
-            },
-            zIndex: 9999
+            }
         });
 
-        treeDialog.attr('style', 'height: 500px');
+        jQuery(document.body).append(treeDialog);
 
         return treeDialog;
     };
 
     my.generateTreeStateArray = function (path) {
 
-        var start, pos, segments, curSegment, curItem;
-
-        curSegment = '';
-        segments = [];
-        start = 1;
-        pos = path.indexOf('/', start);
+        var curItem;
+        var curSegment = '';
+        var segments   = [];
+        var start      = 1;
+        var pos        = path.indexOf('/', start);
 
         while (pos > 0) {
             curItem = path.substr(start, pos - start);
-            if (curItem !== '') {
+            if ('' !== curItem) {
                 curSegment = curSegment + '/' + curItem;
+
                 segments.push(curSegment);
             }
+
             start = pos + 1;
             pos = path.indexOf('/', start);
         }
 
         curItem = path.substr(start);
 
-        if (curItem !== '') {
+        if ('' !== curItem) {
             curSegment = curSegment + '/' + curItem;
+
             segments.push(curSegment);
         }
 
@@ -60,26 +63,44 @@ var AdminTree = (function () {
     };
 
     my.initTree = function (config) {
-        if (! 'rootNode' in config) {
-            config.rootNode = "/";
-        }
-        if (! 'selected' in config) {
+        jQuery.extend(true, {
+            rootNode:         '/',
+            selected:         null, // will be set to the rootNode by default
+            routing_defaults: {},
+            selector:         null,
+            path: {
+                expanded:  null,
+                preloaded: null
+            },
+            ajax: {
+                children_url: null,
+                move_url:     null,
+                reorder_url:  null
+            },
+            types: {},
+            labels: {
+                createItem: null,
+                deleteItem: null
+            },
+            createInOverlay: null,
+            editInOverlay:   null
+        }, config);
+
+        if (!config.hasOwnProperty('selected')) {
             config.selected = config.rootNode;
         }
-        if (! 'routing_defaults' in config) {
-            config.routing_defaults = {};
-        }
+
         var treeInst = jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded
             },
-            "plugins": [ "contextmenu", "themes", "types", "ui", "json_data", "crrm", "dnd", "cookies" ],
+            "plugins": ["contextmenu", "themes", "types", "ui", "json_data", "crrm", "dnd", "cookies"],
             "json_data": {
                 "ajax": {
                     "url": config.ajax.children_url,
                     "data": function (node) {
-                        if (node == -1) {
+                        if (-1 === node) {
                             return { 'root' : config.rootNode };
                         } else {
                             return { 'root' : jQuery(node).attr('id') };
@@ -88,34 +109,40 @@ var AdminTree = (function () {
                 }
             },
             "types": {
-                "max_depth":        -1,
-                "max_children":     -1,
-                "valid_children":  "all",
-                "types": config.types
+                "max_depth":       -1,
+                "max_children":    -1,
+                "valid_children": "all",
+                "types":          config.types
             },
             "ui": {
-                "initially_select" : [ config.selected ]
+                "initially_select" : [config.selected]
             },
             "contextmenu": {
-                "items": function(node) {
+                "items": function (node) {
                     var result = {};
                     var nodetype = node.attr("rel");
-                    if (nodetype in config.types) {
+
+                    if (config.types.hasOwnProperty(nodetype)) {
                         var createItem = {};
                         var found = false;
+
                         createItem.label = config.labels.createItem;
                         createItem.submenu = {};
-                        $.each(config.types[nodetype].valid_children, function(i, val) {
-                            if (val in config.types) {
+
+                        jQuery.each(config.types[nodetype].valid_children, function (i, val) {
+                            if (config.types.hasOwnProperty(val)) {
                                 createItem.submenu[val] = {};
                                 createItem.submenu[val].label = config.types[val].label;
                                 createItem.submenu[val].action = function (node) {
-                                    routing_defaults = config.routing_defaults;
-                                    routing_defaults["parent"] = node.attr("url_safe_id");
+                                    var routing_defaults = config.routing_defaults;
+                                    routing_defaults.parent = node.attr("url_safe_id");
 
                                     if (config.createInOverlay) {
                                         generateDialog(
-                                            Routing.generate(config.types[val].routes.create_route, routing_defaults),
+                                            Routing.generate(
+                                                config.types[val].routes.create_route,
+                                                routing_defaults
+                                            ),
                                             function () {
                                                 treeInst.jstree('refresh', node);
                                             }
@@ -127,19 +154,22 @@ var AdminTree = (function () {
                                 found = true;
                             }
                         });
+
                         if (found) {
                             result.createItem = createItem;
                         }
                     }
+
                     if (undefined !== config.types[node.attr("rel")].routes.delete_route) {
                         result.deleteItem = {};
                         result.deleteItem.label = config.labels.deleteItem;
                         result.deleteItem.action = function (node) {
-                            routing_defaults = config.routing_defaults;
-                            routing_defaults["id"] = node.attr("url_safe_id");
+                            var routing_defaults = config.routing_defaults;
+                            routing_defaults.id = node.attr("url_safe_id");
                             window.location = Routing.generate(config.types[node.attr("rel")].routes.delete_route, routing_defaults);
                         };
                     }
+
                     return result;
                 }
             },
@@ -157,16 +187,19 @@ var AdminTree = (function () {
 
         treeInst.bind("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("rel") in config.types
-                && data.rslt.obj.attr("id") != config.selected
-                && undefined != config.types[data.rslt.obj.attr("rel")].routes.select_route
+                && data.rslt.obj.attr("id") !== config.selected
+                && undefined !== config.types[data.rslt.obj.attr("rel")].routes.select_route
             ) {
-                routing_defaults = config.routing_defaults;
-                routing_defaults["id"] = data.rslt.obj.attr("url_safe_id");
+                var routing_defaults = config.routing_defaults;
+                routing_defaults.id = data.rslt.obj.attr("url_safe_id");
 
                 if (config.editInOverlay) {
                     if (2 < data.args.length){ // only generateDialog() when the tree has received a click, not on refresh
                         generateDialog(
-                            Routing.generate(config.types[data.rslt.obj.attr("rel")].routes.select_route, routing_defaults),
+                            Routing.generate(
+                                config.types[data.rslt.obj.attr("rel")].routes.select_route,
+                                routing_defaults
+                            ),
                             function () {
                                 treeInst.jstree('refresh');
                             }
@@ -177,23 +210,26 @@ var AdminTree = (function () {
                 }
             } else {
                 // TODO: overlay?
-                console.log('This node is not editable');
+                console.log('This node is not editable'); // note this will break lte IE8
             }
         })
         .bind("before.jstree", function (e, data) {
-            if (data.func === "move_node" && data.plugin === "crrm" && data.args[1] == false) {
+            if ("move_node" === data.func && "crrm" === data.plugin && false === data.args[1]) {
                 var confirmEvent = jQuery.Event('symfony_cmf_tree.move', data.inst);
-                $(this).trigger(confirmEvent);
+
+                jQuery(this).trigger(confirmEvent);
+
                 if (confirmEvent.isDefaultPrevented()) {
                     e.stopImmediatePropagation();
+
                     return false;
                 }
             }
         })
         .bind("move_node.jstree", function (event, data) {
-            var dropped = data.rslt.o;
-            var target = data.rslt.r;
-            var position = data.rslt.p;
+            var dropped   = data.rslt.o;
+            var target    = data.rslt.r;
+            var position  = data.rslt.p;
             var oldParent = data.rslt.op;
             var newParent = data.rslt.np;
 
@@ -204,7 +240,7 @@ var AdminTree = (function () {
             }
 
             if (!oldParent.is(newParent)) {
-                $.post(
+                jQuery.post(
                     config.ajax.move_url,
                     { "dropped": dropped.attr("id"), "target": parent },
                     function (data) {
@@ -213,14 +249,15 @@ var AdminTree = (function () {
                     }
                 );
             } else {
-                $.post(
+                jQuery.post(
                     config.ajax.reorder_url,
                     { "dropped": dropped.attr("id"), "target": target.attr("id"), "parent": parent, "position": position }
                 );
             }
         })
-
-        .delegate("a", "click", function (event, data) { event.preventDefault(); });
+        .on("click", "a", function (e) { 
+            e.preventDefault();
+        });
     };
 
     return my;
