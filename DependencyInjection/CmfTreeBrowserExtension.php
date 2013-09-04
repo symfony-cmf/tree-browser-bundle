@@ -23,13 +23,11 @@ class CmfTreeBrowserExtension extends Extension
     public function load(array $configs, ContainerBuilder $container)
     {
         $config = $this->processConfiguration(new Configuration(), $configs);
-
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
         $bundles = $container->getParameter('kernel.bundles');
-
         if (isset($bundles['DoctrinePHPCRBundle'])
-            && !empty($config['persistence']['phpcr']['enabled'])
+            && $config['persistence']['phpcr']['enabled']
         ) {
 
             $loader->load('tree-phpcr.xml');
