@@ -63,27 +63,9 @@ var AdminTree = (function () {
     };
 
     my.initTree = function (config) {
-        jQuery.extend(true, {
+        jQuery.extend({
             rootNode:         '/',
             selected:         null, // will be set to the rootNode by default
-            routing_defaults: {},
-            selector:         null,
-            path: {
-                expanded:  null,
-                preloaded: null
-            },
-            ajax: {
-                children_url: null,
-                move_url:     null,
-                reorder_url:  null
-            },
-            types: {},
-            labels: {
-                createItem: null,
-                deleteItem: null
-            },
-            createInOverlay: null,
-            editInOverlay:   null
         }, config);
 
         if (!config.hasOwnProperty('selected')) {
