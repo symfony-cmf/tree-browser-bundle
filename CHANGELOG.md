@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0.0-RC2
+1.0.0-RC3
 ---------
 
 * **2013-10-05**: Renamed and cleaned up the javascript files
