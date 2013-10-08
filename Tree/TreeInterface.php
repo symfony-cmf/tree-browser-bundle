@@ -22,6 +22,15 @@ interface TreeInterface
     public function getChildren($path);
 
     /**
+     * Returns an array representation of the properties
+
+     * @param string $path The path of any PHPCR node
+     *
+     * @return array children list
+     */
+    public function getProperties($path);
+
+    /**
      * Move the node with $id to become a child of node with id $target
      *
      * Note that this is different from the PHPCR move operation, where the
@@ -57,10 +66,7 @@ interface TreeInterface
 
     /**
      * Get an array describing the available node types
-     *
-     * Example:
-     *    TODO
-     *
+     *     *
      * @return array
      */
     public function getNodeTypes();
