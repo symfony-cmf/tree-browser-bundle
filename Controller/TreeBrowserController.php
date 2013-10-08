@@ -33,23 +33,6 @@ class TreeBrowserController
     }
 
     /**
-     * Helper method to deliver a json node
-     *
-     * @param string $path Node to process
-     * @param string $method Method to execute on the node
-     *
-     * @return Response
-     */
-    protected function processNode($path, $method)
-    {
-        if (empty($path)) {
-            $path = '/';
-        }
-
-        return new JsonResponse($this->tree->$method($path));
-    }
-
-    /**
      * Get a json encoded list of children the specified node has
      *
      * @param Request $request containing the parameter 'root' for which to get
@@ -61,7 +44,12 @@ class TreeBrowserController
     public function childrenAction(Request $request)
     {
         $path = $request->query->get('root');
-        return $this->processNode($path, "getChildren");
+
+        if (empty($path)) {
+            $path = '/';
+        }
+
+        return new JsonResponse($this->tree->getChildren($path));
     }
 
     /**
@@ -75,7 +63,12 @@ class TreeBrowserController
     public function propertiesAction(Request $request)
     {
         $path = $request->query->get('root');
-        return $this->processNode($path, "getProperties");
+
+        if (empty($path)) {
+            $path = '/';
+        }
+
+        return new JsonResponse($this->tree->getProperties($path));
     }
 
     /**
