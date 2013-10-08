@@ -11,10 +11,13 @@ var AdminTree = (function () {
         // iframe is needed because the delivered form might need some additional JS
         var treeDialog = jQuery("<iframe id='tree_dialog'></iframe>");
         treeDialog.attr('src', url);
-        treeDialog.css('height', '500px');
+        treeDialog.css('min-width', '100%');// we set the min-width because the treeDialog plugin overrides the width set
+
+        jQuery(document.body).append(treeDialog);
 
         treeDialog.dialog({
             width:     800,
+            height:     500,
             modal:     true,
             autoOpen:  true,
             resizable: true,
@@ -25,8 +28,6 @@ var AdminTree = (function () {
                 }
             }
         });
-
-        jQuery(document.body).append(treeDialog);
 
         return treeDialog;
     };
