@@ -58,9 +58,6 @@ interface TreeInterface
     /**
      * Get an array describing the available node types
      *
-     * Example:
-     *    TODO
-     *
      * @return array
      */
     public function getNodeTypes();

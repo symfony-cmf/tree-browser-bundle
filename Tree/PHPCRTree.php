@@ -50,44 +50,12 @@ class PHPCRTree implements TreeInterface
         return $children;
     }
 
-    public function getProperties($path)
-    {
-        $node = $this->session->getNode($path);
-        $properties = array();
-
-        foreach ($node->getProperties() as $name => $property) {
-            $entry = array(
-                "name" => $name,
-                "type" => PropertyType::nameFromValue($property->getType())
-            );
-            switch ($property->getType()) {
-                case PropertyType::BINARY:
-                    break;
-                case PropertyType::BOOLEAN:
-                case PropertyType::DATE:
-                case PropertyType::DECIMAL:
-                case PropertyType::DOUBLE:
-                case PropertyType::LONG:
-                case PropertyType::NAME:
-                case PropertyType::STRING:
-                case PropertyType::URI:
-                    $entry['value'] = $property->getString();
-                    break;
-                case PropertyType::PATH:
-                case PropertyType::WEAKREFERENCE:
-                case PropertyType::REFERENCE:
-                    $entry['value'] = $property->getPath();
-            }
-
-            // TODO: handle PATH/(WEAK)REFERENCE in frontend
-            // TODO: handle BINARY in frontend (no value)
-            $properties[] = $entry;
-        }
-
-        return $properties;
-    }
-
-    // TODO: this should be part of the interface. and the target should include the name to allow renames
+    /**
+     * @param string $moved_path
+     * @param string $target_path
+     *
+     * @return array
+     */
     public function move($moved_path, $target_path)
     {
         $resulting_path = $target_path.'/'.PathHelper::getNodeName($moved_path);
@@ -105,6 +73,7 @@ class PHPCRTree implements TreeInterface
      * @param string $moved the id of the child being moved
      * @param string $target the id of the target node
      * @param bool $before insert before or after the target
+     * 
      * @return void
      */
     public function reorder($parent, $moved, $target, $before)
