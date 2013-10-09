@@ -53,25 +53,6 @@ class TreeBrowserController
     }
 
     /**
-     * TODO: make this formAction to get an edit form for the node specified in root
-     *
-     * @param Request $request containing the parameter 'root' for which to get
-     *      the children
-     *
-     * @return Response
-     */
-    public function propertiesAction(Request $request)
-    {
-        $path = $request->query->get('root');
-
-        if (empty($path)) {
-            $path = '/';
-        }
-
-        return new JsonResponse($this->tree->getProperties($path));
-    }
-
-    /**
      * Handle request to move a node from src to target path.
      *
      * Should only be configured for POST requests to avoid manipulations.
