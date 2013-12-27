@@ -8,6 +8,19 @@
     <xsd:element name="config" type="config" />
 
     <xsd:complexType name="config">
+        <xsd:sequence>
+            <xsd:element name="persistence" type="persistence" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="persistence">
+        <xsd:sequence>
+            <xsd:element name="phpcr" type="phpcr" minOccurs="0"/>
+        </xsd:sequence>
+    </xsd:complexType>
+
+    <xsd:complexType name="phpcr">
+        <xsd:attribute name="enabled" type="xsd:boolean" />
         <xsd:attribute name="session-name" type="xsd:string" />
     </xsd:complexType>
 </xsd:schema>
