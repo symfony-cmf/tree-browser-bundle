@@ -1,0 +1,7 @@
+<config xmlns="http://cmf.symfony.com/schema/dic/treebrowser">
+    <persistence>
+        <phpcr
+                session-name="default"
+                />
+    </persistence>
+</config>
