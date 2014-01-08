@@ -18,7 +18,7 @@
         "friendsofsymfony/jsrouting-bundle": "~1.1"
     },
     "require-dev": {
-        "symfony-cmf/testing": "1.0.*"
+        "symfony-cmf/testing": "1.1.*"
     },
     "suggest": {
         "doctrine/phpcr-bundle": "1.0.*",
