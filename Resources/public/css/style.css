@@ -1,6 +1,12 @@
-#tree_dialog {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.jstree a {
+    width: 95%;
+    width: calc(100% - 20px);
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: -5px;
+}
+
+.jstree a:hover {
+    width: auto;
+    overflow-x: visible;
 }
