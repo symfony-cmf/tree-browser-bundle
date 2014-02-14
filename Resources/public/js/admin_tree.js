@@ -198,7 +198,7 @@ var AdminTree = (function () {
         })
         .bind("before.jstree", function (e, data) {
             if ("move_node" === data.func && "crrm" === data.plugin && false === data.args[1]) {
-                var confirmEvent = jQuery.Event('symfony_cmf_tree.move', data.inst);
+                var confirmEvent = jQuery.Event('cmf_tree.move', data.inst);
 
                 jQuery(this).trigger(confirmEvent);
 
@@ -238,7 +238,7 @@ var AdminTree = (function () {
                 );
             }
         })
-        .on("click", "a", function (e) { 
+        .on("click", "a", function (e) {
             e.preventDefault();
         });
     };
