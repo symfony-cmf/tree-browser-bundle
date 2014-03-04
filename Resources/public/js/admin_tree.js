@@ -150,7 +150,7 @@ var AdminTree = (function () {
                             var routing_defaults = config.routing_defaults;
                             routing_defaults.id = node.attr("url_safe_id");
 
-                            if (config.deleteInOverlay) {
+                            if (config.deleteInOverlay != undefined && config.deleteInOverlay === true) {
                                 generateDialog(
                                     Routing.generate(
                                         config.types[node.attr("rel")].routes.delete_route,
