@@ -16,7 +16,7 @@ The TreeBrowserBundle provides tree navigation for the PHP Content Repository
 
 ## Requirements
 
-* Symfony 2.2.x
+* Symfony 2.3+
 * FOSJsRoutingBundle
 * jQuery (SonatajQueryBundle strongly suggested)
 * See also the `require` section of [composer.json](composer.json)
