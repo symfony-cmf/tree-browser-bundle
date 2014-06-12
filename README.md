@@ -1,6 +1,6 @@
 # Symfony CMF Tree Browser Bundle
 
-[![Build Status](https://secure.travis-ci.org/symfony-cmf/TreeBrowserBundle.png?branch=master)](http://travis-ci.org/symfony-cmf/TreeBrowserBundle)
+[![Build Status](https://secure.travis-ci.org/symfony-cmf/TreeBrowserBundle.png?branch=1.0)](http://travis-ci.org/symfony-cmf/TreeBrowserBundle)
 [![Latest Stable Version](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/version.png)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
 [![Total Downloads](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/d/total.png)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
 
