@@ -10,3 +10,7 @@
     width: auto;
     overflow-x: visible;
 }
+
+#jstree-marker-line {
+    pointer-events: none;
+}
