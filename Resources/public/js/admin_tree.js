@@ -76,27 +76,18 @@ var AdminTree = (function () {
         var treeInst = jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
-                "initially_open": config.path.preloaded
-            },
-            "plugins": ["contextmenu", "themes", "types", "ui", "json_data", "crrm", "dnd", "cookies"],
-            "json_data": {
-                "ajax": {
+                "initially_open": config.path.preloaded,
+                "data": {
                     "url": config.ajax.children_url,
                     "data": function (node) {
-                        if (-1 === node) {
-                            return { 'root' : config.rootNode };
-                        } else {
-                            return { 'root' : jQuery(node).attr('id') };
-                        }
+                        return {
+                            root: node.id !== '#' ? node.id : config.rootNode
+                        };
                     }
                 }
             },
-            "types": {
-                "max_depth":       -1,
-                "max_children":    -1,
-                "valid_children": "all",
-                "types":          config.types
-            },
+            "plugins": ["contextmenu", "themes", "types", "ui", "json_data", "crrm", "dnd", "cookies"],
+            "types": config.types,
             "ui": {
                 "initially_select" : [config.selected]
             },
