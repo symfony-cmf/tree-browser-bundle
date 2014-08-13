@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.1.0
+-----
+
+* Upgrade to jstree 3.0.2
+
 1.0.0-RC3
 ---------
 
