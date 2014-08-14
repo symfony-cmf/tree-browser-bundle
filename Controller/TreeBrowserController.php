@@ -49,7 +49,9 @@ class TreeBrowserController
             $path = '/';
         }
 
-        return new JsonResponse($this->tree->getChildren($path));
+        return new JsonResponse(
+            $this->formatTree($this->tree->getChildren($path))
+        );
     }
 
     /**
@@ -92,5 +94,36 @@ class TreeBrowserController
         $this->tree->reorder($parent, $moved, $target, 'before' == $position);
 
         return new Response();
+    }
+
+    /**
+     * Format the tree for use with jstree
+     * FIME: This should not be here, need to determine if we should just PR against SonataDoctrinePhpcrAdminBundle's PhpcrOdmTree::getChildren
+     * In order to support multiple representations it seems like PhpcrOdmTree::documentToArray should perhaps use another class for the serialization
+     * 
+     * @param mixed $tree 
+     * @access protected
+     * @return void
+     */
+    protected function formatTree($tree)
+    {
+        foreach ($tree as $key => $leaf) {
+            $tree[$key] = $this->formatLeaf($leaf);
+            if (!empty($tree[$key]['children'])) {
+                $tree[$key]['children'] = $this->formatTree($tree[$key]['children']);
+            }
+        }
+        return $tree;
+    }
+
+    protected function formatLeaf($leaf)
+    {
+        return array_merge(
+            $leaf,
+            array(
+                'text' => $leaf['data'],
+                'id' => $leaf['attr']['id'],
+            )
+        );
     }
 }
