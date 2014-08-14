@@ -199,7 +199,7 @@ var AdminTree = (function () {
         });
         */
 
-        treeInst.bind("select_node.jstree", function (event, data) {
+        treeInst.on("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("rel") in config.types
                 && data.rslt.obj.attr("id") !== config.selected
                 && undefined !== config.types[data.rslt.obj.attr("rel")].routes.select_route
@@ -227,7 +227,7 @@ var AdminTree = (function () {
                 console.log('This node is not editable'); // note this will break lte IE8
             }
         })
-        .bind("before.jstree", function (e, data) {
+        .on("before.jstree", function (e, data) {
             if ("move_node" === data.func && "crrm" === data.plugin && false === data.args[1]) {
                 var confirmEvent = jQuery.Event('cmf_tree.move', data.inst);
 
@@ -240,14 +240,14 @@ var AdminTree = (function () {
                 }
             }
         })
-        .bind("move_node.jstree", function (event, data) {
+        .on("move_node.jstree", function (event, data) {
             var instance  = data.instance;
             var node      = data.node;
             var dropped   = $(instance.get_node(node, true));
             var target    = data.node;
-            var position  = data.position;
             var oldParent = data.old_parent;
             var newParent = data.parent;
+            var after, before, target, position;
 
             // FIXME: Better way of determining if this is the root node?
             var parentId = newParent == '#' ? config.rootNode : newParent;
@@ -258,16 +258,29 @@ var AdminTree = (function () {
                     config.ajax.move_url,
                     { "dropped": node.id, "target": parentId },
                     function (data) {
+                        // FIXME: Cant move the node more than once, setting the id doesnt seem to be working in any of the following ways
                         dropped.attr("id", data.id);
                         dropped.attr("url_safe_id", data.url_safe_id);
+                        node.id = data.id;
+                        node.li_attr.id = data.id;
+                        instance.set_id(node, data.id);
+                        console.log(node);
                     }
                 );
             // Re-order
             } else {
-                // FIXME: Not sure if there is an easy way to get the target before or after which the node should be moved
+                if (after = instance.get_next_dom(node, true)) {
+                    position = 'before';
+                    target = after.attr('id');
+                } else {
+                    before = instance.get_prev_dom(node, true);
+                    position = 'after';
+                    target = before.attr('id');
+                }
+
                 jQuery.post(
                     config.ajax.reorder_url,
-                    { "dropped": node.id, "target": target.attr("id"), "parent": parentId, "position": position }
+                    { "dropped": node.id, "target": target, "parent": parentId, "position": position }
                 );
             }
         })
