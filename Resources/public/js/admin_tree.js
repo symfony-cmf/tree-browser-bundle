@@ -74,14 +74,39 @@ var AdminTree = (function () {
         }
 
         var treeInst = jQuery(config.selector).jstree({
+            "plugins": ["dnd", "themes"],
+            "core": {
+                "check_callback": true,
+                "themes": {
+                    name: "default",
+                    url: true
+                },
+                "data": {
+                    "url": config.ajax.children_url,
+                    "data": function(node) {
+                        return {
+                            root: node.id !== '#' ? node.id : config.rootNode
+                        };
+                    }
+                },
+                "dnd" : {
+                    "copy": false
+                }
+            }
+        });
+        /*
+        var treeInst = jQuery(config.selector).jstree({
             "core": {
                 "initially_load": config.path.expanded,
                 "initially_open": config.path.preloaded,
                 "data": {
                     "url": config.ajax.children_url,
                     "data": function (node) {
+                        console.dir(node);
                         return {
-                            root: node.id !== '#' ? node.id : config.rootNode
+                            id: node.id,
+                            root: node.id !== '#' ? node.id : config.rootNode,
+                            text: 'foo'
                         };
                     }
                 }
@@ -172,6 +197,7 @@ var AdminTree = (function () {
                 "save_selected": false
             }
         });
+        */
 
         treeInst.bind("select_node.jstree", function (event, data) {
             if (data.rslt.obj.attr("rel") in config.types
@@ -215,31 +241,33 @@ var AdminTree = (function () {
             }
         })
         .bind("move_node.jstree", function (event, data) {
-            var dropped   = data.rslt.o;
-            var target    = data.rslt.r;
-            var position  = data.rslt.p;
-            var oldParent = data.rslt.op;
-            var newParent = data.rslt.np;
+            var instance  = data.instance;
+            var node      = data.node;
+            var dropped   = $(instance.get_node(node, true));
+            var target    = data.node;
+            var position  = data.position;
+            var oldParent = data.old_parent;
+            var newParent = data.parent;
 
-            // parent could be the tree
-            var parent = newParent.attr("id");
-            if (treeInst.is(newParent)) {
-                parent = config.rootNode;
-            }
+            // FIXME: Better way of determining if this is the root node?
+            var parentId = newParent == '#' ? config.rootNode : newParent;
 
-            if (!oldParent.is(newParent)) {
+            // Move the node
+            if (oldParent != newParent) {
                 jQuery.post(
                     config.ajax.move_url,
-                    { "dropped": dropped.attr("id"), "target": parent },
+                    { "dropped": node.id, "target": parentId },
                     function (data) {
                         dropped.attr("id", data.id);
                         dropped.attr("url_safe_id", data.url_safe_id);
                     }
                 );
+            // Re-order
             } else {
+                // FIXME: Not sure if there is an easy way to get the target before or after which the node should be moved
                 jQuery.post(
                     config.ajax.reorder_url,
-                    { "dropped": dropped.attr("id"), "target": target.attr("id"), "parent": parent, "position": position }
+                    { "dropped": node.id, "target": target.attr("id"), "parent": parentId, "position": position }
                 );
             }
         })
