@@ -4,11 +4,11 @@
     overflow-x: hidden;
     text-overflow: ellipsis;
     margin-bottom: -5px;
+    box-sizing: content-box;
 }
 
 .jstree a:hover {
     width: auto;
-    overflow-x: visible;
 }
 
 #jstree-marker-line {
