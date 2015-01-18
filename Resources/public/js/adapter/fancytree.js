@@ -4,7 +4,7 @@
  * @author Wouter J <wouter@wouterj.nl>
  * @see https://github.com/mar10/fancytree
  */
-var FancytreeAdapter = function (data_url) {
+var FancytreeAdapter = function (dataUrl) {
     if (!window.jQuery || !jQuery.fn.fancytree) {
         throw 'The FancytreeAdapter requires both jQuery and the FancyTree library.';
     }
@@ -28,21 +28,20 @@ var FancytreeAdapter = function (data_url) {
 
         return fancytreeNode;
     };
+    // FancyTree instance
+    var tree;
+    // jQuery instance of the tree output element
+    var $tree;
 
     return {
-        tree: null,
-        $elem: null,
-        data_url: data_url,
-
         bindToElement: function ($elem) {
             if (!$elem instanceof jQuery) {
                 throw  'FancytreeAdapter can only be adapted to a jQuery object.';
             }
 
-            this.$elem = $elem;
-            var dataUrl = this.data_url;
+            $tree = $elem;
 
-            $elem.fancytree({
+            $tree.fancytree({
                 // the start data (root node + children)
                 source: { url: dataUrl },
 
@@ -84,12 +83,12 @@ var FancytreeAdapter = function (data_url) {
                 activeVisible: true
             });
 
-            this.tree = $elem.fancytree('getTree');
+            tree = $tree.fancytree('getTree');
         },
 
         bindToInput: function ($input) {
             // output active node to input field
-            this.$elem.fancytree('option', 'activate', function(event, data) {
+            $tree.fancytree('option', 'activate', function(event, data) {
                 $input.val(data.node.getKeyPath());
             });
 
