@@ -92,15 +92,23 @@ var FancytreeAdapter = function (dataUrl) {
                 $input.val(data.node.getKeyPath());
             });
 
-            // change active node when the value of the input field changed
-            var tree = this.tree;
-            $input.on('change', function (e) {
-                tree.loadKeyPath($(this).val(), function (node, status) {
+            var showKey = function (key) {
+                tree.loadKeyPath(key, function (node, status) {
                     if ('ok' == status) {
                         node.setExpanded();
                         node.setActive();
                     }
                 });
+            };
+
+            // use initial input value as active node
+            $tree.bind('fancytreeinit', function (event, data) {
+                showKey($input.val());
+            });
+
+            // change active node when the value of the input field changed
+            $input.on('change', function (e) {
+                showKey($(this).val());
             });
         }
     };
