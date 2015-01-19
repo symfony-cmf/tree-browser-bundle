@@ -1,0 +1,68 @@
+ul.fancytree-container {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 14px;
+    border: none;
+}
+ul.fancytree-container:focus {
+    outline:none;
+}
+.fancytree-loading span.fancytree-expander,
+.fancytree-loading span.fancytree-expander:hover {
+    background: initial;
+}
+
+.fancytree-loading span.fancytree-expander:before,
+.fancytree-loading span.fancytree-expander:hover:before,
+.fancytree-statusnode-wait span.fancytree-icon:before,
+.fancytree-statusnode-wait span.fancytree-icon:hover:before{
+    font-family: FontAwesome;
+    content: ' \f110';
+    -webkit-animation: fa-spin 2s infinite linear;
+    animation: fa-spin 2s infinite linear;
+}
+@-webkit-keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+@keyframes fa-spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(359deg);
+    transform: rotate(359deg);
+  }
+}
+
+.fancytree-container .fancytree-icon {
+    background: initial !important;
+}
+.fancytree-container .fancytree-icon:before {
+    display: inline-block;
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 1;
+    color: #333;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+.fancytree-node .fancytree-icon:before {
+    content: " \f016"; /* fa-file-o */
+}
+.fancytree-expanded .fancytree-icon:before,
+.fancytree-folder .fancytree-icon:before {
+    content: " \f07b"; /* fa-folder */
+}
+
+.fancytree-statusnode-wait .fancytree-icon:before {
+    content: "";
+}
