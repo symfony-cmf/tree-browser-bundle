@@ -71,6 +71,11 @@ var FancytreeAdapter = function (dataUrl) {
 
                             data.result.push(sourceNode);
                         });
+
+                        // if there is one root node, expand it
+                        if (1 == data.result.length) {
+                            data.result[0].expanded = true;
+                        }
                     } else {
                         data.result = {
                             // todo: maybe use a more admin friendly error message in prod?
