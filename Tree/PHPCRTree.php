@@ -171,5 +171,4 @@ class PHPCRTree implements TreeInterface
     {
         return array();
     }
-
 }
