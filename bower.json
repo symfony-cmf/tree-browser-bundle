@@ -1,0 +1,17 @@
+{
+    "name": "symfony-cmf-tree-browser-bundle",
+    "homepage": "http://cmf.symfony.com",
+    "keywords": ["Symfony CMF", "tree", "phpcr"],
+    "authors": [
+        {
+            "name": "Symfony CMF Community",
+            "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle/contributors"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "fancytree": "2.7.*"
+    },
+    "private": true,
+    "ignore": ["*"]
+}
