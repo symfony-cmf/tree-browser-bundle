@@ -31,12 +31,20 @@ jQuery.fn.cmfTree = function (options) {
         options.adapter = new FancytreeAdapter(options.data_url);
     }
     var adapter = options.adapter;
+    
+    if (!adapter.bindToElement) {
+        throw 'cmfTree adapters must have a bindToElement() method to specify the output element of the tree.';
+    }
 
     // render tree
     adapter.bindToElement($treeOutput);
 
     // optionally bind the tree to an input element
     if (options.path_output) {
+        if (!adapter.bindToInput) {
+            throw 'The configured cmfTree adapter does not support binding to an input field, implement the bindToInput() method or use another adapter.';
+        }
+
         adapter.bindToInput(selectElement(options.path_output));
     }
 };
