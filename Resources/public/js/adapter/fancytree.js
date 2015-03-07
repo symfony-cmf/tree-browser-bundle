@@ -4,7 +4,7 @@
  * @author Wouter J <wouter@wouterj.nl>
  * @see https://github.com/mar10/fancytree
  */
-var FancytreeAdapter = function (dataUrl) {
+var FancytreeAdapter = function (requestData) {
     if (!window.jQuery || !jQuery.fn.fancytree) {
         throw 'The FancytreeAdapter requires both jQuery and the FancyTree library.';
     }
@@ -43,14 +43,13 @@ var FancytreeAdapter = function (dataUrl) {
 
             $tree.fancytree({
                 // the start data (root node + children)
-                source: { url: dataUrl },
+                source: requestData.load('/'),
 
                 // lazy load the children when a node is collapsed
                 lazyLoad: function (event, data) {
-                    data.result = {
-                        url: dataUrl,
-                        data: { root: data.node.getKeyPath() }
-                    };
+                    data.result = jQuery.merge({
+                        data: {}
+                    }, requestData.load(data.node.getKeyPath()));
                 },
 
                 // transform the JSON response into a data structure that's supported by FancyTree
