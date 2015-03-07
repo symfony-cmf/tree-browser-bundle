@@ -10,19 +10,25 @@ var FancytreeAdapter = function (requestData) {
     }
 
     var requestNodeToFancytreeNode = function (requestNode) {
+        var title = requestNode.path.substr(requestNode.path.lastIndexOf('/') + 1) || '/';
         var fancytreeNode = {
-            // fixme: remove ugly replacing by just not putting stuff like this in the JSON response
-            title: requestNode.data.replace(' (not editable)', ''),
+            // fixme: use sonata enhancer to get node name based on Admin#toString
+            title: title,
             // fixme: also put the current node name in the JSON response, not just the complete path
-            key: requestNode.attr.id.match(/\/([^\/]+)$/)[1]
+            key: title,
+            children: []
         };
-        
-        // fixme: have more descriptive JSON keys to determine if it has children
-        if (null != requestNode.state) {
-            fancytreeNode.folder = true;
+
+        for (name in requestNode.children) {
+            if (!requestNode.children.hasOwnProperty(name)) {
+                continue;
+            }
+
+            fancytreeNode.children.push(requestNodeToFancytreeNode(requestNode.children[name]));
         }
 
-        if ('closed' == requestNode.state) {
+        if (fancytreeNode.children.length) {
+            fancytreeNode.folder = true;
             fancytreeNode.lazy = true;
         }
 
@@ -55,24 +61,8 @@ var FancytreeAdapter = function (requestData) {
                 // transform the JSON response into a data structure that's supported by FancyTree
                 postProcess: function (event, data) {
                     if (null == data.error) {
-                        data.result = []
-
-                        data.response.forEach(function (node) {
-                            var sourceNode = requestNodeToFancytreeNode(node);
-
-                            if (node.children) {
-                                sourceNode.children = [];
-
-                                node.children.forEach(function (leaf) {
-                                    sourceNode.children.push(requestNodeToFancytreeNode(leaf));
-                                });
-                            }
-
-                            data.result.push(sourceNode);
-                        });
-
-                        // if there is one root node, expand it
-                        if (1 == data.result.length) {
+                        data.result = requestNodeToFancytreeNode(data.response).children;
+                        if (data.result.length == 1) {
                             data.result[0].expanded = true;
                         }
                     } else {
