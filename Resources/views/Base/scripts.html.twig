@@ -1,0 +1,15 @@
+{% set treeAdapter = treeAdapter|default('fancytree') %}
+<script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+{% if treeAdapter == 'fancytree' %}
+<script>window.jQuery || document.write(unescape('%3Cscript src="{{ asset(assetsBasePath ~ '/jquery/dist/jquery.min.js') }}"%3E%3C/script%3E'))</script>
+<script>jQuery.ui || document.write(unescape('%3Cscript src="{{ asset(assetsBasePath ~ '/jquery-ui/jquery-ui.min.js') }}"%3E%3C/script%3E'))</script>
+<script src="{{ asset(assetsBasePath ~ '/fancytree/dist/src/jquery.fancytree.js') }}" type="text/javascript"></script>
+{% endif %}
+
+<script src="{{ asset('bundles/cmftreebrowser/js/adapter/' ~ treeAdapter ~ '.js') }}"></script>
+<script src="{{ asset('bundles/cmftreebrowser/js/jquery.cmf_tree.js') }}"></script>
+
+<link rel="stylesheet" href="{{ asset(assetsBasePath ~ '/fancytree/dist/skin-win8/ui.fancytree.min.css') }}" media="all"/>
+<link rel="stylesheet" href="{{ asset('bundles/cmftreebrowser/css/fontawesome-style.css') }}" media="all"/>
