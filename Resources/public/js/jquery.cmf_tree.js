@@ -9,6 +9,9 @@
 jQuery.fn.cmfTree = function (options) {
     options = jQuery.extend({
         adapter: null,
+        request: {
+            load: null
+        }
     }, options);
 
     // configure options
@@ -23,12 +26,12 @@ jQuery.fn.cmfTree = function (options) {
         throw 'Cannot handle selector ' + selector + '. You may want to pass a jQuery object or a jQuery selector.';
     };
 
-    if (!options.data_url) {
-        throw 'cmfTree needs an AJAX URL to lazy load the tree, pass it using the `data_url` option.';
+    if (!options.request.load) {
+        throw 'cmfTree needs an AJAX URL to lazy load the tree, pass it using the `request.load` option.';
     }
 
     if (!options.adapter) {
-        options.adapter = new FancytreeAdapter(options.data_url);
+        options.adapter = new FancytreeAdapter(options.request);
     }
     var adapter = options.adapter;
     
