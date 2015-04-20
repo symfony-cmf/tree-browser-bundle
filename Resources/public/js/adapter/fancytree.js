@@ -10,6 +10,10 @@ var FancytreeAdapter = function (requestData) {
     }
 
     var requestNodeToFancytreeNode = function (requestNode) {
+        if (requestNode.length === 0) {
+            return;
+        }
+
         var title = requestNode.path.substr(requestNode.path.lastIndexOf('/') + 1) || '/';
         var fancytreeNode = {
             // fixme: use sonata enhancer to get node name based on Admin#toString
@@ -19,15 +23,20 @@ var FancytreeAdapter = function (requestData) {
             children: []
         };
 
+        var childrenCount = 0;
         for (name in requestNode.children) {
             if (!requestNode.children.hasOwnProperty(name)) {
                 continue;
             }
 
-            fancytreeNode.children.push(requestNodeToFancytreeNode(requestNode.children[name]));
+            var child = requestNodeToFancytreeNode(requestNode.children[name]);
+            if (child) {
+                fancytreeNode.children.push(child);
+            }
+            childrenCount++;
         }
 
-        if (fancytreeNode.children.length) {
+        if (childrenCount) {
             fancytreeNode.folder = true;
             fancytreeNode.lazy = true;
         }
@@ -53,7 +62,7 @@ var FancytreeAdapter = function (requestData) {
 
                 // lazy load the children when a node is collapsed
                 lazyLoad: function (event, data) {
-                    data.result = jQuery.merge({
+                    data.result = jQuery.extend({
                         data: {}
                     }, requestData.load(data.node.getKeyPath()));
                 },
