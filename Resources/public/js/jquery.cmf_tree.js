@@ -11,7 +11,8 @@ jQuery.fn.cmfTree = function (options) {
         adapter: null,
         request: {
             load: null
-        }
+        },
+        actions: {}
     }, options);
 
     // configure options
@@ -37,6 +38,23 @@ jQuery.fn.cmfTree = function (options) {
     
     if (!adapter.bindToElement) {
         throw 'cmfTree adapters must have a bindToElement() method to specify the output element of the tree.';
+    }
+
+    for (actionName in options.actions) {
+        if (!options.actions.hasOwnProperty(actionName)) {
+            continue;
+        }
+
+        if (!adapter.addAction) {
+            throw 'The configured cmfTree adapter does not support actions, implement the addAction() method or use another adapter.';
+        }
+        var action = options.actions[actionName];
+
+        if (!action.url) {
+            throw 'actions should have a url defined, "' + actionName + '" does not.';
+        }
+
+        adapter.addAction(actionName, action.url, action.icon);
     }
 
     // render tree
