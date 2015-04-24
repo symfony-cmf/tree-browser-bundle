@@ -14,12 +14,9 @@ var FancytreeAdapter = function (requestData) {
             return;
         }
 
-        var title = requestNode.path.substr(requestNode.path.lastIndexOf('/') + 1) || '/';
         var fancytreeNode = {
-            // fixme: use sonata enhancer to get node name based on Admin#toString
-            title: title,
-            // fixme: also put the current node name in the JSON response, not just the complete path
-            key: title,
+            title: requestNode.resource_label,
+            key: requestNode.node_name,
             children: []
         };
 
