@@ -6,17 +6,26 @@
 */
 jQuery.fn.cmfAutoComplete = function (options) {
     options = jQuery.extend({
-        // The element to put the data in, this has to be a <datalist> element
-        //     null:   use the list attribute to find the datalist
-        //     string: specify a custom selector
+        /**
+         * The element used to show the suggestions.
+         *
+         * This has to be a <datalist> element.
+         *
+         * @var string|null A selector or use the selector in
+         *                  the `list` attribute (when null is used)
+         */
         datalist_selector: null,
-        // A callback to retrieve the data, it should always return an array.
+
+        /**
+         * A callback to retrieve the data.
+         *
+         * @return array
+         */
         data: function (path) { return []; },
     }, options);
 
     var $input = $(this);
     var $autocompleteList;
-    var cache = {};
     var previousBase;
 
     // find datalist
