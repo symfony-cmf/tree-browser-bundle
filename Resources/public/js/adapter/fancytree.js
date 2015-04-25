@@ -9,25 +9,50 @@ var FancytreeAdapter = function (requestData) {
         throw 'The FancytreeAdapter requires both jQuery and the FancyTree library.';
     }
 
+    var actions = {};
     var requestNodeToFancytreeNode = function (requestNode) {
-        var title = requestNode.path.substr(requestNode.path.lastIndexOf('/') + 1) || '/';
+        if (requestNode.length === 0) {
+            return;
+        }
+
         var fancytreeNode = {
-            // fixme: use sonata enhancer to get node name based on Admin#toString
-            title: title,
-            // fixme: also put the current node name in the JSON response, not just the complete path
-            key: title,
-            children: []
+            title: requestNode.label,
+            key: requestNode.node_name,
+            children: [],
+            actions: {}
         };
 
+        for (actionName in actions) {
+            if (!actions.hasOwnProperty(actionName)) {
+                continue;
+            }
+
+            var action = actions[actionName];
+            var url = action.url;
+            if (typeof action.url == 'object' && action.url.hasOwnProperty('data')) {
+                url = getPropertyFromString(action.url.data, requestNode);
+            }
+
+            if (url === undefined) {
+                continue;
+            }
+            fancytreeNode['actions'][actionName] = { label: actionName, iconClass: action.icon, url: url };
+        }
+
+        var childrenCount = 0;
         for (name in requestNode.children) {
             if (!requestNode.children.hasOwnProperty(name)) {
                 continue;
             }
 
-            fancytreeNode.children.push(requestNodeToFancytreeNode(requestNode.children[name]));
+            var child = requestNodeToFancytreeNode(requestNode.children[name]);
+            if (child) {
+                fancytreeNode.children.push(child);
+            }
+            childrenCount++;
         }
 
-        if (fancytreeNode.children.length) {
+        if (childrenCount) {
             fancytreeNode.folder = true;
             fancytreeNode.lazy = true;
         }
@@ -53,7 +78,7 @@ var FancytreeAdapter = function (requestData) {
 
                 // lazy load the children when a node is collapsed
                 lazyLoad: function (event, data) {
-                    data.result = jQuery.merge({
+                    data.result = jQuery.extend({
                         data: {}
                     }, requestData.load(data.node.getKeyPath()));
                 },
@@ -76,6 +101,17 @@ var FancytreeAdapter = function (requestData) {
                 // always show the active node
                 activeVisible: true
             });
+
+            if (actions) {
+                $tree.cmfContextMenu({
+                    delegate: 'span.fancytree-title',
+                    wrapperTemplate: '<ul class="dropdown-menu" style="display:block;"></ul>',
+                    actionTemplate: '<li role="presentation"><a role="menuitem" href="{{ url }}"><i class="{{ iconClass }}"></i> {{ label }}</li>',
+                    actions: function ($node) {
+                        return jQuery.ui.fancytree.getNode($node).data.actions;
+                    }
+                });
+            }
 
             tree = $tree.fancytree('getTree');
         },
@@ -104,6 +140,29 @@ var FancytreeAdapter = function (requestData) {
             $input.on('change', function (e) {
                 showKey($(this).val());
             });
+        },
+
+        addAction: function (name, url, icon) {
+            actions[name] = { url: url, icon: icon };
         }
     };
 };
+
+function getPropertyFromString(propertyPath, list) {
+    var isOptional = propertyPath.substr(0, 1) === '?';
+    var props = propertyPath.substr(1).split('.');
+    var currentNode = list;
+    for (prop in props) {
+        currentNode = currentNode[props[prop]];
+
+        if (undefined === currentNode) {
+            if (isOptional) {
+                break;
+            }
+
+            throw 'Attribute "' + props[prop] + '" does not exists';
+        }
+    }
+
+    return currentNode;
+}
