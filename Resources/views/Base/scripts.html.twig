@@ -1,6 +1,4 @@
 {% set treeAdapter = treeAdapter|default('fancytree') %}
-<script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
-<script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
 
 {% if treeAdapter == 'fancytree' %}
 <script>window.jQuery || document.write(unescape('%3Cscript src="{{ asset(assetsBasePath ~ '/jquery/dist/jquery.min.js') }}"%3E%3C/script%3E'))</script>
