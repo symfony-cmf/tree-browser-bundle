@@ -10,10 +10,4 @@ use Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection\Compiler\AddTreesCo
 
 class CmfTreeBrowserBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-        $container->addCompilerPass(new AddTreesCompilerPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
-    }
-
 }
