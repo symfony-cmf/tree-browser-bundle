@@ -68,4 +68,6 @@ jQuery.fn.cmfTree = function (options) {
 
         adapter.bindToInput(selectElement(options.path_output));
     }
+
+    return adapter;
 };

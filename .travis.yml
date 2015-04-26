@@ -1,0 +1,19 @@
+language: node_js
+
+node_js: stable
+
+sudo: false
+
+cache:
+    directories:
+        - node_modules
+
+before_install:
+  - npm install -g bower
+
+before_script:
+  - bower install
+
+notifications:
+  irc: "irc.freenode.org#symfony-cmf"
+  email: "symfony-cmf-devs@googlegroups.com"
