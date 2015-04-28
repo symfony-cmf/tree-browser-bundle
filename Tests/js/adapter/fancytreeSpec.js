@@ -52,6 +52,13 @@ describe('The Fancytree adapter', function() {
         expect(this.$tree).toBeMatchedBy(':ui-fancytree');
     });
 
+    it('cannot be bound to multiple elements', function () {
+        this.adapter.bindToElement(this.$tree);
+
+        var adapter = this.adapter;
+        expect(function () { adapter.bindToElement($('<div></div>')) }).toThrow('Cannot bind to multiple elements.');
+    });
+
     it('automatically expands nodes when root is one folder', function () {
         this.adapter.bindToElement(this.$tree);
 

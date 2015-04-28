@@ -35,6 +35,10 @@ FancytreeAdapter.prototype = {
     $tree: null,
 
     bindToElement: function ($elem) {
+        if (this.$tree) {
+            throw 'Cannot bind to multiple elements.';
+        }
+
         if (!$elem instanceof jQuery) {
             throw  'FancytreeAdapter can only be adapted to a jQuery object.';
         }

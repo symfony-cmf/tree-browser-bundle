@@ -4,7 +4,7 @@
  * @author Wouter J <wouter@wouterj.nl>
  */
 jQuery.fn.cmfContextMenu = function (options) {
-    options = jQuery.extend({
+    var options = jQuery.extend({
         /**
          * The selector used to delegate the contextmenu event too.
          *
@@ -116,11 +116,12 @@ jQuery.fn.cmfContextMenu = function (options) {
 
         $body.append($menu);
 
+        var select = options.select;
         // respond to a click on an action
         $menu.on('click', 'li', function (e) {
             e.stopPropagation();
 
-            options.select($target, e);
+            select($target, e);
         });
     });
 
