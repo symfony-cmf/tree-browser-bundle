@@ -3,11 +3,13 @@ describe('The Fancytree adapter', function() {
     beforeEach(function () {
         this.$tree = $('<div id="tree"></div>');
         this.adapter = new FancytreeAdapter({
-            load: function (path) {
-                return {
-                    url: '/api',
-                    data: { path: path }
-                };
+            request: {
+                load: function (path) {
+                    return {
+                        url: '/api',
+                        data: { path: path }
+                    };
+                }
             }
         });
 
@@ -82,6 +84,32 @@ describe('The Fancytree adapter', function() {
         var tree = this.$tree.fancytree('getTree');
 
         tree.getNodeByKey('content').setExpanded();
+
+        expect(jasmine.Ajax.requests.mostRecent().url).toMatch(/^\/api\?path=%2Fcms%2Fcontent/);
+    });
+
+    it('can have another path as root node', function () {
+        jasmine.Ajax.stubRequest(/^\/api/, 'path=/cms/content').andReturn({
+            responseText: JSON.stringify([{
+                data: 'homepage',
+                attr: { id: '/cms/content/home' },
+                state: null,
+                children: []
+            }])
+        });
+
+        var adapter = new FancytreeAdapter({
+            request: {
+                load: function (path) {
+                    return {
+                        url: '/api',
+                        data: { path: path }
+                    };
+                },
+            },
+            root_node: '/cms/content'
+        });
+        adapter.bindToElement(this.$tree);
 
         expect(jasmine.Ajax.requests.mostRecent().url).toMatch(/^\/api\?path=%2Fcms%2Fcontent/);
     });
