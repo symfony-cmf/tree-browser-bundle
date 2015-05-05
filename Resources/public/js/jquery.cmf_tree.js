@@ -32,7 +32,7 @@ jQuery.fn.cmfTree = function (options) {
     }
 
     if (!options.adapter) {
-        options.adapter = new FancytreeAdapter(options.request);
+        options.adapter = new FancytreeAdapter(options);
     }
     var adapter = options.adapter;
     

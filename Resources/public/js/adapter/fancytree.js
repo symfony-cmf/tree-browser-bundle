@@ -4,12 +4,17 @@
  * @author Wouter J <wouter@wouterj.nl>
  * @see https://github.com/mar10/fancytree
  */
-var FancytreeAdapter = function (requestData) {
+var FancytreeAdapter = function (options) {
     if (!window.jQuery || !jQuery.fn.fancytree) {
         throw 'The FancytreeAdapter requires both jQuery and the FancyTree library.';
     }
 
-    this.requestData = requestData;
+    if (!options.request) {
+        throw 'The FancytreeAdapter requires a request option.';
+    }
+
+    this.requestData = options.request;
+    this.rootNode = options.root_node || '/';
 }
 
 FancytreeAdapter.prototype = {
@@ -99,7 +104,7 @@ FancytreeAdapter.prototype = {
         var requestData = this.requestData;
         this.$tree.fancytree({
             // the start data (root node + children)
-            source: requestData.load('/'),
+            source: requestData.load(this.rootNode),
 
             // lazy load the children when a node is collapsed
             lazyLoad: function (event, data) {
