@@ -46,6 +46,8 @@ describe('The Fancytree adapter', function() {
 
     afterEach(function () {
         jasmine.Ajax.uninstall();
+
+        FancytreeAdapter._resetCache();
     });
 
     it('binds to a tree output', function () {
@@ -86,6 +88,66 @@ describe('The Fancytree adapter', function() {
         tree.getNodeByKey('content').setExpanded();
 
         expect(jasmine.Ajax.requests.mostRecent().url).toMatch(/^\/api\?path=%2Fcms%2Fcontent/);
+    });
+
+    it('caches the nodes globally', function () {
+        var adapter = new FancytreeAdapter({
+            request: {
+                load: function (path) {
+                    return {
+                        url: '/api',
+                        data: { path: path }
+                    };
+                }
+            }
+        });
+
+        this.adapter.bindToElement(this.$tree);
+
+        var $tree = $('<div></div>');
+        adapter.bindToElement($tree);
+
+        expect(jasmine.Ajax.requests.count()).toBe(1);
+    });
+
+    it('does not cache when use_cache is set to false', function () {
+        var adapter = new FancytreeAdapter({
+            request: {
+                load: function (path) {
+                    return {
+                        url: '/api',
+                        data: { path: path }
+                    };
+                }
+            },
+            use_cache: false
+        });
+
+        this.adapter.bindToElement(this.$tree);
+
+        var $tree = $('<div></div>');
+        adapter.bindToElement($tree);
+
+        expect(jasmine.Ajax.requests.count()).toBe(2);
+    });
+
+    it('accepts direct results by the data loader', function () {
+        var adapter = new FancytreeAdapter({
+            request: {
+                load: function (path) {
+                    return [
+                        { title: 'Hello', key: 'hello' }
+                    ];
+                }
+            }
+        });
+
+        adapter.bindToElement(this.$tree);
+
+        expect(jasmine.Ajax.requests.count()).toBe(0);
+
+        var tree = this.$tree.fancytree('getTree');
+        expect(tree.getRootNode().children[0].key).toBe('hello');
     });
 
     it('can have another path as root node', function () {
