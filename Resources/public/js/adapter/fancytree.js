@@ -15,8 +15,10 @@ var FancytreeAdapter = function (options) {
 
     this.requestData = options.request;
     this.rootNode = options.root_node || '/';
+    this.useCache = options.use_cache || true;
 }
 
+var cache = {};
 FancytreeAdapter.prototype = {
     /**
      * The available actions.
@@ -108,10 +110,21 @@ FancytreeAdapter.prototype = {
 
             // lazy load the children when a node is collapsed
             lazyLoad: function (event, data) {
-                data.result = jQuery.extend({
-                    data: {}
-                }, requestData.load(data.node.getKeyPath()));
-            },
+                var path = data.node.getKeyPath();
+                if (this.useCache && cache.hasOwnProperty(path)) {
+                    data.result = cache[path];
+                } else {
+                    var loadData = requestData.load(path);
+
+                    if (Array.isArray(loadData)) {
+                        data.result = loadData;
+                    } else {
+                        data.result = jQuery.extend({
+                            data: {}
+                        }, loadData);
+                    }
+                }
+            }.bind(this),
 
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
@@ -120,13 +133,17 @@ FancytreeAdapter.prototype = {
                     if (data.result.length == 1) {
                         data.result[0].expanded = true;
                     }
+
+                    if (this.useCache) {
+                        cache[data.node.getKeyPath()] = data.result;
+                    }
                 } else {
                     data.result = {
                         // todo: maybe use a more admin friendly error message in prod?
                         error: 'An error occured while retrieving the nodes: ' + data.error
                     };
                 }
-            },
+            }.bind(this),
 
             // always show the active node
             activeVisible: true
