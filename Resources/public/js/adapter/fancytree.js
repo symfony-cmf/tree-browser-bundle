@@ -195,6 +195,10 @@
 
         addAction: function (name, url, icon) {
             this.actions[name] = { url: url, icon: icon };
+        },
+
+        getFromCache: function (name) {
+            return cache.hasOwnProperty(name) ? cache[name] : undefined;
         }
     };
 
