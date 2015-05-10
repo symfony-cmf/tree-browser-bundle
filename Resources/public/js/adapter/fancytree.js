@@ -16,7 +16,7 @@
 
         this.requestData = options.request;
         this.rootNode = options.root_node || '/';
-        this.useCache = options.use_cache || true;
+        this.useCache = undefined === options.use_cache ? true : options.use_cache;
     }
 
     var cache = {};
@@ -105,14 +105,15 @@
             };
 
             var requestData = this.requestData;
+            var useCache = this.useCache;
             this.$tree.fancytree({
                 // the start data (root node + children)
-                source: requestData.load(this.rootNode),
+                source: (useCache && cache.hasOwnProperty(this.rootNode)) ? cache[this.rootNode] : requestData.load(this.rootNode),
 
                 // lazy load the children when a node is collapsed
                 lazyLoad: function (event, data) {
                     var path = data.node.getKeyPath();
-                    if (this.useCache && cache.hasOwnProperty(path)) {
+                    if (useCache && cache.hasOwnProperty(path)) {
                         data.result = cache[path];
                     } else {
                         var loadData = requestData.load(path);
@@ -125,7 +126,7 @@
                             }, loadData);
                         }
                     }
-                }.bind(this),
+                },
 
                 // transform the JSON response into a data structure that's supported by FancyTree
                 postProcess: function (event, data) {
@@ -135,7 +136,7 @@
                             data.result[0].expanded = true;
                         }
 
-                        if (this.useCache) {
+                        if (useCache) {
                             cache[data.node.getKeyPath()] = data.result;
                         }
                     } else {
@@ -144,7 +145,7 @@
                             error: 'An error occured while retrieving the nodes: ' + data.error
                         };
                     }
-                }.bind(this),
+                },
 
                 // always show the active node
                 activeVisible: true
@@ -195,6 +196,10 @@
         addAction: function (name, url, icon) {
             this.actions[name] = { url: url, icon: icon };
         }
+    };
+
+    FancytreeAdapter._resetCache = function () {
+        cache = {};
     };
 
     function getPropertyFromString(propertyPath, list) {
