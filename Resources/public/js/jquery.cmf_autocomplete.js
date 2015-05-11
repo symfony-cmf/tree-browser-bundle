@@ -24,7 +24,7 @@
              *
              * @return array
              */
-            data: function (path) { return []; },
+            data: function (path, next) { next([]); },
         }, options);
 
         var $input = $(this);
@@ -34,6 +34,7 @@
         // find datalist
         if (options.datalist_selector) {
             $autocompleteList = $(options.datalist_selector);
+            $(this).attr('list', options.datalist_selector);
         } else if ($(this).attr('list')) {
             $autocompleteList = $('#' + $(this).attr('list'));
         } else {
@@ -52,7 +53,7 @@
             }
 
             var path = $(this).val();
-            var base = path.substr(0, path.lastIndexOf('/') + 1); // get everything except the child
+            var base = path.substr(0, path.lastIndexOf('/')); // get everything except the child
 
             // skip if still in same node
             if (base === previousBase) {
