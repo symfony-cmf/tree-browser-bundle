@@ -1,3 +1,5 @@
+require('bundle/jquery.cmf_context_menu.js');
+
 describe('The cmfContextMenu plugin', function () {
 
     beforeEach(function () {

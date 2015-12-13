@@ -7,6 +7,9 @@
  * file that was distributed with this source code.
  */
 
+import jQuery from 'jquery';
+import {FancytreeAdapter} from './adapter/fancytree';
+
 /**
  * A simple layer between the jQuery front-end and the JS tree library used.
  *
@@ -25,10 +28,10 @@ jQuery.fn.cmfTree = function (options) {
     }, options);
 
     // configure options
-    var $treeOutput = $(this);
+    var $treeOutput = jQuery(this);
     var selectElement = function (selector) {
         if ('string' == typeof(selector)) {
-            return $(selector);
+            return jQuery(selector);
         } else if (selector instanceof jQuery) {
             return selector;
         }
@@ -49,7 +52,7 @@ jQuery.fn.cmfTree = function (options) {
         throw 'cmfTree adapters must have a bindToElement() method to specify the output element of the tree.';
     }
 
-    for (actionName in options.actions) {
+    for (let actionName in options.actions) {
         if (!options.actions.hasOwnProperty(actionName)) {
             continue;
         }

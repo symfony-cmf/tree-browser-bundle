@@ -1,3 +1,6 @@
+import 'bundle/jquery.cmf_tree'
+import {FancytreeAdapter} from 'bundle/adapter/fancytree'
+
 describe('The cmfTree plugin', function () {
 
     it('has a constructor called cmfTree', function () {
