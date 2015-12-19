@@ -7,6 +7,8 @@
  * file that was distributed with this source code.
  */
 
+import jQuery from 'jquery';
+
 /**
  * A very flexible and simple jQuery context menu plugin.
  *
@@ -68,14 +70,14 @@ jQuery.fn.cmfContextMenu = function (options) {
         actionTemplate: '<li><i class="{{ iconClass }}"></i> {{ label }}</li>'
     }, options);
 
-    var $body = $('body');
+    var $body = jQuery('body');
     var $menu;
 
     // respond to right click
-    $(this).on('contextmenu', options.delegate, function (e) {
+    jQuery(this).on('contextmenu', options.delegate, function (e) {
         e.preventDefault();
 
-        var $target = $(this);
+        var $target = jQuery(this);
 
         // remove already shown menu
         $menu && $menu.remove();
@@ -92,11 +94,11 @@ jQuery.fn.cmfContextMenu = function (options) {
 
         // generate the menu element
         $menu = (function () {
-            var $wrapper = $(options.wrapperTemplate);
+            var $wrapper = jQuery(options.wrapperTemplate);
             var $menu = $wrapper.is('ul') ? $wrapper : $wrapper.find('ul');
             for (var cmd in actions) {
                 var action = actions[cmd];
-                var $action = $((function () {
+                var $action = jQuery((function () {
                     var tmp = options.actionTemplate;
                     for (var prop in action) {
                         if (!action.hasOwnProperty(prop)) {
@@ -135,7 +137,7 @@ jQuery.fn.cmfContextMenu = function (options) {
     });
 
     // when clicked anywhere outside of the contextmenu, hide the menu
-    $('html').on('click', function (e) {
+    jQuery('html').on('click', function (e) {
         $menu && $menu.remove();
     });
 };

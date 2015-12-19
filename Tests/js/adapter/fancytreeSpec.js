@@ -1,3 +1,5 @@
+import {FancytreeAdapter} from 'bundle/adapter/fancytree'
+
 describe('The Fancytree adapter', function() {
 
     beforeEach(function () {

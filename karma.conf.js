@@ -1,5 +1,8 @@
-// Karma configuration
-// Generated on Sat Mar 14 2015 12:52:18 GMT+0100 (W. Europe Standard Time)
+var path = require('path');
+var webpackConfig = require('./webpack.config.js');
+webpackConfig.devtool = 'inline-source-map';
+webpackConfig.resolve.alias.bundle = path.join(__dirname, 'Resources/assets/js');
+webpackConfig.entry = {};
 
 module.exports = function(config) {
   config.set({
@@ -15,47 +18,40 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      // 3rd party packages
-      'Resources/public/vendor/jquery/dist/jquery.min.js',
-      'Resources/public/vendor/jquery-ui/jquery-ui.min.js',
-      'Resources/public/vendor/fancytree/dist/src/jquery.fancytree.js',
+      // vendors
+      'bower_components/jquery/dist/jquery.js',
+      'bower_components/jquery-ui/jquery-ui.js',
 
       // jasmine helpers
       'node_modules/jasmine-jquery/lib/jasmine-jquery.js',
       'node_modules/jasmine-ajax/lib/mock-ajax.js',
 
-      // source code
-      'Resources/public/js/*.js',
-      'Resources/public/js/**/*.js',
-
       // specs
-      'Tests/js/*Spec.js',
-      'Tests/js/**/*Spec.js'
+      'Tests/tests.cmf_tree_browser.js'
     ],
 
 
     // list of files to exclude
-    exclude: [
-      '*.swp',
-      '*~'
-    ],
+    exclude: ['*.swp', '*~'],
 
 
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'Tests/tests.cmf_tree_browser.js': ['webpack', 'sourcemap']
     },
 
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ['progress'],
+    reporters: ['dots'],
 
+    webpack: webpackConfig,
+    webpackMiddleware: { noInfo: true },
 
     // web server port
     port: 9876,
-
 
     // enable / disable colors in the output (reporters and logs)
     colors: true,
