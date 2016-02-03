@@ -12,7 +12,6 @@ use Symfony\Cmf\Component\Testing\Functional\BaseTestCase;
  */
 class PHPCRBrowserTest extends BaseTestCase
 {
-
     public function testGetChildrenListFromRoot()
     {
         $this->loadFixtures();
@@ -22,7 +21,7 @@ class PHPCRBrowserTest extends BaseTestCase
         $client->request('GET', '/_cmf_tree/phpcr_tree/children');
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseSuccess($response);
 
         $this->assertEquals(
             '[{"data":"cms","attr":{"id":"\/cms","url_safe_id":"cms","rel":"node"},"state":"closed","children":[{"data":"content","attr":{"id":"\/cms\/content","url_safe_id":"cms\/content","rel":"node"},"state":"closed"}]},{"data":"menus","attr":{"id":"\/menus","url_safe_id":"menus","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/menus\/test","url_safe_id":"menus\/test","rel":"node"},"state":null}]}]',
@@ -39,7 +38,7 @@ class PHPCRBrowserTest extends BaseTestCase
         $crawler = $client->request('GET', '/_cmf_tree/phpcr_tree/children?root=%2Fcms%2Fcontent');
         $response = $client->getResponse();
 
-        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertResponseSuccess($response);
 
         $this->assertEquals(
             '[{"data":"static","attr":{"id":"\/cms\/content\/static","url_safe_id":"cms\/content\/static","rel":"node"},"state":"closed","children":[{"data":"test","attr":{"id":"\/cms\/content\/static\/test","url_safe_id":"cms\/content\/static\/test","rel":"node"},"state":null}]}]',

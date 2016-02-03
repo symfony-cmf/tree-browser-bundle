@@ -2,6 +2,7 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Route;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\FileLoader;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
@@ -19,6 +20,8 @@ class TreeControllerRoutesLoader extends FileLoader
      */
     public function __construct(array $treeControllers)
     {
+        parent::__construct(new FileLocator());
+
         $this->treeControllers = $treeControllers;
     }
 
@@ -36,17 +39,14 @@ class TreeControllerRoutesLoader extends FileLoader
                 $defaults = array(
                     '_controller' => $controller['id'].':'.$definition['action']
                 );
-                $requirements = array(
-                    '_method' => $definition['method']
-                );
-                $pattern = '_cmf_tree/'.$controller['alias'].'/'.$definition['pattern'];
+                $path = '_cmf_tree/'.$controller['alias'].'/'.$definition['path'];
 
-                $route = new Route($pattern, $defaults, $requirements, array('expose' => true));
+                $route = new Route($path, $defaults, array(), array('expose' => true), '', array(), array($definition['method']));
                 $collection->add('_cmf_tree_'.$controller['alias'].'_'.$name, $route);
             }
         }
-        return $collection;
 
+        return $collection;
     }
 
     /**
@@ -70,17 +70,17 @@ class TreeControllerRoutesLoader extends FileLoader
     {
         return array(
             'children' => array(
-                'pattern' => 'children',
+                'path'   => 'children',
                 'method' => 'GET',
                 'action' => 'childrenAction'
             ),
             'move' => array(
-                'pattern' => 'move',
+                'path'   => 'move',
                 'method' => 'POST',
                 'action' => 'moveAction'
             ),
             'reorder' => array(
-                'pattern' => 'reorder',
+                'path'   => 'reorder',
                 'method' => 'POST',
                 'action' => 'reorderAction'
             ),

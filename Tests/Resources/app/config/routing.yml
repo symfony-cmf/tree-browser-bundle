@@ -1,5 +1,5 @@
 symfony_route:
-    pattern:  /symfony_route_test
+    path:     /symfony_route_test
     defaults: { _controller: Test:controller }
 
 cmf_tree:
