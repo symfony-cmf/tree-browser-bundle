@@ -1,17 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Unit;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree;
 
-use PHPCR\PropertyType;
-
 /**
- * Unit test for PHPCRTree class
+ * Unit test for PHPCRTree class.
  *
  * @author Jacopo Jakuza Romei <jromei@gmail.com>
- * @see \Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree
  *
+ * @see \Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree
  */
 class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
 {
@@ -46,7 +53,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
     {
         $node_mock_prototype = $this->getMockBuilder('Jackalope\Node')->
             disableOriginalConstructor()->
-            setMethods(array('getPath', 'getNodes'));
+            setMethods(['getPath', 'getNodes']);
 
         $grandson = $node_mock_prototype->getMock();
         $grandson->expects($this->any())->
@@ -54,11 +61,11 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue('/com/anonimarmonisti/grandson'));
         $grandson->expects($this->any())->
                 method('getNodes')->
-                will($this->returnValue(array()));
+                will($this->returnValue([]));
 
-        $grandchildren = array(
+        $grandchildren = [
             'grandson'   => $grandson,
-        );
+        ];
 
         $anonimarmonisti = $node_mock_prototype->getMock();
         $anonimarmonisti->expects($this->any())->
@@ -74,7 +81,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue('/com/romereview'));
         $romereview->expects($this->any())->
                 method('getNodes')->
-                will($this->returnValue(array()));
+                will($this->returnValue([]));
 
         $_5etto = $node_mock_prototype->getMock();
         $_5etto->expects($this->any())->
@@ -82,7 +89,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue('/com/5etto'));
         $_5etto->expects($this->any())->
                 method('getNodes')->
-                will($this->returnValue(array()));
+                will($this->returnValue([]));
 
         $wordpress = $node_mock_prototype->getMock();
         $wordpress->expects($this->any())->
@@ -90,68 +97,68 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue('/com/wordpress'));
         $wordpress->expects($this->any())->
                 method('getNodes')->
-                will($this->returnValue(array()));
+                will($this->returnValue([]));
 
-        $children = array(
+        $children = [
             'anonimarmonisti'   => $anonimarmonisti,
             'romereview'        => $romereview,
             '5etto'             => $_5etto,
             'wordpress'         => $wordpress,
-        );
+        ];
 
         $this->com->expects($this->exactly(1))->
                 method('getNodes')->
                 will($this->returnValue($children));
 
-        $expected = array (
-            array (
+        $expected =  [
+             [
                 'data'      => 'anonimarmonisti',
-                'attr'      => array(
+                'attr'      => [
                                 'id'            => '/com/anonimarmonisti',
                                 'url_safe_id'   => 'com/anonimarmonisti',
                                 'rel'           => 'node',
-                            ),
-                'state'     =>  null,
-                'children'  => array(
-                    array(
+                            ],
+                'state'     => null,
+                'children'  => [
+                    [
                         'data'      => 'grandson',
-                        'attr'      => array(
+                        'attr'      => [
                                         'id'            => '/com/anonimarmonisti/grandson',
                                         'url_safe_id'   => 'com/anonimarmonisti/grandson',
                                         'rel'           => 'node',
-                                    ),
-                        'state' =>  null,
-                    ),
-                ),
-            ),
-            array (
+                                    ],
+                        'state' => null,
+                    ],
+                ],
+            ],
+             [
                 'data' => 'romereview',
-                'attr' => array(
+                'attr' => [
                     'id'            => '/com/romereview',
                     'url_safe_id'   => 'com/romereview',
                     'rel'           => 'node',
-                ),
+                ],
                 'state' => null,
-            ),
-            array (
+            ],
+             [
                 'data' => '5etto',
-                'attr' => array(
+                'attr' => [
                     'id'            => '/com/5etto',
                     'url_safe_id'   => 'com/5etto',
                     'rel'           => 'node',
-                ),
+                ],
                 'state' => null,
-            ),
-            array (
+            ],
+             [
                 'data' => 'wordpress',
-                'attr' => array(
+                'attr' => [
                     'id'            => '/com/wordpress',
                     'url_safe_id'   => 'com/wordpress',
                     'rel'           => 'node',
-                ),
+                ],
                 'state' => null,
-            )
-        );
+            ],
+        ];
 
         $this->assertEquals($expected, $this->tree->getChildren('/com'));
     }
@@ -160,7 +167,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
     {
         $workspace = $this->getMockBuilder('Jackalope\Workspace')->
             disableOriginalConstructor()->
-            setMethods(array('move'))->
+            setMethods(['move'])->
             getMock();
 
         $workspace->expects($this->once())
@@ -173,5 +180,4 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
 
         $this->tree->move('/mother/litigated_son', '/father');
     }
-
 }

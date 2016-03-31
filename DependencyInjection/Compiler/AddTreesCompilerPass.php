@@ -1,11 +1,19 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
-use Symfony\Component\DependencyInjection\Reference;
 
 class AddTreesCompilerPass implements CompilerPassInterface
 {
@@ -19,7 +27,7 @@ class AddTreesCompilerPass implements CompilerPassInterface
     public function process(ContainerBuilder $container)
     {
         $trees = $container->findTaggedServiceIds('cmf.tree');
-        $controllers = array();
+        $controllers = [];
         foreach ($trees as $treeId => $tag) {
             $tree = $container->getDefinition($treeId);
             $alias = isset($tag[0]['alias'])
@@ -29,9 +37,8 @@ class AddTreesCompilerPass implements CompilerPassInterface
             $controller = new DefinitionDecorator('cmf_tree_browser.controller_prototype');
             $controller->replaceArgument(0, $tree);
             $container->setDefinition($alias.'.cmf_tree_controller', $controller);
-            $controllers[] = array('id' => $alias.'.cmf_tree_controller', 'alias' => $alias);
+            $controllers[] = ['id' => $alias.'.cmf_tree_controller', 'alias' => $alias];
         }
         $container->setParameter('cmf_tree_browser.tree_controllers', $controllers);
     }
-
 }

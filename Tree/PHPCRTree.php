@@ -1,15 +1,22 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 use Doctrine\Bundle\PHPCRBundle\ManagerRegistry;
-
-use PHPCR\PropertyType;
 use PHPCR\Util\NodeHelper;
 use PHPCR\Util\PathHelper;
 
 /**
- * A simple class to get PHPCR trees in JSON format
+ * A simple class to get PHPCR trees in JSON format.
  *
  * @author Jacopo 'Jakuza' Romei <jromei@gmail.com>
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
@@ -32,7 +39,7 @@ class PHPCRTree implements TreeInterface
     {
         $root = $this->session->getNode($path);
 
-        $children = array();
+        $children = [];
 
         foreach ($root->getNodes() as $name => $node) {
             if (NodeHelper::isSystemItem($node)) {
@@ -63,17 +70,17 @@ class PHPCRTree implements TreeInterface
         $workspace = $this->session->getWorkspace();
         $workspace->move($moved_path, $target_path.'/'.PathHelper::getNodeName($moved_path));
 
-        return array('id' => $resulting_path, 'url_safe_id' => ltrim($resulting_path, '/'));
+        return ['id' => $resulting_path, 'url_safe_id' => ltrim($resulting_path, '/')];
     }
 
     /**
-     * Reorder $moved (child of $parent) before or after $target
+     * Reorder $moved (child of $parent) before or after $target.
      *
      * @param string $parent the id of the parent
-     * @param string $moved the id of the child being moved
+     * @param string $moved  the id of the child being moved
      * @param string $target the id of the target node
-     * @param bool $before insert before or after the target
-     * 
+     * @param bool   $before insert before or after the target
+     *
      * @return void
      */
     public function reorder($parent, $moved, $target, $before)
@@ -101,7 +108,6 @@ class PHPCRTree implements TreeInterface
         $this->session->save();
     }
 
-
     /**
      * Get the phpcr session this tree is using.
      *
@@ -115,10 +121,9 @@ class PHPCRTree implements TreeInterface
     }
 
     /**
+     * Returns an array representation of a PHPCR node.
      *
-     * Returns an array representation of a PHPCR node
-     *
-     * @param string $name
+     * @param string               $name
      * @param \PHPCR\NodeInterface $node
      *
      * @return array
@@ -126,19 +131,20 @@ class PHPCRTree implements TreeInterface
     private function nodeToArray($name, $node)
     {
         $has_children = $node->hasNodes();
-        return array(
+
+        return [
             'data'  => $name,
-            'attr'  => array(
-                'id' => $node->getPath(),
+            'attr'  => [
+                'id'          => $node->getPath(),
                 'url_safe_id' => substr($node->getPath(), 1),
-                'rel' => 'node'
-            ),
+                'rel'         => 'node',
+            ],
             'state' => $has_children ? 'closed' : null,
-        );
+        ];
     }
 
     /**
-     * Get the alias for this tree
+     * Get the alias for this tree.
      *
      * @return string
      */
@@ -148,18 +154,18 @@ class PHPCRTree implements TreeInterface
     }
 
     /**
-     * Get an array describing the available node types
+     * Get an array describing the available node types.
      *
      * @return array
      */
     public function getNodeTypes()
     {
-        return array(
-            'node' => array(
-                'valid_children' => array('node'),
-                'label' => 'Node',
-            )
-        );
+        return [
+            'node' => [
+                'valid_children' => ['node'],
+                'label'          => 'Node',
+            ],
+        ];
     }
 
     /**
@@ -169,6 +175,6 @@ class PHPCRTree implements TreeInterface
      */
     public function getLabels()
     {
-        return array();
+        return [];
     }
 }
