@@ -1,5 +1,14 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
 
 /**
@@ -9,11 +18,11 @@ namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tree;
  * @author cirpo <alessandro.cinelli@gmail.com>
  * @author Lukas Kahwe Smith <smith@pooteeweet.org>
  * @author Uwe Jäger <uwej711@googlemail.com>
-*/
+ */
 interface TreeInterface
 {
     /**
-     * Returns an array representation of children nodes of a node
+     * Returns an array representation of children nodes of a node.
      *
      * @param string $path The path of any PHPCR node
      *
@@ -22,14 +31,14 @@ interface TreeInterface
     public function getChildren($path);
 
     /**
-     * Move the node with $id to become a child of node with id $target
+     * Move the node with $id to become a child of node with id $target.
      *
      * Note that this is different from the PHPCR move operation, where the
      * target includes the new node name as well, allowing to rename. In the
      * context of the tree, renaming is considered an edit operation and out of
      * scope here.
      *
-     * @param string $id id of element to be moved
+     * @param string $id     id of element to be moved
      * @param string $target id of future parent element
      *
      * @return array the new id of the moved node at $target and the url_safe_id
@@ -37,26 +46,24 @@ interface TreeInterface
     public function move($id, $target);
 
     /**
-     * Reorder $moved (child of $parent) before or after $target
+     * Reorder $moved (child of $parent) before or after $target.
      *
      * @param string $parent the id of the parent
-     * @param string $moved the id of the child being moved
+     * @param string $moved  the id of the child being moved
      * @param string $target the id of the target node
-     * @param bool $before insert before or after the target
-     *
-     * @return void
+     * @param bool   $before insert before or after the target
      */
     public function reorder($parent, $moved, $target, $before);
 
     /**
-     * Get the alias for this tree
+     * Get the alias for this tree.
      *
      * @return string
      */
     public function getAlias();
 
     /**
-     * Get an array describing the available node types
+     * Get an array describing the available node types.
      *
      * @return array
      */
@@ -69,4 +76,3 @@ interface TreeInterface
      */
     public function getLabels();
 }
-
