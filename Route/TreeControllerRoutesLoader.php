@@ -1,14 +1,23 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Route;
 
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\FileLoader;
-use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 /**
- * Load routes for all existing tree controllers
+ * Load routes for all existing tree controllers.
  */
 class TreeControllerRoutesLoader extends FileLoader
 {
@@ -37,7 +46,7 @@ class TreeControllerRoutesLoader extends FileLoader
         foreach ($this->treeControllers as $controller) {
             foreach ($this->getRoutesDefinitions() as $name => $definition) {
                 $defaults = array(
-                    '_controller' => $controller['id'].':'.$definition['action']
+                    '_controller' => $controller['id'].':'.$definition['action'],
                 );
                 $path = '_cmf_tree/'.$controller['alias'].'/'.$definition['path'];
 
@@ -55,7 +64,7 @@ class TreeControllerRoutesLoader extends FileLoader
      * @param mixed  $resource A resource
      * @param string $type     The resource type
      *
-     * @return Boolean true if this class supports the given resource, false otherwise
+     * @return bool true if this class supports the given resource, false otherwise
      */
     public function supports($resource, $type = null)
     {
@@ -72,17 +81,17 @@ class TreeControllerRoutesLoader extends FileLoader
             'children' => array(
                 'path'   => 'children',
                 'method' => 'GET',
-                'action' => 'childrenAction'
+                'action' => 'childrenAction',
             ),
             'move' => array(
                 'path'   => 'move',
                 'method' => 'POST',
-                'action' => 'moveAction'
+                'action' => 'moveAction',
             ),
             'reorder' => array(
                 'path'   => 'reorder',
                 'method' => 'POST',
-                'action' => 'reorderAction'
+                'action' => 'reorderAction',
             ),
         );
     }

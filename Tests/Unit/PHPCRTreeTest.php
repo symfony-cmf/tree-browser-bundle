@@ -1,17 +1,24 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Unit;
 
 use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree;
 
-use PHPCR\PropertyType;
-
 /**
- * Unit test for PHPCRTree class
+ * Unit test for PHPCRTree class.
  *
  * @author Jacopo Jakuza Romei <jromei@gmail.com>
- * @see \Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree
  *
+ * @see \Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\PHPCRTree
  */
 class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
 {
@@ -82,7 +89,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue('/com/5etto'));
         $_5etto->expects($this->any())->
                 method('getNodes')->
-                will($this->returnValue(array()));
+                will($this->returnValue([]));
 
         $wordpress = $node_mock_prototype->getMock();
         $wordpress->expects($this->any())->
@@ -103,15 +110,15 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 method('getNodes')->
                 will($this->returnValue($children));
 
-        $expected = array (
-            array (
+        $expected = array(
+             array(
                 'data'      => 'anonimarmonisti',
                 'attr'      => array(
                                 'id'            => '/com/anonimarmonisti',
                                 'url_safe_id'   => 'com/anonimarmonisti',
                                 'rel'           => 'node',
                             ),
-                'state'     =>  null,
+                'state'     => null,
                 'children'  => array(
                     array(
                         'data'      => 'grandson',
@@ -120,11 +127,11 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                                         'url_safe_id'   => 'com/anonimarmonisti/grandson',
                                         'rel'           => 'node',
                                     ),
-                        'state' =>  null,
+                        'state' => null,
                     ),
                 ),
             ),
-            array (
+            array(
                 'data' => 'romereview',
                 'attr' => array(
                     'id'            => '/com/romereview',
@@ -133,7 +140,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 ),
                 'state' => null,
             ),
-            array (
+            array(
                 'data' => '5etto',
                 'attr' => array(
                     'id'            => '/com/5etto',
@@ -142,7 +149,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 ),
                 'state' => null,
             ),
-            array (
+            array(
                 'data' => 'wordpress',
                 'attr' => array(
                     'id'            => '/com/wordpress',
@@ -150,7 +157,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                     'rel'           => 'node',
                 ),
                 'state' => null,
-            )
+            ),
         );
 
         $this->assertEquals($expected, $this->tree->getChildren('/com'));
@@ -173,5 +180,4 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
 
         $this->tree->move('/mother/litigated_son', '/father');
     }
-
 }
