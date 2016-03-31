@@ -1,12 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Controller;
 
+use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\TreeInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\JsonResponse;
-
-use Symfony\Cmf\Bundle\TreeBrowserBundle\Tree\TreeInterface;
 
 /**
  * Frontend to the TreeInterface, allowing to fetch children, get an edit form
@@ -23,7 +31,7 @@ class TreeBrowserController
     protected $tree;
 
     /**
-     * Create the controller
+     * Create the controller.
      *
      * @param TreeInterface $tree the tree to operate on
      */
@@ -33,13 +41,13 @@ class TreeBrowserController
     }
 
     /**
-     * Get a json encoded list of children the specified node has
+     * Get a json encoded list of children the specified node has.
      *
      * @param Request $request containing the parameter 'root' for which to get
-     *      the children
+     *                         the children
      *
      * @return Response json encoded list of child nodes of the specified root
-     *      node.
+     *                  node.
      */
     public function childrenAction(Request $request)
     {
@@ -58,10 +66,10 @@ class TreeBrowserController
      * Should only be configured for POST requests to avoid manipulations.
      *
      * @param Request $request with the parameters dropped and target,
-     *      containing the path to move from resp. to
+     *                         containing the path to move from resp. to
      *
      * @return Response returning a plain text result with the new path of the
-     *      node.
+     *                  node.
      */
     public function moveAction(Request $request)
     {
@@ -77,10 +85,10 @@ class TreeBrowserController
      * Should only be configured for POST requests to avoid manipulations.
      *
      * @param Request $request with the parameters dropped and target,
-     *      containing the path to move from resp. to
+     *                         containing the path to move from resp. to
      *
      * @return Response returning a plain text result with the new path of the
-     *      node.
+     *                  node.
      */
     public function reorderAction(Request $request)
     {

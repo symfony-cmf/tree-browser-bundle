@@ -1,12 +1,20 @@
 <?php
 
-namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\PHPCR;
+/*
+ * This file is part of the Symfony CMF package.
+ *
+ * (c) 2011-2015 Symfony CMF
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
+namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Tests\Functional\PHPCR;
 
 use Symfony\Cmf\Component\Testing\Functional\BaseTestCase;
 
 /**
- * Functional test for PHPCRBrowser
+ * Functional test for PHPCRBrowser.
  *
  * @author Jacopo Jakuza Romei <jromei@gmail.com>
  */
@@ -49,11 +57,11 @@ class PHPCRBrowserTest extends BaseTestCase
     protected function loadFixtures()
     {
         $session = $this->getContainer()->get('doctrine_phpcr.session');
-        if ($session->nodeExists("/cms")) {
-            $session->getNode("/cms")->remove();
+        if ($session->nodeExists('/cms')) {
+            $session->getNode('/cms')->remove();
         }
-        if ($session->nodeExists("/menus")) {
-            $session->getNode("/menus")->remove();
+        if ($session->nodeExists('/menus')) {
+            $session->getNode('/menus')->remove();
         }
 
         $node = $session->getRootNode()->addNode('cms', 'nt:unstructured');
@@ -66,5 +74,4 @@ class PHPCRBrowserTest extends BaseTestCase
 
         $session->save();
     }
-
 }
