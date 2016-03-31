@@ -79,17 +79,17 @@ class TreeControllerRoutesLoader extends FileLoader
     {
         return array(
             'children' => array(
-                'path'   => 'children',
+                'path' => 'children',
                 'method' => 'GET',
                 'action' => 'childrenAction',
             ),
             'move' => array(
-                'path'   => 'move',
+                'path' => 'move',
                 'method' => 'POST',
                 'action' => 'moveAction',
             ),
             'reorder' => array(
-                'path'   => 'reorder',
+                'path' => 'reorder',
                 'method' => 'POST',
                 'action' => 'reorderAction',
             ),

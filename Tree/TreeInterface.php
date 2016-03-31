@@ -52,8 +52,6 @@ interface TreeInterface
      * @param string $moved  the id of the child being moved
      * @param string $target the id of the target node
      * @param bool   $before insert before or after the target
-     *
-     * @return void
      */
     public function reorder($parent, $moved, $target, $before);
 

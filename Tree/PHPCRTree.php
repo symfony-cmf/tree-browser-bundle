@@ -80,8 +80,6 @@ class PHPCRTree implements TreeInterface
      * @param string $moved  the id of the child being moved
      * @param string $target the id of the target node
      * @param bool   $before insert before or after the target
-     *
-     * @return void
      */
     public function reorder($parent, $moved, $target, $before)
     {
@@ -133,11 +131,11 @@ class PHPCRTree implements TreeInterface
         $has_children = $node->hasNodes();
 
         return array(
-            'data'  => $name,
-            'attr'  => array(
-                'id'          => $node->getPath(),
+            'data' => $name,
+            'attr' => array(
+                'id' => $node->getPath(),
                 'url_safe_id' => substr($node->getPath(), 1),
-                'rel'         => 'node',
+                'rel' => 'node',
             ),
             'state' => $has_children ? 'closed' : null,
         );
@@ -163,7 +161,7 @@ class PHPCRTree implements TreeInterface
         return array(
             'node' => array(
                 'valid_children' => array('node'),
-                'label'          => 'Node',
+                'label' => 'Node',
             ),
         );
     }

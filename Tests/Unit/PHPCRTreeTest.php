@@ -64,7 +64,7 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue(array()));
 
         $grandchildren = array(
-            'grandson'   => $grandson,
+            'grandson' => $grandson,
         );
 
         $anonimarmonisti = $node_mock_prototype->getMock();
@@ -100,10 +100,10 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
                 will($this->returnValue(array()));
 
         $children = array(
-            'anonimarmonisti'   => $anonimarmonisti,
-            'romereview'        => $romereview,
-            '5etto'             => $_5etto,
-            'wordpress'         => $wordpress,
+            'anonimarmonisti' => $anonimarmonisti,
+            'romereview' => $romereview,
+            '5etto' => $_5etto,
+            'wordpress' => $wordpress,
         );
 
         $this->com->expects($this->exactly(1))->
@@ -112,20 +112,20 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
 
         $expected = array(
              array(
-                'data'      => 'anonimarmonisti',
-                'attr'      => array(
-                                'id'            => '/com/anonimarmonisti',
-                                'url_safe_id'   => 'com/anonimarmonisti',
-                                'rel'           => 'node',
+                'data' => 'anonimarmonisti',
+                'attr' => array(
+                                'id' => '/com/anonimarmonisti',
+                                'url_safe_id' => 'com/anonimarmonisti',
+                                'rel' => 'node',
                             ),
-                'state'     => null,
-                'children'  => array(
+                'state' => null,
+                'children' => array(
                     array(
-                        'data'      => 'grandson',
-                        'attr'      => array(
-                                        'id'            => '/com/anonimarmonisti/grandson',
-                                        'url_safe_id'   => 'com/anonimarmonisti/grandson',
-                                        'rel'           => 'node',
+                        'data' => 'grandson',
+                        'attr' => array(
+                                        'id' => '/com/anonimarmonisti/grandson',
+                                        'url_safe_id' => 'com/anonimarmonisti/grandson',
+                                        'rel' => 'node',
                                     ),
                         'state' => null,
                     ),
@@ -134,27 +134,27 @@ class PHPCRTreeTest extends \PHPUnit_Framework_TestCase
             array(
                 'data' => 'romereview',
                 'attr' => array(
-                    'id'            => '/com/romereview',
-                    'url_safe_id'   => 'com/romereview',
-                    'rel'           => 'node',
+                    'id' => '/com/romereview',
+                    'url_safe_id' => 'com/romereview',
+                    'rel' => 'node',
                 ),
                 'state' => null,
             ),
             array(
                 'data' => '5etto',
                 'attr' => array(
-                    'id'            => '/com/5etto',
-                    'url_safe_id'   => 'com/5etto',
-                    'rel'           => 'node',
+                    'id' => '/com/5etto',
+                    'url_safe_id' => 'com/5etto',
+                    'rel' => 'node',
                 ),
                 'state' => null,
             ),
             array(
                 'data' => 'wordpress',
                 'attr' => array(
-                    'id'            => '/com/wordpress',
-                    'url_safe_id'   => 'com/wordpress',
-                    'rel'           => 'node',
+                    'id' => '/com/wordpress',
+                    'url_safe_id' => 'com/wordpress',
+                    'rel' => 'node',
                 ),
                 'state' => null,
             ),
