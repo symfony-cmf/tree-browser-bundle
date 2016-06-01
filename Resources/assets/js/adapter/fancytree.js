@@ -19,7 +19,7 @@ function getPropertyFromString(propertyPath, list) {
     var isOptional = propertyPath.substr(0, 1) === '?';
     var props = propertyPath.substr(1).split('.');
     var currentNode = list;
-    for (prop in props) {
+    for (let prop in props) {
         currentNode = currentNode[props[prop]];
 
         if (undefined === currentNode) {
