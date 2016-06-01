@@ -19,7 +19,7 @@ function getPropertyFromString(propertyPath, list) {
     var isOptional = propertyPath.substr(0, 1) === '?';
     var props = propertyPath.substr(1).split('.');
     var currentNode = list;
-    for (prop in props) {
+    for (let prop in props) {
         currentNode = currentNode[props[prop]];
 
         if (undefined === currentNode) {
@@ -55,7 +55,7 @@ export class FancytreeAdapter {
         this.useCache = undefined === options.use_cache ? true : options.use_cache;
 
         // available actions (array)
-        this.actions = new Map();
+        this.actions = new Array();
         // the Fancytree instance (FancytreeTree)
         this.tree = null;
         // the tree element (jQuery)
@@ -87,11 +87,7 @@ export class FancytreeAdapter {
             };
 
             for (let actionName in actions) {
-                if (!actions.has(actionName)) {
-                    continue;
-                }
-
-                var action = actions.get(actionName);
+                var action = actions[actionName];
                 var url = action.url;
                 if (typeof action.url == 'object' && action.url.hasOwnProperty('data')) {
                     url = getPropertyFromString(action.url.data, requestNode);
@@ -213,7 +209,7 @@ export class FancytreeAdapter {
     }
 
     addAction(name, url, icon) {
-        this.actions.set(name, { url: url, icon: icon });
+        this.actions[name] = { url: url, icon: icon };
     }
 
     static _resetCache() {
