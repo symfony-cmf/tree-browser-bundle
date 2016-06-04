@@ -1,18 +1,37 @@
-language: node_js
+language: php
 
-node_js: stable
+php:
+  - 5.5
+  - 5.6
+  - 7.0
+  - hhvm
 
 sudo: false
 
 cache:
     directories:
+        - $HOME/.composer/cache/files
         - node_modules
 
-before_install:
-  - npm install -g bower
+env: LANG=php
 
-before_script:
-  - bower install
+matrix:
+  include:
+    - php: 5.6
+      env: LANG=js
+  fast_finish: true
+
+before_install:
+  - if [ "$LANG" = "php" ]; then phpenv config-rm xdebug.ini || true; fi
+  - if [ "$LANG" = "js" ]; then npm install -g bower && npm set progress=false; fi
+
+install:
+  - if [ "$LANG" = "js" ]; then npm install; bower install; fi
+  - if [ "$LANG" = "php" ]; then composer update --prefer-dist; fi
+
+script:
+  - if [ "$LANG" = "js" ]; then npm test; fi
+  - if [ "$LANG" = "php" ]; then phpunit; fi
 
 notifications:
   irc: "irc.freenode.org#symfony-cmf"
