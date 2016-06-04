@@ -1,6 +1,11 @@
 Changelog
 =========
 
+1.2.0
+-----
+
+* Symfony 3 compatibility
+
 1.1.0-RC1
 ---------
 

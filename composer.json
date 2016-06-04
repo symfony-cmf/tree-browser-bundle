@@ -11,11 +11,12 @@
             "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle/contributors"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
-        "php": "^5.3.9|^7.0",
+        "php": "^5.3.3|^7.0",
         "symfony-cmf/resource-rest-bundle": "~1.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "Symfony\\Cmf\\Bundle\\TreeBrowserBundle\\": ""
