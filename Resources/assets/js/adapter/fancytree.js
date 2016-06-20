@@ -183,28 +183,39 @@ export class FancytreeAdapter {
 
     bindToInput($input) {
         // output active node to input field
-        this.$tree.fancytree('option', 'activate', function(event, data) {
-            $input.val(data.node.getKeyPath());
+        this.$tree.fancytree('option', 'activate', (event, data) => {
+            root = this.rootNode;
+            if (root.substr(-1) == '/') {
+                var root = this.rootNode.substr(0, -1);
+            }
+
+            $input.val(root + data.node.getKeyPath());
         });
 
-        var tree = this.tree;
-        var showKey = function (key) {
-            tree.loadKeyPath(key, function (node, status) {
+        var showKey = (key) => {
+            this.tree.loadKeyPath(key, function (node, status) {
                 if ('ok' == status) {
                     node.setExpanded();
                     node.setActive();
                 }
             });
         };
+        var removeRoot = (path) => {
+            if (0 === path.indexOf(this.rootNode)) {
+                return path.substr(this.rootNode.length);
+            }
+
+            return path;
+        };
 
         // use initial input value as active node
         this.$tree.bind('fancytreeinit', function (event, data) {
-            showKey($input.val());
+            showKey(removeRoot($input.val()));
         });
 
         // change active node when the value of the input field changed
         $input.on('change', function (e) {
-            showKey($(this).val());
+            showKey(removeRoot($(this).val()));
         });
     }
 
