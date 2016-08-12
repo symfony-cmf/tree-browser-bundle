@@ -46,10 +46,10 @@ class TreeSelectTypeTest extends TypeTestCase
         $this->assertEquals('hidden', $view->vars['type']);
     }
 
-    public function testTextWidget()
+    public function testCompactWidget()
     {
         $form = $this->factory->create(TreeSelectType::class, null, [
-            'widget' => 'text',
+            'widget' => 'compact',
         ]);
 
         $view = $form->createView();

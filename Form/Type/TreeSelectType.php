@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Cmf\Bundle\TreeBrowserbundle\Form\Type;
+namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,8 +23,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * The widget option provides 2 different ways to display the form type:
  *
  * - browser
- *     Displays only the tree browsers;
- * - text
+ *     Displays only the tree browser;
+ * - compact
  *     Displays a text field with a button to select using the tree browser
  *     (just like a file browser).
  *
@@ -36,16 +36,22 @@ class TreeSelectType extends AbstractType
     {
         parent::buildView($view, $form, $options);
 
-        $view->vars['type'] = ('text' === $options['widget']) ? 'text' : 'hidden';
-        $view->vars['root_path'] = '/'.ltrim($options['root_path']);
+        $view->vars['type'] = ('compact' === $options['widget']) ? 'text' : 'hidden';
+        $view->vars['root_node'] = $options['root_node'];
+        $view->vars['repository_name'] = $options['repository_name'];
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefault('widget', 'text');
-        $resolver->setAllowedValues('widget', ['browser', 'text']);
+        $resolver->setDefault('widget', 'compact');
+        $resolver->setAllowedValues('widget', ['browser', 'compact']);
 
-        $resolver->setDefault('root_path', '/');
+        $resolver->setDefault('root_node', '/');
+        $resolver->setAllowedValues('root_node', function ($value) {
+            return '/' === $value[0];
+        });
+
+        $resolver->setDefault('repository_name', 'default');
     }
 
     public function getBlockPrefix()
