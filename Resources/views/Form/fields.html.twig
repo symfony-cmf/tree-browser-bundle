@@ -1,0 +1,26 @@
+{% block cmf_tree_select_widget %}
+    {% include 'CmfTreeBrowserBundle:Base:tree.html.twig' %}
+    <script>
+        jQuery(function ($) {
+            $('#{{ id }}-cmf-tree').cmfTree({
+                request: {
+                    load: function (nodePath) {
+                        return {
+                            url: '{{ path('_cmf_get_resource', {
+                                repositoryName: repository_name,
+                                path: '__path__',
+                                _locale: app.request.locale
+                            }) }}'.replace('__path__', nodePath)
+                        };
+                    },
+                },
+                root_node: '{{ root_node }}',
+                path_output: '#{{ id }}'
+            });
+        });
+    </script>
+
+    <div id="{{ id }}-cmf-tree"></div>
+
+    {{ block('form_widget_simple') }}
+{% endblock %}
