@@ -37,6 +37,7 @@ class TreeSelectType extends AbstractType
         parent::buildView($view, $form, $options);
 
         $view->vars['type'] = ('compact' === $options['widget']) ? 'text' : 'hidden';
+        $view->vars['widget'] = $options['widget'];
         $view->vars['root_node'] = $options['root_node'];
         $view->vars['repository_name'] = $options['repository_name'];
     }
