@@ -1,26 +1,76 @@
 {% block cmf_tree_select_widget %}
-    {% include 'CmfTreeBrowserBundle:Base:tree.html.twig' %}
-    <script>
-        jQuery(function ($) {
-            $('#{{ id }}-cmf-tree').cmfTree({
-                request: {
-                    load: function (nodePath) {
-                        return {
-                            url: '{{ path('_cmf_get_resource', {
-                                repositoryName: repository_name,
-                                path: '__path__',
-                                _locale: app.request.locale
-                            }) }}'.replace('__path__', nodePath)
-                        };
+    {% block cmf_tree_select_widget_js %}
+        {% include 'CmfTreeBrowserBundle:Base:tree.html.twig' %}
+        <script>
+            jQuery(function ($) {
+                $('#{{ id }}-cmf-tree').cmfTree({
+                    request: {
+                        load: function (nodePath) {
+                            return {
+                                url: '{{ path('_cmf_get_resource', {
+                                    repositoryName: repository_name,
+                                    path: '__path__',
+                                    _locale: app.request.locale
+                                }) }}'.replace('__path__', nodePath)
+                            };
+                        },
                     },
-                },
-                root_node: '{{ root_node }}',
-                path_output: '#{{ id }}'
-            });
-        });
-    </script>
+                    root_node: '{{ root_node }}',
+                    path_output: '#{{ id }}'
+                });
 
+                {% if "compact" == widget %}
+                var $tooltip = $('#{{ id }}-cmf-tree-tooltip');
+                $('#{{ id }}-cmf-tree-tooltip-toggle').click(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var $input = $(this).prev('input');
+                    var offset = $input.position();
+                    $tooltip.css({
+                        left: offset.left,
+                        top: offset.top + $input.outerHeight(),
+                        display: 'block'
+                    });
+
+                    $('body').one('click', function (e) {
+                        $tooltip.hide();
+                    });
+                });
+
+                $tooltip.click(function (e) {
+                    e.stopPropagation();
+                });
+                {% endif %}
+            });
+        </script>
+    {% endblock %}
+
+    {% block cmf_tree_select_widget_css %}
+        {% if 'compact' == widget %}
+        <style>
+        #{{ id }}-cmf-tree-tooltip{
+            display:none;
+            position:absolute;
+            box-shadow:0 1px 2px #888;
+            background:#fff;
+            padding:10px;
+        }
+        </style>
+        {% endif %}
+    {% endblock %}
+
+    {% if "compact" == widget %}
+    <div id="{{ id }}-cmf-tree-tooltip">
+        <div id="{{ id }}-cmf-tree"></div>
+    </div>
+    {% else %}
     <div id="{{ id }}-cmf-tree"></div>
+    {% endif %}
 
     {{ block('form_widget_simple') }}
+
+    {% if "compact" == widget %}
+    <button id="{{ id }}-cmf-tree-tooltip-toggle">Pick</button>
+    {% endif %}
 {% endblock %}
