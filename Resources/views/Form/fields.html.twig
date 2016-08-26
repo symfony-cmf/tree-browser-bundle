@@ -71,6 +71,6 @@
     {{ block('form_widget_simple') }}
 
     {% if "compact" == widget %}
-    <button id="{{ id }}-cmf-tree-tooltip-toggle">Pick</button>
+    <button id="{{ id }}-cmf-tree-tooltip-toggle">{{ 'form.button.pick'|trans({}, 'CmfTreeBrowserBundle') }}</button>
     {% endif %}
 {% endblock %}
