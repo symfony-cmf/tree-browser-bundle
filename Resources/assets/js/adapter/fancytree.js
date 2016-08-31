@@ -71,7 +71,6 @@ export class FancytreeAdapter {
 
         this.$tree = $elem;
         var actions = this.actions;
-        var requestNode = this.requestNode;
         var requestNodeToFancytreeNode = (requestNode) => {
             if (requestNode.length === 0) {
                 return;
@@ -91,6 +90,10 @@ export class FancytreeAdapter {
             };
 
             this.pathKeyMap[fancytreeNode.refPath] = key;
+
+            if (requestNode.descriptors.hasOwnProperty('icon')) {
+                fancytreeNode.icon = requestNode.descriptors.icon;
+            }
 
             for (let actionName in actions) {
                 var action = actions[actionName];
