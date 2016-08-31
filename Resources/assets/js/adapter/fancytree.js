@@ -147,13 +147,20 @@ export class FancytreeAdapter {
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
                 if (null == data.error) {
-                    data.result = requestNodeToFancytreeNode(data.response).children;
-                    if (data.result.length == 1) {
-                        data.result[0].expanded = true;
+                    var result = requestNodeToFancytreeNode(data.response);
+                    if ("" === result.key) {
+                        result = result.children;
+                    } else {
+                        result = [result];
                     }
 
+                    if (result.length == 1) {
+                        result[0].expanded = true;
+                    }
+
+                    data.result = result;
                     if (useCache) {
-                        cache.set(data.node.getKeyPath(), data.result);
+                        cache.set(data.node.getKeyPath(), result);
                     }
                 } else {
                     data.result = {
@@ -182,29 +189,41 @@ export class FancytreeAdapter {
     }
 
     bindToInput($input) {
+        var root = this.rootNode;
+        if (root.substr(-1) == '/') {
+            var root = this.rootNode.substr(0, -1);
+        }
+        var rootParent = root.substr(0, root.lastIndexOf('/'));
+
         // output active node to input field
-        this.$tree.fancytree('option', 'activate', function(event, data) {
-            $input.val(data.node.getKeyPath());
+        this.$tree.fancytree('option', 'activate', (event, data) => {
+            $input.val(rootParent + data.node.getKeyPath());
         });
 
-        var tree = this.tree;
-        var showKey = function (key) {
-            tree.loadKeyPath(key, function (node, status) {
+        var showKey = (key) => {
+            this.tree.loadKeyPath(key, function (node, status) {
                 if ('ok' == status) {
                     node.setExpanded();
                     node.setActive();
                 }
             });
         };
+        var removeRoot = (path) => {
+            if (0 === path.indexOf(rootParent + '/')) {
+                return path.substr(rootParent.length + 1);
+            }
+
+            return path;
+        };
 
         // use initial input value as active node
         this.$tree.bind('fancytreeinit', function (event, data) {
-            showKey($input.val());
+            showKey(removeRoot($input.val()));
         });
 
         // change active node when the value of the input field changed
         $input.on('change', function (e) {
-            showKey($(this).val());
+            showKey(removeRoot($(this).val()));
         });
     }
 

@@ -11,7 +11,8 @@ sudo: false
 cache:
     directories:
         - $HOME/.composer/cache/files
-        - node_modules
+# node_modules are not cached, because we don't shrinkwrap the deps.
+#        - node_modules
 
 env: LANG=php
 
