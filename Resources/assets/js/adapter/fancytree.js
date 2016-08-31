@@ -147,13 +147,20 @@ export class FancytreeAdapter {
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
                 if (null == data.error) {
-                    data.result = requestNodeToFancytreeNode(data.response).children;
-                    if (data.result.length == 1) {
-                        data.result[0].expanded = true;
+                    var result = requestNodeToFancytreeNode(data.response);
+                    if ("" === result.key) {
+                        result = result.children;
+                    } else {
+                        result = [result];
                     }
 
+                    if (result.length == 1) {
+                        result[0].expanded = true;
+                    }
+
+                    data.result = result;
                     if (useCache) {
-                        cache.set(data.node.getKeyPath(), data.result);
+                        cache.set(data.node.getKeyPath(), result);
                     }
                 } else {
                     data.result = {
@@ -182,14 +189,15 @@ export class FancytreeAdapter {
     }
 
     bindToInput($input) {
+        var root = this.rootNode;
+        if (root.substr(-1) == '/') {
+            var root = this.rootNode.substr(0, -1);
+        }
+        var rootParent = root.substr(0, root.lastIndexOf('/'));
+
         // output active node to input field
         this.$tree.fancytree('option', 'activate', (event, data) => {
-            root = this.rootNode;
-            if (root.substr(-1) == '/') {
-                var root = this.rootNode.substr(0, -1);
-            }
-
-            $input.val(root + data.node.getKeyPath());
+            $input.val(rootParent + data.node.getKeyPath());
         });
 
         var showKey = (key) => {
@@ -201,8 +209,8 @@ export class FancytreeAdapter {
             });
         };
         var removeRoot = (path) => {
-            if (0 === path.indexOf(this.rootNode)) {
-                return path.substr(this.rootNode.length);
+            if (0 === path.indexOf(rootParent + '/')) {
+                return path.substr(rootParent.length + 1);
             }
 
             return path;
