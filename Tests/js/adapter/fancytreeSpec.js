@@ -208,4 +208,52 @@ describe('The Fancytree adapter', function() {
         expect(tree.getNodeByKey('cms').isActive()).toBe(true);
     });
 
+    it('prefixes the root node to path output when configured', function () {
+        jasmine.Ajax.stubRequest(/^\/root_api/).andReturn({
+            responseText: JSON.stringify({
+                node_name: 'cms',
+                label: 'cms',
+                path: '\/cms',
+                children: {
+                    content: {
+                        node_name: 'content',
+                        label: 'Content',
+                        path: '/cms/content',
+                        children: {
+                            some_article: [],
+                            other_article: []
+                        }
+                    },
+                    routes: {
+                        node_name: 'routes',
+                        label: 'Routes',
+                        path: '/cms/routes',
+                        children: {}
+                    }
+                }
+            })
+        });
+
+        var adapter = new FancytreeAdapter({
+            request: {
+                load: function (path) {
+                    return {
+                        url: '/root_api'
+                    };
+                },
+            },
+            root_node: '/cms'
+        });
+
+        adapter.bindToElement(this.$tree);
+
+        var $input = $('<input type=text value="/cms/routes"/>');
+        adapter.bindToInput($input);
+
+        var tree = this.$tree.fancytree('getTree');
+
+        tree.getNodeByKey('content').setActive();
+        expect($input).toHaveValue('/cms/content');
+    });
+
 });
