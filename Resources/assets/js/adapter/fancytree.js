@@ -146,27 +146,34 @@ export class FancytreeAdapter {
 
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
-                if (null == data.error) {
-                    var result = requestNodeToFancytreeNode(data.response);
-                    if ("" === result.key) {
-                        result = result.children;
-                    } else {
-                        result = [result];
-                    }
+                if (data.hasOwnProperty('error') && null != data.error) {
+                  data.result = {
+                    // todo: maybe use a more admin friendly error message in prod?
+                    error: 'An error occured while retrieving the nodes: ' + data.error
+                  };
 
-                    if (result.length == 1) {
-                        result[0].expanded = true;
-                    }
+                  return;
+                }
 
-                    data.result = result;
-                    if (useCache) {
-                        cache.set(data.node.getKeyPath(), result);
-                    }
-                } else {
-                    data.result = {
-                        // todo: maybe use a more admin friendly error message in prod?
-                        error: 'An error occured while retrieving the nodes: ' + data.error
+                let result = requestNodeToFancytreeNode(data.response),
+                    keyIsValid = function (key, parentKey) {
+                        // Invalid node keys won't be displayed and we don't want to show them twice
+                        return "" === key || !key || "false" == key || parentKey == key;
                     };
+
+                if (keyIsValid(result.key, data.node.key)) {
+                    result = result.children;
+                } else {
+                    result = [result];
+                }
+
+                if (result.length == 1) {
+                    result[0].expanded = true;
+                }
+
+                data.result = result;
+                if (useCache) {
+                    cache.set(data.node.getKeyPath(), result);
                 }
             },
 
