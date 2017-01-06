@@ -147,16 +147,16 @@ export class FancytreeAdapter {
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
                 if (data.hasOwnProperty('error') && null != data.error) {
-                  data.result = {
-                    // todo: maybe use a more admin friendly error message in prod?
-                    error: 'An error occured while retrieving the nodes: ' + data.error
-                  };
+                    data.result = {
+                        // todo: maybe use a more admin friendly error message in prod?
+                        error: 'An error occured while retrieving the nodes: ' + data.error
+                    };
 
-                  return;
+                    return;
                 }
 
-                let result = requestNodeToFancytreeNode(data.response),
-                    keyIsValid = function (key, parentKey) {
+                let result = requestNodeToFancytreeNode(data.response);
+                let keyIsValid = function (key, parentKey) {
                         // Invalid node keys won't be displayed and we don't want to show them twice
                         return "" === key || !key || "false" == key || parentKey == key;
                     };
