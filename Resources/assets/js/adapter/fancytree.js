@@ -60,6 +60,8 @@ export class FancytreeAdapter {
         this.tree = null;
         // the tree element (jQuery)
         this.$tree = null;
+        // a map of path and related keys
+        this.pathKeyMap = {};
     }
 
     bindToElement($elem) {
@@ -74,17 +76,25 @@ export class FancytreeAdapter {
         this.$tree = $elem;
         var actions = this.actions;
         var requestNode = this.requestNode;
-        var requestNodeToFancytreeNode = function (requestNode) {
+        var requestNodeToFancytreeNode = (requestNode) => {
             if (requestNode.length === 0) {
                 return;
             }
 
+            if ('//' == requestNode.path || '/' == requestNode.path) {
+                return requestNodeToFancytreeNode(requestNode.children[Object.keys(requestNode.children)[0]]);
+            }
+
+            var key = "" + jQuery.ui.fancytree._nextNodeKey++;
             var fancytreeNode = {
                 title: requestNode.label,
-                key: requestNode.node_name,
+                key: key,
                 children: [],
-                actions: {}
+                actions: {},
+                refPath: requestNode.path.replace('\/', '/').replace('//', '/')
             };
+
+            this.pathKeyMap[fancytreeNode.refPath] = key;
 
             for (let actionName in actions) {
                 var action = actions[actionName];
@@ -128,7 +138,7 @@ export class FancytreeAdapter {
 
             // lazy load the children when a node is collapsed
             lazyLoad: function (event, data) {
-                var path = data.node.getKeyPath();
+                var path = data.node.data.refPath;
                 if (useCache && cache.has(path)) {
                     data.result = cache.get(path);
                 } else {
@@ -156,12 +166,11 @@ export class FancytreeAdapter {
                 }
 
                 let result = requestNodeToFancytreeNode(data.response);
-                let keyIsValid = function (key, parentKey) {
-                        // Invalid node keys won't be displayed and we don't want to show them twice
-                        return "" === key || !key || "false" == key || parentKey == key;
-                    };
+                let nodeIsDuplicate = function (node, parentPath) {
+                    return parentPath == node.refPath;
+                };
 
-                if (keyIsValid(result.key, data.node.key)) {
+                if (nodeIsDuplicate(result, data.node.data.refPath)) {
                     result = result.children;
                 } else {
                     result = [result];
@@ -173,7 +182,7 @@ export class FancytreeAdapter {
 
                 data.result = result;
                 if (useCache) {
-                    cache.set(data.node.getKeyPath(), result);
+                    cache.set(data.node.data.refPath, result);
                 }
             },
 
@@ -196,41 +205,47 @@ export class FancytreeAdapter {
     }
 
     bindToInput($input) {
-        var root = this.rootNode;
-        if (root.substr(-1) == '/') {
-            var root = this.rootNode.substr(0, -1);
-        }
-        var rootParent = root.substr(0, root.lastIndexOf('/'));
-
         // output active node to input field
         this.$tree.fancytree('option', 'activate', (event, data) => {
-            $input.val(rootParent + data.node.getKeyPath());
+            $input.val(data.node.data.refPath);
         });
 
-        var showKey = (key) => {
-            this.tree.loadKeyPath(key, function (node, status) {
+        var showPath = (path) => {
+            if (!this.pathKeyMap.hasOwnProperty(path)) {
+                return;
+            }
+
+            this.tree.loadKeyPath(generateKeyPath(path), function (node, status) {
                 if ('ok' == status) {
                     node.setExpanded();
                     node.setActive();
                 }
             });
         };
-        var removeRoot = (path) => {
-            if (0 === path.indexOf(rootParent + '/')) {
-                return path.substr(rootParent.length + 1);
-            }
+        var generateKeyPath = (path) => {
+            var keyPath = '';
+            var refPath = '';
+            var subPaths = path.split('/');
 
-            return path;
+            subPaths.forEach((subPath) => {
+                if (subPath == '' || !this.pathKeyMap.hasOwnProperty(refPath += '/' + subPath)) {
+                    return;
+                }
+
+                keyPath += '/' + this.pathKeyMap[refPath];
+            });
+
+            return keyPath;
         };
 
         // use initial input value as active node
         this.$tree.bind('fancytreeinit', function (event, data) {
-            showKey(removeRoot($input.val()));
+            showPath($input.val());
         });
 
         // change active node when the value of the input field changed
         $input.on('change', function (e) {
-            showKey(removeRoot($(this).val()));
+            showPath($(this).val());
         });
     }
 
