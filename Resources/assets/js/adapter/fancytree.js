@@ -198,6 +198,12 @@ export class FancytreeAdapter {
         }
 
         this.tree = this.$tree.fancytree('getTree');
+
+        this.tree.getNodeByRefPath = function (refPath) {
+            return this.findFirst((node) => {
+                return node.data.refPath == refPath;
+            });
+        };
     }
 
     bindToInput($input) {
