@@ -12,13 +12,13 @@
         }
     ],
     "require": {
-        "php": "^5.3.3|^7.0",
+        "php": "^5.6|^7.0",
         "symfony-cmf/resource-rest-bundle": "~1.0"
     },
     "require-dev": {
         "symfony/form": "^2.8|^3.0"
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "RC",
     "prefer-stable": true,
     "autoload": {
         "psr-4": {

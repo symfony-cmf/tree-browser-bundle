@@ -10,7 +10,7 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "fancytree": "2.7.*"
+        "fancytree": "2.21.*"
     },
     "private": true,
     "ignore": ["*"]

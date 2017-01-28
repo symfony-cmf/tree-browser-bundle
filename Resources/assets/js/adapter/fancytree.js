@@ -15,23 +15,19 @@ import '../../css/fontawesome-style.css'
 
 var cache = new Map();
 
-function getPropertyFromString(propertyPath, list) {
-    var isOptional = propertyPath.substr(0, 1) === '?';
-    var props = propertyPath.substr(1).split('.');
-    var currentNode = list;
-    for (let prop in props) {
-        currentNode = currentNode[props[prop]];
+function getPropertyFromString(name, list) {
+    var isOptional = name.substr(0, 1) === '?';
+    var nameWithoutPrefix = (isOptional ? name.substr(1) : name);
 
-        if (undefined === currentNode) {
-            if (isOptional) {
-                break;
-            }
-
-            throw 'Attribute "' + props[prop] + '" does not exists';
+    if (undefined === list[nameWithoutPrefix]) {
+        if (isOptional) {
+            return undefined;
         }
+
+        throw 'Attribute "' + props[prop] + '" does not exists';
     }
 
-    return currentNode;
+    return list[nameWithoutPrefix];
 }
 
 /**
@@ -60,6 +56,8 @@ export class FancytreeAdapter {
         this.tree = null;
         // the tree element (jQuery)
         this.$tree = null;
+        // a map of path and related keys
+        this.pathKeyMap = {};
     }
 
     bindToElement($elem) {
@@ -74,23 +72,31 @@ export class FancytreeAdapter {
         this.$tree = $elem;
         var actions = this.actions;
         var requestNode = this.requestNode;
-        var requestNodeToFancytreeNode = function (requestNode) {
+        var requestNodeToFancytreeNode = (requestNode) => {
             if (requestNode.length === 0) {
                 return;
             }
 
+            if ('//' == requestNode.path || '/' == requestNode.path) {
+                return requestNodeToFancytreeNode(requestNode.children[Object.keys(requestNode.children)[0]]);
+            }
+
+            var key = "" + jQuery.ui.fancytree._nextNodeKey++;
             var fancytreeNode = {
                 title: requestNode.label,
-                key: requestNode.node_name,
+                key: key,
                 children: [],
-                actions: {}
+                actions: {},
+                refPath: requestNode.path.replace('\/', '/').replace('//', '/')
             };
+
+            this.pathKeyMap[fancytreeNode.refPath] = key;
 
             for (let actionName in actions) {
                 var action = actions[actionName];
                 var url = action.url;
                 if (typeof action.url == 'object' && action.url.hasOwnProperty('data')) {
-                    url = getPropertyFromString(action.url.data, requestNode);
+                    url = getPropertyFromString(action.url.data, requestNode.descriptors);
                 }
 
                 if (url === undefined) {
@@ -112,9 +118,13 @@ export class FancytreeAdapter {
                 childrenCount++;
             }
 
-            if (childrenCount) {
+            if (0 != childrenCount) {
                 fancytreeNode.folder = true;
                 fancytreeNode.lazy = true;
+
+                if (0 === fancytreeNode.children.length) {
+                    fancytreeNode.children = null;
+                }
             }
 
             return fancytreeNode;
@@ -128,7 +138,7 @@ export class FancytreeAdapter {
 
             // lazy load the children when a node is collapsed
             lazyLoad: function (event, data) {
-                var path = data.node.getKeyPath();
+                var path = data.node.data.refPath;
                 if (useCache && cache.has(path)) {
                     data.result = cache.get(path);
                 } else {
@@ -146,27 +156,33 @@ export class FancytreeAdapter {
 
             // transform the JSON response into a data structure that's supported by FancyTree
             postProcess: function (event, data) {
-                if (null == data.error) {
-                    var result = requestNodeToFancytreeNode(data.response);
-                    if ("" === result.key) {
-                        result = result.children;
-                    } else {
-                        result = [result];
-                    }
-
-                    if (result.length == 1) {
-                        result[0].expanded = true;
-                    }
-
-                    data.result = result;
-                    if (useCache) {
-                        cache.set(data.node.getKeyPath(), result);
-                    }
-                } else {
+                if (data.hasOwnProperty('error') && null != data.error) {
                     data.result = {
                         // todo: maybe use a more admin friendly error message in prod?
                         error: 'An error occured while retrieving the nodes: ' + data.error
                     };
+
+                    return;
+                }
+
+                let result = requestNodeToFancytreeNode(data.response);
+                let nodeIsDuplicate = function (node, parentPath) {
+                    return parentPath == node.refPath;
+                };
+
+                if (nodeIsDuplicate(result, data.node.data.refPath)) {
+                    result = result.children;
+                } else {
+                    result = [result];
+                }
+
+                if (result.length == 1 && undefined !== result[0].folder) {
+                    result[0].expanded = true;
+                }
+
+                data.result = result;
+                if (useCache) {
+                    cache.set(data.node.data.refPath, result);
                 }
             },
 
@@ -186,44 +202,56 @@ export class FancytreeAdapter {
         }
 
         this.tree = this.$tree.fancytree('getTree');
+
+        this.tree.getNodeByRefPath = function (refPath) {
+            return this.findFirst((node) => {
+                return node.data.refPath == refPath;
+            });
+        };
     }
 
     bindToInput($input) {
-        var root = this.rootNode;
-        if (root.substr(-1) == '/') {
-            var root = this.rootNode.substr(0, -1);
-        }
-        var rootParent = root.substr(0, root.lastIndexOf('/'));
-
         // output active node to input field
         this.$tree.fancytree('option', 'activate', (event, data) => {
-            $input.val(rootParent + data.node.getKeyPath());
+            $input.val(data.node.data.refPath);
         });
 
-        var showKey = (key) => {
-            this.tree.loadKeyPath(key, function (node, status) {
+        var showPath = (path) => {
+            if (!this.pathKeyMap.hasOwnProperty(path)) {
+                return;
+            }
+
+            this.tree.loadKeyPath(generateKeyPath(path), function (node, status) {
                 if ('ok' == status) {
                     node.setExpanded();
                     node.setActive();
                 }
             });
         };
-        var removeRoot = (path) => {
-            if (0 === path.indexOf(rootParent + '/')) {
-                return path.substr(rootParent.length + 1);
-            }
+        var generateKeyPath = (path) => {
+            var keyPath = '';
+            var refPath = '';
+            var subPaths = path.split('/');
 
-            return path;
+            subPaths.forEach((subPath) => {
+                if (subPath == '' || !this.pathKeyMap.hasOwnProperty(refPath += '/' + subPath)) {
+                    return;
+                }
+
+                keyPath += '/' + this.pathKeyMap[refPath];
+            });
+
+            return keyPath;
         };
 
         // use initial input value as active node
         this.$tree.bind('fancytreeinit', function (event, data) {
-            showKey(removeRoot($input.val()));
+            showPath($input.val());
         });
 
         // change active node when the value of the input field changed
         $input.on('change', function (e) {
-            showKey(removeRoot($(this).val()));
+            showPath($(this).val());
         });
     }
 
