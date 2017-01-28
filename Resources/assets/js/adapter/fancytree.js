@@ -118,9 +118,13 @@ export class FancytreeAdapter {
                 childrenCount++;
             }
 
-            if (childrenCount) {
+            if (0 != childrenCount) {
                 fancytreeNode.folder = true;
                 fancytreeNode.lazy = true;
+
+                if (0 === fancytreeNode.children.length) {
+                    fancytreeNode.children = null;
+                }
             }
 
             return fancytreeNode;
@@ -172,7 +176,7 @@ export class FancytreeAdapter {
                     result = [result];
                 }
 
-                if (result.length == 1) {
+                if (result.length == 1 && undefined !== result[0].folder) {
                     result[0].expanded = true;
                 }
 
