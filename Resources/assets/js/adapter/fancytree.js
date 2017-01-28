@@ -15,23 +15,19 @@ import '../../css/fontawesome-style.css'
 
 var cache = new Map();
 
-function getPropertyFromString(propertyPath, list) {
-    var isOptional = propertyPath.substr(0, 1) === '?';
-    var props = propertyPath.substr(1).split('.');
-    var currentNode = list;
-    for (let prop in props) {
-        currentNode = currentNode[props[prop]];
+function getPropertyFromString(name, list) {
+    var isOptional = name.substr(0, 1) === '?';
+    var nameWithoutPrefix = (isOptional ? name.substr(1) : name);
 
-        if (undefined === currentNode) {
-            if (isOptional) {
-                break;
-            }
-
-            throw 'Attribute "' + props[prop] + '" does not exists';
+    if (undefined === list[nameWithoutPrefix]) {
+        if (isOptional) {
+            return undefined;
         }
+
+        throw 'Attribute "' + props[prop] + '" does not exists';
     }
 
-    return currentNode;
+    return list[nameWithoutPrefix];
 }
 
 /**
@@ -100,7 +96,7 @@ export class FancytreeAdapter {
                 var action = actions[actionName];
                 var url = action.url;
                 if (typeof action.url == 'object' && action.url.hasOwnProperty('data')) {
-                    url = getPropertyFromString(action.url.data, requestNode);
+                    url = getPropertyFromString(action.url.data, requestNode.descriptors);
                 }
 
                 if (url === undefined) {
