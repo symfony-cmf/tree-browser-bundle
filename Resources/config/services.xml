@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="cmf_tree_browser.description.icon_enhancer"
+            class="Symfony\Cmf\Bundle\TreeBrowserBundle\Description\IconEnhancer"
+            public="false">
+            <argument>%cmf_tree_browser.description.icon_map%</argument>
+
+            <tag name="cmf_resource.description.enhancer" alias="cmf_tree_icons"/>
+        </service>
+    </services>
+
+</container>

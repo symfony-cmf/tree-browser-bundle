@@ -11,8 +11,10 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\DependencyInjection;
 
+use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\PrependExtensionInterface;
+use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class CmfTreeBrowserExtension extends Extension implements PrependExtensionInterface
@@ -40,5 +42,10 @@ class CmfTreeBrowserExtension extends Extension implements PrependExtensionInter
      */
     public function load(array $configs, ContainerBuilder $container)
     {
+        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader->load('services.xml');
+
+        $config = $this->processConfiguration(new Configuration(), $configs);
+        $container->setParameter('cmf_tree_browser.description.icon_map', $config['icons']);
     }
 }
