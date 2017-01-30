@@ -29,11 +29,13 @@ describe('The Fancytree adapter', function() {
                         node_name: 'cms',
                         label: 'cms',
                         path: '\/cms',
+                        descriptors: [],
                         children: {
                             content: {
                                 node_name: 'content',
                                 label: 'Content',
                                 path: '/cms/content',
+                                descriptors: [],
                                 children: {
                                     some_article: [],
                                     other_article: []
@@ -41,7 +43,8 @@ describe('The Fancytree adapter', function() {
                             }
                         }
                     }
-                }
+                },
+                descriptors: []
             })
         });
     });
@@ -81,7 +84,8 @@ describe('The Fancytree adapter', function() {
                 data: 'homepage',
                 attr: { id: '/cms/content/home' },
                 state: null,
-                children: []
+                children: [],
+                descriptors: []
             }])
         });
 
@@ -159,10 +163,9 @@ describe('The Fancytree adapter', function() {
     it('can have another path as root node', function () {
         jasmine.Ajax.stubRequest(/^\/api/, 'path=/cms/content').andReturn({
             responseText: JSON.stringify([{
-                data: 'homepage',
                 attr: { id: '/cms/content/home' },
-                state: null,
-                children: []
+                children: [],
+                descriptors: []
             }])
         });
 
@@ -220,11 +223,13 @@ describe('The Fancytree adapter', function() {
                 node_name: 'cms',
                 label: 'cms',
                 path: '\/cms',
+                descriptors: [],
                 children: {
                     content: {
                         node_name: 'content',
                         label: 'Content',
                         path: '/cms/content',
+                        descriptors: [],
                         children: {
                             some_article: [],
                             other_article: []
@@ -234,6 +239,7 @@ describe('The Fancytree adapter', function() {
                         node_name: 'routes',
                         label: 'Routes',
                         path: '/cms/routes',
+                        descriptors: [],
                         children: {}
                     }
                 }

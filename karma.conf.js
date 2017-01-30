@@ -1,7 +1,7 @@
 var path = require('path');
 var webpackConfig = require('./webpack.config.js');
 webpackConfig.devtool = 'inline-source-map';
-webpackConfig.resolve.alias.bundle = path.join(__dirname, 'Resources/assets/js');
+webpackConfig.resolve.alias.bundle = path.join(__dirname, 'src/Resources/assets/js');
 webpackConfig.entry = {};
 
 module.exports = function(config) {
@@ -68,7 +68,7 @@ module.exports = function(config) {
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-    browsers: ['Chrome', 'Firefox', 'IE'],
+    browsers: ['Chrome'],//, 'Firefox', 'IE'],
 
 
     // Continuous Integration mode

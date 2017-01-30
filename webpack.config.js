@@ -4,12 +4,12 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
   debug : true,
-  context : path.join(__dirname, 'Resources/assets/'),
+  context : path.join(__dirname, 'src/Resources/assets/'),
   entry : {
     fancytree : './js/jquery.cmf_tree.js'
   },
   output : {
-    path : path.join(__dirname, 'Resources/public/js'),
+    path : path.join(__dirname, 'src/Resources/public/js'),
     filename : 'cmf_tree_browser.[name].js'
   },
   externals : {
