@@ -9,7 +9,8 @@
 
 import Map from 'core-js/es6/map'
 import '../jquery.cmf_context_menu'
-import 'fancytree/jquery.fancytree.js'
+import 'fancytree/src/jquery.fancytree.js'
+import 'fancytree/src/jquery.fancytree.dnd.js'
 import 'fancytree/skin-win8/ui.fancytree.css'
 import '../../css/fontawesome-style.css'
 
@@ -50,6 +51,21 @@ export class FancytreeAdapter {
         this.rootNode = options.root_node || '/';
         this.useCache = undefined === options.use_cache ? true : options.use_cache;
 
+        if (options.dnd && undefined == options.dnd.enabled) {
+            options.dnd.enabled = true;
+        }
+        var alwaysTrueFunction = () => { return true };
+        this.dndOptions = jQuery.extend({
+            enabled: false,
+            isNodeDraggable: alwaysTrueFunction,
+            nodeAcceptsDraggable: alwaysTrueFunction
+        }, options.dnd);
+
+        if (this.dndOptions.enabled && !options.request.move) {
+            throw 'The move request needs to be configured when drag \'n drop is enabled, pass it using the `request.move` option.';
+        }
+        this.dndOptions.request = options.request.move;
+
         // available actions (array)
         this.actions = new Array();
         // the Fancytree instance (FancytreeTree)
@@ -71,6 +87,19 @@ export class FancytreeAdapter {
 
         this.$tree = $elem;
         var actions = this.actions;
+        var parseUrl = function (url, node) {
+            if (typeof url == 'object' && url.hasOwnProperty('data')) {
+                return getPropertyFromString(url.data, node.descriptors);
+            }
+
+            if (typeof url == 'function') {
+                return url(requestNode);
+            }
+
+            if (typeof url == 'string') {
+                return url;
+            }
+        };
         var requestNodeToFancytreeNode = (requestNode) => {
             if (requestNode.length === 0) {
                 return;
@@ -86,7 +115,8 @@ export class FancytreeAdapter {
                 key: key,
                 children: [],
                 actions: {},
-                refPath: requestNode.path.replace('\/', '/').replace('//', '/')
+                refPath: requestNode.path.replace('\/', '/').replace('//', '/'),
+                type: requestNode.payload_type
             };
 
             this.pathKeyMap[fancytreeNode.refPath] = key;
@@ -97,10 +127,7 @@ export class FancytreeAdapter {
 
             for (let actionName in actions) {
                 var action = actions[actionName];
-                var url = action.url;
-                if (typeof action.url == 'object' && action.url.hasOwnProperty('data')) {
-                    url = getPropertyFromString(action.url.data, requestNode.descriptors);
-                }
+                var url = parseUrl(action.url, requestNode);
 
                 if (url === undefined) {
                     continue;
@@ -135,7 +162,7 @@ export class FancytreeAdapter {
 
         var requestData = this.requestData;
         var useCache = this.useCache;
-        this.$tree.fancytree({
+        var fancytreeOptions = {
             // the start data (root node + children)
             source: (useCache && cache.has(this.rootNode)) ? cache.get(this.rootNode) : requestData.load(this.rootNode),
 
@@ -191,7 +218,59 @@ export class FancytreeAdapter {
 
             // always show the active node
             activeVisible: true
-        });
+        };
+
+        if (this.dndOptions.enabled) {
+            fancytreeOptions.extensions = ['dnd'];
+            fancytreeOptions.dnd = {
+                dragStart: (node, data) => {
+                    return this.dndOptions.isNodeDraggable(node, data);
+                },
+                dragEnter: (node, data) => {
+                    return this.dndOptions.nodeAcceptsDraggable(node, data);
+                },
+                dragExpand: (node, data) => {
+                    return true;
+                },
+                dragDrop: (node, data) => {
+                    var targetParentKeyPath = node.data.refPath;
+                    if ('over' != data.hitMode && 'child' != data.hitMode) {
+                        // a node at a specific place can still be a drop in a new parent
+                        targetParentKeyPath = node.parent.data.refPath;
+                    }
+                    var dropNodePath = data.otherNode.data.refPath;
+                    var targetPath = targetParentKeyPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
+
+                    var oldIcon = data.otherNode.icon;
+                    data.otherNode.icon = 'fa fa-spinner fa-spin';
+                    data.otherNode.renderTitle();
+                    this.requestData.move(dropNodePath, targetPath)
+                        .done(function (responseData) {
+                            data.otherNode.remove();
+
+                            if ('over' != data.hitMode) {
+                                node = node.parent;
+                            }
+
+                            node.addChildren(requestNodeToFancytreeNode(responseData));
+                        })
+                        .fail(function (jqxhr, textStatus, errorThrown) {
+                            console.error(errorThrown);
+
+                            node._error = { message: 'Failed to move the node.', details: errorThrown };
+                            node.renderStatus();
+
+                            setTimeout(function () {
+                                node._error = null;
+                                node.renderStatus();
+                            }, 1000);
+                        })
+                    ;
+                }
+            };
+        }
+
+        this.$tree.fancytree(fancytreeOptions);
 
         if (this.actions) {
             this.$tree.cmfContextMenu({

@@ -5,6 +5,6 @@
 <script>window.jQuery.ui || document.write('<script src="{{ asset(assetsBasePath ~ '/jquery-ui/jquery-ui.min.js') }}"><\/script>')</script>
 {% endif %}
 
-<script src="{{ asset('bundles/cmftreebrowser/js/cmf_tree_browser.' ~ treeAdapter ~ '.js?' ~ 'now'|format('u')) }}" type="text/javascript"></script>
+<script src="{{ asset('bundles/cmftreebrowser/js/cmf_tree_browser.' ~ treeAdapter ~ '.js?' ~ 'now'|date('U')) }}" type="text/javascript"></script>
 
 <link rel="stylesheet" href="{{ asset('bundles/cmftreebrowser/css/cmf_tree_browser.' ~ treeAdapter ~ '.css') }}" media="all"/>
