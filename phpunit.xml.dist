@@ -8,17 +8,15 @@
 
     <testsuites>
         <testsuite name="Symfony CmfTreeBrowserBundleBundle Test Suite">
-            <directory>./Tests/Unit</directory>
+            <directory>./tests/Unit</directory>
         </testsuite>
     </testsuites>
 
     <filter>
         <whitelist addUncoveredFilesFromWhitelist="true">
-            <directory>.</directory>
+            <directory>src</directory>
             <exclude>
                 <directory>Resources/</directory>
-                <directory>Tests/</directory>
-                <directory>vendor/</directory>
             </exclude>
         </whitelist>
     </filter>

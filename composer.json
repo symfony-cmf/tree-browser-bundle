@@ -22,7 +22,12 @@
     "prefer-stable": true,
     "autoload": {
         "psr-4": {
-            "Symfony\\Cmf\\Bundle\\TreeBrowserBundle\\": ""
+            "Symfony\\Cmf\\Bundle\\TreeBrowserBundle\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Symfony\\Cmf\\Bundle\\TreeBrowserBundle\\Tests\\": "tests"
         }
     },
     "extra": {
