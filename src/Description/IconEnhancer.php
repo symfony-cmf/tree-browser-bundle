@@ -11,10 +11,10 @@
 
 namespace Symfony\Cmf\Bundle\TreeBrowserBundle\Description;
 
-use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 use Symfony\Cmf\Component\Resource\Description\Description;
 use Symfony\Cmf\Component\Resource\Description\DescriptionEnhancerInterface;
 use Symfony\Cmf\Component\Resource\Puli\Api\PuliResource;
+use Symfony\Cmf\Component\Resource\Repository\Resource\CmfResource;
 
 /**
  * A description enhancer to add custom tree node icons.
