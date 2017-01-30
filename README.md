@@ -8,11 +8,7 @@
 This bundle is part of the [Symfony Content Management Framework (CMF)](http://cmf.symfony.com/)
 and licensed under the [MIT License](LICENSE).
 
-The TreeBrowserBundle provides tree navigation for the PHP Content Repository
-(PHPCR). This bundle comprises two parts:
-
-* Generic tree browser with a "TreeInterface"
-* PHPCR-specific tree browser implementation with GUI
+The TreeBrowserBundle provides tree navigation for the Content Repository.
 
 
 ## Requirements
