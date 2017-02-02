@@ -290,6 +290,11 @@ export class FancytreeAdapter {
                 return node.data.refPath == refPath;
             });
         };
+
+        // We do not want to do anything on activation atm.
+        this.$tree.fancytree('option', 'beforeActivate', () => {
+            return false;
+        });
     }
 
     bindToInput($input) {
