@@ -18,7 +18,7 @@ fi
 cp ./bower_components/jquery/dist/jquery.min.js ./src/Resources/public/vendor/jquery/dist/jquery.min.js
 
 # jQuery UI
-if [ ! -d "./Resources/public/vendor/jquery-ui" ]; then
-    mkdir ./Resources/public/vendor/jquery-ui
+if [ ! -d "./src/Resources/public/vendor/jquery-ui" ]; then
+    mkdir ./src/Resources/public/vendor/jquery-ui
 fi
 cp ./bower_components/jquery-ui/jquery-ui.min.js ./src/Resources/public/vendor/jquery-ui/jquery-ui.min.js
