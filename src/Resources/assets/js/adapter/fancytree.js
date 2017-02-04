@@ -50,6 +50,7 @@ export class FancytreeAdapter {
         this.requestData = options.request;
         this.rootNode = options.root_node || '/';
         this.useCache = undefined === options.use_cache ? true : options.use_cache;
+        this.boundToInput = false;
 
         if (options.dnd && undefined == options.dnd.enabled) {
             options.dnd.enabled = true;
@@ -116,7 +117,8 @@ export class FancytreeAdapter {
                 children: [],
                 actions: {},
                 refPath: requestNode.path.replace('\/', '/').replace('//', '/'),
-                type: requestNode.payload_type
+                type: requestNode.payload_type,
+                unselectable: true
             };
 
             this.pathKeyMap[fancytreeNode.refPath] = key;
@@ -292,12 +294,16 @@ export class FancytreeAdapter {
         };
 
         // We do not want to do anything on activation atm.
-        this.$tree.fancytree('option', 'beforeActivate', () => {
-            return false;
+        this.$tree.fancytree('option', 'beforeActivate', (event, data) => {
+            if (!this.boundToInput) {
+                return false;
+            }
         });
     }
 
     bindToInput($input) {
+        this.boundToInput = true;
+
         // output active node to input field
         this.$tree.fancytree('option', 'activate', (event, data) => {
             $input.val(data.node.data.refPath);
