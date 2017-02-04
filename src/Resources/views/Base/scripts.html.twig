@@ -7,7 +7,7 @@
 
 <script>
 if (jQuery.fn.cmfTree === undefined) {
-    document.write('<script src="{{ asset('bundles/cmftreebrowser/js/cmf_tree_browser.' ~ treeAdapter ~ '.js') }}"><\/script>');
+    document.write('<script src="{{ asset('bundles/cmftreebrowser/js/cmf_tree_browser.' ~ treeAdapter ~ '.js' ~ (app.debug ? 'now'|date('?U') : '')) }}"><\/script>');
     document.write('<link rel="stylesheet" href="{{ asset('bundles/cmftreebrowser/css/cmf_tree_browser.' ~ treeAdapter ~ '.css') }}" media="all"/>');
 }
 </script>
