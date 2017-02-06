@@ -110,18 +110,19 @@ export class FancytreeAdapter {
                 return requestNodeToFancytreeNode(requestNode.children[Object.keys(requestNode.children)[0]]);
             }
 
-            var key = "" + jQuery.ui.fancytree._nextNodeKey++;
+            var refPath = requestNode.path.replace('\/', '/').replace('//', '/');
+            var key = this.pathKeyMap[refPath] || "" + jQuery.ui.fancytree._nextNodeKey++;
             var fancytreeNode = {
                 title: requestNode.label,
                 key: key,
                 children: [],
                 actions: {},
-                refPath: requestNode.path.replace('\/', '/').replace('//', '/'),
+                refPath: refPath,
                 type: requestNode.payload_type,
                 unselectable: true
             };
 
-            this.pathKeyMap[fancytreeNode.refPath] = key;
+            this.pathKeyMap[refPath] = key;
 
             if (requestNode.descriptors.hasOwnProperty('icon')) {
                 fancytreeNode.icon = requestNode.descriptors.icon;
@@ -311,7 +312,20 @@ export class FancytreeAdapter {
 
         var showPath = (path) => {
             if (!this.pathKeyMap.hasOwnProperty(path)) {
-                return;
+                var parts = path.split('/');
+
+                while (!this.pathKeyMap.hasOwnProperty(parts.join('/')) && parts.pop());
+
+                if (parts.length === 0) {
+                    return;
+                }
+
+                var loadedPath = parts.join('/');
+                var pathsToLoad = path.substr(loadedPath.length + 1).split('/');
+
+                pathsToLoad.forEach((pathToLoad) => {
+                    this.pathKeyMap[loadedPath += '/' + pathToLoad] = "" + jQuery.ui.fancytree._nextNodeKey++;
+                });
             }
 
             this.tree.loadKeyPath(generateKeyPath(path), function (node, status) {
