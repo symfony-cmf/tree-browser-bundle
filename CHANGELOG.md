@@ -1,6 +1,13 @@
 Changelog
 =========
 
+2.0.0-RC2
+---------
+
+ * The `cmf_tree_browser.fancytree.js`/`cmf_tree_browser.fancytree.css` files
+   are now only loaded once (even when the `Base:scripts.html.twig` template is
+   included multiple times).
+
 2.0.0-RC1
 ---------
 
