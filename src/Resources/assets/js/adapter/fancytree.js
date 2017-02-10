@@ -295,9 +295,10 @@ export class FancytreeAdapter {
         };
 
         // We do not want to do anything on activation atm.
-        this.$tree.fancytree('option', 'beforeActivate', (event, data) => {
+        this.$tree.fancytree('option', 'activate', (event, data) => {
             if (!this.boundToInput) {
-                return false;
+                data.node.setActive(false);
+                data.node.setFocus(false);
             }
         });
     }

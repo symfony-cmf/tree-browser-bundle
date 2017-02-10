@@ -48,7 +48,7 @@ module.exports = function(config) {
     reporters: ['dots'],
 
     webpack: webpackConfig,
-    webpackMiddleware: { noInfo: true },
+    webpackMiddleware: { noInfo: true, stats: 'errors-only'},
 
     // web server port
     port: 9876,
