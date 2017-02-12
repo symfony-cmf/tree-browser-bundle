@@ -1,6 +1,9 @@
 {% block cmf_tree_select_widget %}
     {% block cmf_tree_select_widget_js %}
-        {% include 'CmfTreeBrowserBundle:Base:tree.html.twig' %}
+        {% block cmf_tree_select_widget_assets -%}
+            {% include 'CmfTreeBrowserBundle:Base:tree.html.twig' %}
+        {%- endblock %}
+
         <script>
             jQuery(function ($) {
                 $('#{{ id }}-cmf-tree').cmfTree({
@@ -25,7 +28,7 @@
                     e.preventDefault();
                     e.stopPropagation();
 
-                    var $input = $(this).prev('input');
+                    var $input = $('#{{ id }}');
                     var offset = $input.position();
                     $tooltip.css({
                         left: offset.left,
@@ -62,16 +65,20 @@
     {% endblock %}
 
     {% if "compact" == widget %}
-    <div id="{{ id }}-cmf-tree-tooltip">
-        <div id="{{ id }}-cmf-tree"></div>
-    </div>
+        {%- block cmf_tree_select_widget_tooltip %}
+        <div id="{{ id }}-cmf-tree-tooltip">
+            <div id="{{ id }}-cmf-tree"></div>
+        </div>
+        {% endblock -%}
     {% else %}
     <div id="{{ id }}-cmf-tree"></div>
     {% endif %}
 
-    {{ block('form_widget_simple') }}
+    {% block cmf_tree_select_widget_input -%}
+        {{ block('form_widget_simple') }}
 
-    {% if "compact" == widget %}
-    <button id="{{ id }}-cmf-tree-tooltip-toggle">{{ 'form.button.pick'|trans({}, 'CmfTreeBrowserBundle') }}</button>
-    {% endif %}
+        {% if "compact" == widget %}
+            <button id="{{ id }}-cmf-tree-tooltip-toggle">{{ 'form.button.pick'|trans({}, 'CmfTreeBrowserBundle') }}</button>
+        {% endif %}
+    {%- endblock %}
 {% endblock %}
