@@ -5,7 +5,8 @@ php:
   - 7.0
   - 7.1
 
-sudo: false
+sudo: required
+dist: trusty
 
 cache:
     directories:
@@ -13,25 +14,35 @@ cache:
 # node_modules are not cached, because we don't shrinkwrap the deps.
 #        - node_modules
 
-env: LANG=php
+env:
+  - LANG=php
+  - NODE_RELEASE=6.x
 
 matrix:
   include:
     - php: 5.6
-      env: LANG=js
+      env:
+        - LANG=js
+        - NODE_RELEASE=6.x
+  exclude:
+    - php: 5.6
+      env: NODE_RELEASE=6.x
+    - php: 7.0
+      env: NODE_RELEASE=6.x
+    - php: 7.1
+      env: NODE_RELEASE=6.x
   fast_finish: true
 
 before_install:
   - if [ "$LANG" = "php" ]; then phpenv config-rm xdebug.ini || true; fi
-  - if [ "$LANG" = "js" ]; then npm install -g bower && npm set progress=false; fi
 
 install:
-  - if [ "$LANG" = "js" ]; then npm install; bower install; fi
+  - if [ "$LANG" = "js" ]; then npm run travis:install; fi
   - if [ "$LANG" = "php" ]; then composer update --prefer-dist; fi
 
 script:
   - if [ "$LANG" = "js" ]; then npm test; fi
-  - if [ "$LANG" = "php" ]; then phpunit; fi
+  - if [ "$LANG" = "php" ]; then vendor/bin/simple-phpunit; fi
 
 notifications:
   irc: "irc.freenode.org#symfony-cmf"
