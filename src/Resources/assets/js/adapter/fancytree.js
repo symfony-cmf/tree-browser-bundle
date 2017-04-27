@@ -244,31 +244,34 @@ export class FancytreeAdapter {
                     var dropNodePath = data.otherNode.data.refPath;
                     var targetPath = targetParentKeyPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
-                    var oldIcon = data.otherNode.icon;
                     data.otherNode.icon = 'fa fa-spinner fa-spin';
                     data.otherNode.renderTitle();
-                    this.requestData.move(dropNodePath, targetPath)
-                        .done(function (responseData) {
-                            data.otherNode.remove();
+                    var moveNodeInTree = function (data, node, responseData) {
+                        data.otherNode.remove();
+                        if ('over' != data.hitMode) {
+                        node = node.parent;
+                        }
+                        node.addChildren(requestNodeToFancytreeNode(responseData));
+                    };
+                    _this.requestData.move(dropNodePath, targetPath).done(function (responseData) {
+                        if (_this.dndOptions.reorder) {
+                            _this.requestData.reorder(targetParentKeyPath, targetPath, dropNodePath, data.hitMode).done(function (responseData) {
+                                moveNodeInTree(data, node, responseData);
+                            });
+                        } else {
+                            moveNodeInTree(data, node, responseData);
+                        }
+                    }).fail(function (jqxhr, textStatus, errorThrown) {
+                        console.error(errorThrown);
 
-                            if ('over' != data.hitMode) {
-                                node = node.parent;
-                            }
+                        node._error = { message: 'Failed to move the node.', details: errorThrown };
+                        node.renderStatus();
 
-                            node.addChildren(requestNodeToFancytreeNode(responseData));
-                        })
-                        .fail(function (jqxhr, textStatus, errorThrown) {
-                            console.error(errorThrown);
-
-                            node._error = { message: 'Failed to move the node.', details: errorThrown };
+                        setTimeout(function () {
+                            node._error = null;
                             node.renderStatus();
-
-                            setTimeout(function () {
-                                node._error = null;
-                                node.renderStatus();
-                            }, 1000);
-                        })
-                    ;
+                        }, 1000);
+                    });
                 }
             };
         }
