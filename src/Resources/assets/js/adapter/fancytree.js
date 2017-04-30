@@ -51,6 +51,7 @@ export class FancytreeAdapter {
         this.rootNode = options.root_node || '/';
         this.useCache = undefined === options.use_cache ? true : options.use_cache;
         this.boundToInput = false;
+        this.sortableBy = undefined == options.sortableBy ? false : options.sortableBy;
 
         if (options.dnd && undefined == options.dnd.enabled) {
             options.dnd.enabled = true;
@@ -223,6 +224,20 @@ export class FancytreeAdapter {
             activeVisible: true
         };
 
+        if (this.sortableBy) {
+            fancytreeOptions.sortChildren = (a, b) => {
+                var firstItem = a.descriptors[this.sortableBy];
+                var secondtItem = b.descriptors[this.sortableBy];
+                if (firstItem == secondtItem) {
+                    return 0;
+                } else if (firstItem < secondtItem) {
+                    return 1;
+                } else  {
+                    return -1;
+                }
+            };
+        }
+
         if (this.dndOptions.enabled) {
             fancytreeOptions.extensions = ['dnd'];
             fancytreeOptions.dnd = {
@@ -236,32 +251,39 @@ export class FancytreeAdapter {
                     return true;
                 },
                 dragDrop: (node, data) => {
-                    var targetParentKeyPath = node.data.refPath;
+                    var dropedNode = data.otherNode;
+                    var dropedAtNode = data.node;
+
+                    var dropNodePath = dropedNode.data.refPath;
+                    var dropedAtPath = dropedAtNode.data.refPath;
+                    var parenPath = '';
                     if ('over' != data.hitMode && 'child' != data.hitMode) {
                         // a node at a specific place can still be a drop in a new parent
-                        targetParentKeyPath = node.parent.data.refPath;
+                        parenPath = dropedAtNode.parent.data.refPath;
+                    } else {
+                        parenPath = dropedAtPath;
                     }
-                    var dropNodePath = data.otherNode.data.refPath;
-                    var targetPath = targetParentKeyPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
+                    var targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
-                    data.otherNode.icon = 'fa fa-spinner fa-spin';
-                    data.otherNode.renderTitle();
-                    var moveNodeInTree = function (data, node, responseData) {
-                        data.otherNode.remove();
+                    dropedNode.icon = 'fa fa-spinner fa-spin';
+                    dropedNode.renderTitle();
+                    var moveNodeInTree = (responseData) => {
+                        dropedNode.remove();
                         if ('over' != data.hitMode) {
-                        node = node.parent;
+                            dropedAtNode.addChildren(requestNodeToFancytreeNode(responseData));
+                        } else {
+                            dropedAtNode.parent.addChildren(requestNodeToFancytreeNode(responseData));
                         }
-                        node.addChildren(requestNodeToFancytreeNode(responseData));
                     };
-                    _this.requestData.move(dropNodePath, targetPath).done(function (responseData) {
-                        if (_this.dndOptions.reorder) {
-                            _this.requestData.reorder(targetParentKeyPath, targetPath, dropNodePath, data.hitMode).done(function (responseData) {
-                                moveNodeInTree(data, node, responseData);
+                    this.requestData.move(dropNodePath, targetPath).done((responseData) => {
+                        if (this.dndOptions.reorder) {
+                            this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
+                                moveNodeInTree(responseData);
                             });
                         } else {
-                            moveNodeInTree(data, node, responseData);
+                            moveNodeInTree(responseData);
                         }
-                    }).fail(function (jqxhr, textStatus, errorThrown) {
+                    }).fail((jqxhr, textStatus, errorThrown) => {
                         console.error(errorThrown);
 
                         node._error = { message: 'Failed to move the node.', details: errorThrown };
