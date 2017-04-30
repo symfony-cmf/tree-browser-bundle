@@ -269,31 +269,32 @@ export class FancytreeAdapter {
                     dropedNode.renderTitle();
                     var moveNodeInTree = (responseData) => {
                         dropedNode.remove();
-                        if ('over' != data.hitMode) {
-                            dropedAtNode.addChildren(requestNodeToFancytreeNode(responseData));
-                        } else {
+                        if ('over' != data.hitMode && 'child' != data.hitMode) {
                             dropedAtNode.parent.addChildren(requestNodeToFancytreeNode(responseData));
+                        } else {
+                            dropedAtNode.addChildren(requestNodeToFancytreeNode(responseData));
                         }
                     };
+                    var onError = (jqxhr, textStatus, errorThrown) => {
+                      console.error(errorThrown);
+
+                      node._error = { message: 'Failed to move the node.', details: errorThrown };
+                      node.renderStatus();
+
+                      setTimeout(function () {
+                        node._error = null;
+                        node.renderStatus();
+                      }, 1000);
+                    }
                     this.requestData.move(dropNodePath, targetPath).done((responseData) => {
-                        if (this.dndOptions.reorder) {
+                        if (this.dndOptions.reorder && 'over' != data.hitMode && 'child' != data.hitMode) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
                                 moveNodeInTree(responseData);
-                            });
+                            }).fail(onError);
                         } else {
                             moveNodeInTree(responseData);
                         }
-                    }).fail((jqxhr, textStatus, errorThrown) => {
-                        console.error(errorThrown);
-
-                        node._error = { message: 'Failed to move the node.', details: errorThrown };
-                        node.renderStatus();
-
-                        setTimeout(function () {
-                            node._error = null;
-                            node.renderStatus();
-                        }, 1000);
-                    });
+                    }).fail(onError);
                 }
             };
         }
