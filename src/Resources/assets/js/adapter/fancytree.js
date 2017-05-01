@@ -256,12 +256,14 @@ export class FancytreeAdapter {
 
                     let dropNodePath = dropedNode.data.refPath;
                     let dropedAtPath = dropedAtNode.data.refPath;
-                    let parentNode = ('over' != data.hitMode && 'child' != data.hitMode) ? dropedAtNode.parent : dropedAtNode;
+                    let positionBefore = 'over' != data.hitMode && 'child' != data.hitMode;
+                    let parentNode = positionBefore ? dropedAtNode.parent : dropedAtNode;
                     let parenPath = parenNode.data.refPath;
                     let targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
                     dropedNode.icon = 'fa fa-spinner fa-spin';
                     dropedNode.renderTitle();
+
                     let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
@@ -279,7 +281,7 @@ export class FancytreeAdapter {
                       }, 1000);
                     }
                     this.requestData.move(dropNodePath, targetPath).done((responseData) => {
-                        if (this.dndOptions.reorder && 'over' != data.hitMode && 'child' != data.hitMode) {
+                        if (this.dndOptions.reorder) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
                                 moveNodeInTree(responseData);
                             }).fail(onError);
