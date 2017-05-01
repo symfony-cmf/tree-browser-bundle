@@ -129,6 +129,10 @@ export class FancytreeAdapter {
                 fancytreeNode.icon = requestNode.descriptors.icon;
             }
 
+            if(requestNode.descriptors.hasOwnProperty('position')) {
+                fancytreeNode.position = requestNode.descriptors.position;
+            }
+
             for (let actionName in actions) {
                 var action = actions[actionName];
                 var url = parseUrl(action.url, requestNode);
@@ -226,11 +230,11 @@ export class FancytreeAdapter {
 
         if (this.sortableBy) {
             fancytreeOptions.sortChildren = (a, b) => {
-                var firstItem = a.descriptors[this.sortableBy];
-                var secondtItem = b.descriptors[this.sortableBy];
-                if (firstItem == secondtItem) {
+                var current = a[this.sortableBy];
+                var next = b[this.sortableBy];
+                if (current == next) {
                     return 0;
-                } else if (firstItem < secondtItem) {
+                } else if (current < next) {
                     return 1;
                 } else  {
                     return -1;
@@ -269,16 +273,15 @@ export class FancytreeAdapter {
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
                     };
                     let onError = (jqxhr, textStatus, errorThrown) => {
-                      console.error(errorThrown);
-
                       node._error = { message: 'Failed to move the node.', details: errorThrown };
                       node.renderStatus();
+                      console.error(errorThrown);
 
                       setTimeout(function () {
                         node._error = null;
                         node.renderStatus();
                       }, 1000);
-                    }
+                    };
                     this.requestData.move(dropNodePath, targetPath).done((responseData) => {
                         if (this.dndOptions.reorder) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
