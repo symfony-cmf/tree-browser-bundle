@@ -230,14 +230,14 @@ export class FancytreeAdapter {
 
         if (this.sortableBy) {
             fancytreeOptions.sortChildren = (a, b) => {
-                var current = a[this.sortableBy];
-                var next = b[this.sortableBy];
+                var current = a.data[this.sortableBy];
+                var next = b.data[this.sortableBy];
                 if (current == next) {
                     return 0;
                 } else if (current < next) {
-                    return 1;
-                } else  {
                     return -1;
+                } else  {
+                    return 1;
                 }
             };
         }
