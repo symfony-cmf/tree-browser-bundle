@@ -251,31 +251,23 @@ export class FancytreeAdapter {
                     return true;
                 },
                 dragDrop: (node, data) => {
-                    var dropedNode = data.otherNode;
-                    var dropedAtNode = data.node;
+                    let dropedNode = data.otherNode;
+                    let dropedAtNode = data.node;
 
-                    var dropNodePath = dropedNode.data.refPath;
-                    var dropedAtPath = dropedAtNode.data.refPath;
-                    var parenPath = '';
-                    if ('over' != data.hitMode && 'child' != data.hitMode) {
-                        // a node at a specific place can still be a drop in a new parent
-                        parenPath = dropedAtNode.parent.data.refPath;
-                    } else {
-                        parenPath = dropedAtPath;
-                    }
-                    var targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
+                    let dropNodePath = dropedNode.data.refPath;
+                    let dropedAtPath = dropedAtNode.data.refPath;
+                    let parentNode = ('over' != data.hitMode && 'child' != data.hitMode) ? dropedAtNode.parent : dropedAtNode;
+                    let parenPath = parenNode.data.refPath;
+                    let targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
                     dropedNode.icon = 'fa fa-spinner fa-spin';
                     dropedNode.renderTitle();
-                    var moveNodeInTree = (responseData) => {
+                    let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
-                        if ('over' != data.hitMode && 'child' != data.hitMode) {
-                            dropedAtNode.parent.addChildren(requestNodeToFancytreeNode(responseData));
-                        } else {
-                            dropedAtNode.addChildren(requestNodeToFancytreeNode(responseData));
-                        }
+                        parentNode.addChildren(requestNodeToFancytreeNode(responseData));
+                        parentNode.sortChildren(null, true);
                     };
-                    var onError = (jqxhr, textStatus, errorThrown) => {
+                    let onError = (jqxhr, textStatus, errorThrown) => {
                       console.error(errorThrown);
 
                       node._error = { message: 'Failed to move the node.', details: errorThrown };
