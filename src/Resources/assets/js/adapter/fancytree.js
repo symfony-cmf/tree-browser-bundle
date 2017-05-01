@@ -267,7 +267,7 @@ export class FancytreeAdapter {
                     let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
-                        parentNode.sortChildren(null, true);
+                        parentNode.sortChildren(fancytreeOptions.sortChildren, true);
                     };
                     let onError = (jqxhr, textStatus, errorThrown) => {
                       console.error(errorThrown);
