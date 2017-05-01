@@ -258,7 +258,7 @@ export class FancytreeAdapter {
                     let dropedAtPath = dropedAtNode.data.refPath;
                     let positionBefore = 'over' != data.hitMode && 'child' != data.hitMode;
                     let parentNode = positionBefore ? dropedAtNode.parent : dropedAtNode;
-                    let parenPath = parenNode.data.refPath;
+                    let parenPath = parentNode.data.refPath;
                     let targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
                     dropedNode.icon = 'fa fa-spinner fa-spin';
