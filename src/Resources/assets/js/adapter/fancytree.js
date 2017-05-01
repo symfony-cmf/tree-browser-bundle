@@ -267,7 +267,6 @@ export class FancytreeAdapter {
                     let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
-                        parentNode.sortChildren(fancytreeOptions.sortChildren, true);
                     };
                     let onError = (jqxhr, textStatus, errorThrown) => {
                       console.error(errorThrown);
@@ -284,6 +283,9 @@ export class FancytreeAdapter {
                         if (this.dndOptions.reorder) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
                                 moveNodeInTree(responseData);
+                                if (fancytreeOptions.hasOwnProperty('sortChildren')) {
+                                  parentNode.sortChildren(fancytreeOptions.sortChildren, true);
+                                }
                             }).fail(onError);
                         } else {
                             moveNodeInTree(responseData);
