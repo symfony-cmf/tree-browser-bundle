@@ -51,6 +51,7 @@ export class FancytreeAdapter {
         this.rootNode = options.root_node || '/';
         this.useCache = undefined === options.use_cache ? true : options.use_cache;
         this.boundToInput = false;
+        this.sortableBy = undefined == options.sortableBy ? false : options.sortableBy;
 
         if (options.dnd && undefined == options.dnd.enabled) {
             options.dnd.enabled = true;
@@ -126,6 +127,10 @@ export class FancytreeAdapter {
 
             if (requestNode.descriptors.hasOwnProperty('icon')) {
                 fancytreeNode.icon = requestNode.descriptors.icon;
+            }
+
+            if(requestNode.descriptors.hasOwnProperty('position')) {
+                fancytreeNode.position = requestNode.descriptors.position;
             }
 
             for (let actionName in actions) {
@@ -223,6 +228,20 @@ export class FancytreeAdapter {
             activeVisible: true
         };
 
+        if (this.sortableBy) {
+            fancytreeOptions.sortChildren = (a, b) => {
+                var current = a.data[this.sortableBy];
+                var next = b.data[this.sortableBy];
+                if (current == next) {
+                    return 0;
+                } else if (current < next) {
+                    return -1;
+                } else  {
+                    return 1;
+                }
+            };
+        }
+
         if (this.dndOptions.enabled) {
             fancytreeOptions.extensions = ['dnd'];
             fancytreeOptions.dnd = {
@@ -236,39 +255,45 @@ export class FancytreeAdapter {
                     return true;
                 },
                 dragDrop: (node, data) => {
-                    var targetParentKeyPath = node.data.refPath;
-                    if ('over' != data.hitMode && 'child' != data.hitMode) {
-                        // a node at a specific place can still be a drop in a new parent
-                        targetParentKeyPath = node.parent.data.refPath;
-                    }
-                    var dropNodePath = data.otherNode.data.refPath;
-                    var targetPath = targetParentKeyPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
+                    let dropedNode = data.otherNode;
+                    let dropedAtNode = data.node;
 
-                    var oldIcon = data.otherNode.icon;
-                    data.otherNode.icon = 'fa fa-spinner fa-spin';
-                    data.otherNode.renderTitle();
-                    this.requestData.move(dropNodePath, targetPath)
-                        .done(function (responseData) {
-                            data.otherNode.remove();
+                    let dropNodePath = dropedNode.data.refPath;
+                    let dropedAtPath = dropedAtNode.data.refPath;
+                    let positionBefore = 'over' != data.hitMode && 'child' != data.hitMode;
+                    let parentNode = positionBefore ? dropedAtNode.parent : dropedAtNode;
+                    let parenPath = parentNode.data.refPath;
+                    let targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
-                            if ('over' != data.hitMode) {
-                                node = node.parent;
-                            }
+                    dropedNode.icon = 'fa fa-spinner fa-spin';
+                    dropedNode.renderTitle();
 
-                            node.addChildren(requestNodeToFancytreeNode(responseData));
-                        })
-                        .fail(function (jqxhr, textStatus, errorThrown) {
-                            console.error(errorThrown);
+                    let moveNodeInTree = (responseData) => {
+                        dropedNode.remove();
+                        parentNode.addChildren(requestNodeToFancytreeNode(responseData));
+                    };
+                    let onError = (jqxhr, textStatus, errorThrown) => {
+                      node._error = { message: 'Failed to move the node.', details: errorThrown };
+                      node.renderStatus();
+                      console.error(errorThrown);
 
-                            node._error = { message: 'Failed to move the node.', details: errorThrown };
-                            node.renderStatus();
-
-                            setTimeout(function () {
-                                node._error = null;
-                                node.renderStatus();
-                            }, 1000);
-                        })
-                    ;
+                      setTimeout(function () {
+                        node._error = null;
+                        node.renderStatus();
+                      }, 1000);
+                    };
+                    this.requestData.move(dropNodePath, targetPath).done((responseData) => {
+                        if (this.dndOptions.reorder) {
+                            this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
+                                moveNodeInTree(responseData);
+                                if (fancytreeOptions.hasOwnProperty('sortChildren')) {
+                                  parentNode.sortChildren(fancytreeOptions.sortChildren, true);
+                                }
+                            }).fail(onError);
+                        } else {
+                            moveNodeInTree(responseData);
+                        }
+                    }).fail(onError);
                 }
             };
         }
