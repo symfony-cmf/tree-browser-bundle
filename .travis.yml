@@ -6,7 +6,6 @@ php:
   - 7.1
 
 sudo: required
-dist: trusty
 
 cache:
     directories:
@@ -21,9 +20,12 @@ env:
 matrix:
   include:
     - php: 5.6
+      dist: trusty
       env:
         - LANG=js
         - NODE_RELEASE=6.x
+    - php: hhvm
+      dist: trusty
   exclude:
     - php: 5.6
       env: NODE_RELEASE=6.x
