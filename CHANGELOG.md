@@ -1,6 +1,9 @@
 Changelog
 =========
 
+2.0.0
+-----
+
 2.0.0-RC2
 ---------
  * Added Drag&Drop to move nodes.
