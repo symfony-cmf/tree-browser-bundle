@@ -269,6 +269,13 @@ export class FancytreeAdapter {
 
                     let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
+                        if (positionBefore) {
+                            parentNode.children.forEach((node) => {
+                            if (node.data.position >= responseData.descriptors.position) {
+                                node.data.position++;
+                            }
+                        });
+                      }
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
                     };
 
