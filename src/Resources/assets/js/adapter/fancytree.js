@@ -306,7 +306,7 @@ export class FancytreeAdapter {
                         }, 1000);
                     };
                     this.requestData.move(dropNodePath, targetPath).done((responseData) => {
-                        if (this.dndOptions.reorder) {
+                        if (positionBefore && this.dndOptions.reorder) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
                                 moveNodeInTree(responseData);
                                 if (fancytreeOptions.hasOwnProperty('sortChildren')) {
