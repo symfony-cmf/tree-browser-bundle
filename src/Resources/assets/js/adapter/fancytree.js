@@ -265,32 +265,68 @@ export class FancytreeAdapter {
                     let parenPath = parentNode.data.refPath;
                     let targetPath = parenPath + '/' + dropNodePath.substr(1 + dropNodePath.lastIndexOf('/'));
 
-                    dropedNode.icon = 'fa fa-spinner fa-spin';
-                    dropedNode.renderTitle();
+                    let formerIcon = dropedNode.icon;
 
                     let moveNodeInTree = (responseData) => {
                         dropedNode.remove();
                         parentNode.addChildren(requestNodeToFancytreeNode(responseData));
                     };
-                    let onError = (jqxhr, textStatus, errorThrown) => {
-                      node._error = { message: 'Failed to move the node.', details: errorThrown };
-                      node.renderStatus();
-                      console.error(errorThrown);
 
-                      setTimeout(function () {
-                        node._error = null;
-                        node.renderStatus();
-                      }, 1000);
+                    let setIcon = (nodeToSetOn, icon) => {
+                        nodeToSetOn.icon = icon;
+                        dropedNode.renderTitle();
+                    };
+
+                    setIcon(dropedNode, 'fa fa-spinner fa-spin')
+
+                    let onError = (jqxhr) => {
+                        let message = 'Failed to move node';
+                        let formerLabel = dropedNode.title;
+                        if (jqxhr.hasOwnProperty('responseJSON') && jqxhr.responseJSON.hasOwnProperty('message')) {
+                            message += ': ' + jqxhr.responseJSON.message;
+                        }
+                        let details = null;
+                        if (jqxhr.hasOwnProperty('responseJSON')) {
+                            details = jqxhr.responseJSON;
+                        }
+                        dropedNode._error = { message: message, details: details};
+                        dropedNode.renderStatus();
+
+                        dropedNode.title +=  '[' + message + ']';
+                        dropedNode.renderTitle();
+
+                        console.error(message);
+                        setIcon(dropedNode, formerIcon);
+
+                        setTimeout(function () {
+                            dropedNode._error = null;
+                            dropedNode.title = formerLabel;
+                            dropedNode.renderTitle();
+                            dropedNode.renderStatus();
+                        }, 1000);
                     };
                     this.requestData.move(dropNodePath, targetPath).done((responseData) => {
                         if (this.dndOptions.reorder) {
                             this.requestData.reorder(parenPath, dropedAtPath, targetPath, data.hitMode).done((responseData) => {
                                 moveNodeInTree(responseData);
                                 if (fancytreeOptions.hasOwnProperty('sortChildren')) {
-                                  parentNode.sortChildren(fancytreeOptions.sortChildren, true);
+                                    parentNode.sortChildren(fancytreeOptions.sortChildren, true);
                                 }
-                            }).fail(onError);
+                                setIcon(dropedNode, formerIcon);
+                          }).fail( (jqxhr) => {
+                              onError(jqxhr);
+                              setTimeout(() => {
+                                  this.requestData.move(targetPath, dropNodePath).done((responseData) => {
+                                      if (fancytreeOptions.hasOwnProperty('sortChildren')) {
+                                         parentNode.sortChildren(fancytreeOptions.sortChildren, true);
+                                      }
+                                      setIcon(dropedNode, formerIcon);
+                                  });
+                              }, 1000);
+
+                            });
                         } else {
+                            dropedNode.icon = formerIcon;
                             moveNodeInTree(responseData);
                         }
                     }).fail(onError);
