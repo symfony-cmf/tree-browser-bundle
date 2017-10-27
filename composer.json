@@ -17,7 +17,8 @@
     },
     "require-dev": {
         "symfony/form": "^2.8|^3.0",
-        "symfony/phpunit-bridge": "^3.2"
+        "symfony-cmf/testing": "^2.1@dev",
+        "symfony/phpunit-bridge": "^3.3.10"
     },
     "autoload": {
         "psr-4": {
@@ -31,7 +32,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.0-dev"
+            "dev-master": "2.1-dev"
         }
     }
 }
