@@ -1,41 +1,71 @@
 # Symfony CMF Tree Browser Bundle
 
-[![Build Status](https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master)](https://travis-ci.org/symfony-cmf/tree-browser-bundle)
-[![StyleCI](https://styleci.io/repos/4233010/shield)](https://styleci.io/repos/4233010)
-[![Latest Stable Version](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/version.png)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
-[![Total Downloads](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/d/total.png)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+[![Latest Stable Version](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/v/stable)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+[![Latest Unstable Version](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/v/unstable)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+[![License](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/license)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
 
-This bundle is part of the [Symfony Content Management Framework (CMF)](http://cmf.symfony.com/)
-and licensed under the [MIT License](LICENSE).
+[![Total Downloads](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/downloads)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+[![Monthly Downloads](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/d/monthly)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+[![Daily Downloads](https://poser.pugx.org/symfony-cmf/tree-browser-bundle/d/daily)](https://packagist.org/packages/symfony-cmf/tree-browser-bundle)
+
+Branch | Travis | Coveralls |
+------ | ------ | --------- |
+master | [![Build Status][travis_unstable_badge]][travis_unstable_link] | [![Coverage Status][coveralls_unstable_badge]][coveralls_unstable_link] |
+
+This package is part of the [Symfony Content Management Framework (CMF)](http://cmf.symfony.com/) and licensed
+under the [MIT License](LICENSE).
 
 The TreeBrowserBundle provides tree navigation for the Content Repository.
 
 
 ## Requirements
 
-* Symfony 2.8+
+* PHP 5.6 / 7.0 / 7.1
+* Symfony 2.8 / 3.1 / 3.2 / 3.3
 * See also the `require` section of [composer.json](composer.json)
-
 
 ## Documentation
 
 For the install guide and reference, see:
 
-* [TreeBrowserBundle documentation](http://symfony.com/doc/master/cmf/bundles/tree_browser/index.html)
+* [symfony-cmf/tree-browser-bundle Documentation](http://symfony.com/doc/master/cmf/bundle/tree-browser-bundle/index.html)
 
 See also:
 
 * [All Symfony CMF documentation](http://symfony.com/doc/master/cmf/index.html) - complete Symfony CMF reference
 * [Symfony CMF Website](http://cmf.symfony.com/) - introduction, live demo, support and community links
 
+## Support
+
+For general support and questions, please use [StackOverflow](http://stackoverflow.com/questions/tagged/symfony-cmf).
 
 ## Contributing
 
-Pull requests are welcome. Please see our [CONTRIBUTING](CONTRIBUTING.md) guide.
+Pull requests are welcome. Please see our
+[CONTRIBUTING](https://github.com/symfony-cmf/symfony-cmf/blob/master/CONTRIBUTING.md)
+guide.
 
-Unit and/or functional tests exist for this bundle. See the
+Unit and/or functional tests exist for this package. See the
 [Testing documentation](http://symfony.com/doc/master/cmf/components/testing.html)
 for a guide to running the tests.
 
 Thanks to
-[everyone who has contributed](https://github.com/symfony-cmf/TreeBrowserBundle/contributors) already.
+[everyone who has contributed](contributors) already.
+
+## License
+
+This package is available under the [MIT license](src/Resources/meta/LICENSE).
+
+[travis_legacy_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master
+[travis_legacy_link]: https://travis-ci.org/symfony-cmf/tree-browser-bundle
+[travis_stable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master
+[travis_stable_link]: https://travis-ci.org/symfony-cmf/tree-browser-bundle
+[travis_unstable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master
+[travis_unstable_link]: https://travis-ci.org/symfony-cmf/tree-browser-bundle
+
+[coveralls_legacy_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=master
+[coveralls_legacy_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=master
+[coveralls_stable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=master
+[coveralls_stable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=master
+[coveralls_unstable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=master
+[coveralls_unstable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=master
