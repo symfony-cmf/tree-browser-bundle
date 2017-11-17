@@ -1,8 +1,6 @@
 language: php
 
 php:
-  - 5.6
-  - 7.0
   - 7.1
 
 sudo: required
@@ -14,37 +12,51 @@ cache:
 #        - node_modules
 
 env:
-  - LANG=php
-  - NODE_RELEASE=6.x
+env:
+  matrix: SYMFONY_VERSION=^3.4@dev
+  global:
+    - SYMFONY_DEPRECATIONS_HELPER=0
+    - SYMFONY_PHPUNIT_DIR=.phpunit SYMFONY_PHPUNIT_REMOVE="symfony/yaml"
+    - KERNEL_CLASS=Symfony\Cmf\Bundle\RoutingBundle\Tests\Fixtures\App\Kernel
+    - SYMFONY_PHPUNIT_VERSION=5.7
+    - TEST_INSTALLATION=false
+    - LANG=php
+    - NODE_RELEASE=6.x
 
 matrix:
   include:
-    - php: 5.6
+    - php: 7.1
       dist: trusty
       env:
         - LANG=js
         - NODE_RELEASE=6.x
-    - php: hhvm
-      dist: trusty
-  exclude:
-    - php: 5.6
-      env: NODE_RELEASE=6.x
-    - php: 7.0
-      env: NODE_RELEASE=6.x
     - php: 7.1
-      env: NODE_RELEASE=6.x
+      env: DEPS=dev SYMFONY_VERSION=^4.0@dev
+    - php: 7.1
+      env: DEPS=dev SYMFONY_VERSION=^3.4@dev
+    - php: 7.1
+      env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_VERSION=2.8.* SYMFONY_DEPRECATIONS_HELPER=weak
+    - php: 7.1
+      env: SYMFONY_VERSION=3.3.*
+    - env: TEST_INSTALLATION=true
   fast_finish: true
+  allow_failures:
+    - php: 7.1
+      env: DEPS=dev SYMFONY_VERSION=^4.0@dev
+    - env: TEST_INSTALLATION=true
 
 before_install:
-  - if [ "$LANG" = "php" ]; then phpenv config-rm xdebug.ini || true; fi
-
-install:
   - if [ "$LANG" = "js" ]; then npm run travis:install; fi
-  - if [ "$LANG" = "php" ]; then composer update --prefer-dist; fi
+  - if [ "$LANG" = "php" ]; then phpenv config-rm xdebug.ini || true; fi
+  - phpenv config-rm xdebug.ini || true
+  - composer self-update
+  - if [ "$DEPS" = "dev" ]; then perl -pi -e 's/^}$/,"minimum-stability":"dev"}/' composer.json; fi
+  - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION} --no-update; fi
+  - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
 
 script:
   - if [ "$LANG" = "js" ]; then npm test; fi
-  - if [ "$LANG" = "php" ]; then vendor/bin/simple-phpunit; fi
+  - if [ "$LANG" = "php" ]; then make test; fi
 
 notifications:
   irc: "irc.freenode.org#symfony-cmf"
