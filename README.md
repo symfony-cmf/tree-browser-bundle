@@ -20,8 +20,8 @@ The TreeBrowserBundle provides tree navigation for the Content Repository.
 
 ## Requirements
 
-* PHP 7.1
-* Symfony 2.8 / ^3.4@dev
+* PHP 7.0 / 7.1
+* Symfony 2.8 / ^3.4@dev / ^4.0@dev
 * See also the `require` section of [composer.json](composer.json)
 
 ## Documentation

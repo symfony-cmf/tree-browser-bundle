@@ -2,7 +2,11 @@
     "name": "symfony-cmf/tree-browser-bundle",
     "type": "symfony-bundle",
     "description": "Symfony CMF Tree Browser Bundle",
-    "keywords": ["Symfony CMF", "tree", "phpcr"],
+    "keywords": [
+        "Symfony CMF",
+        "tree",
+        "phpcr"
+    ],
     "homepage": "http://cmf.symfony.com",
     "license": "MIT",
     "authors": [
@@ -12,7 +16,7 @@
         }
     ],
     "require": {
-        "php": "^7.1",
+        "php": "^7.0",
         "symfony-cmf/resource-rest-bundle": "^1.0"
     },
     "require-dev": {
@@ -35,6 +39,6 @@
             "dev-master": "2.1-dev"
         }
     },
-    "minimum-stability":"dev",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
