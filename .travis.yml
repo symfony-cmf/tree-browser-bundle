@@ -2,7 +2,7 @@ language: php
 
 php:
   - 7.1
-
+  - 7.2
 sudo: required
 
 cache:
@@ -31,10 +31,10 @@ matrix:
         - LANG=js
         - NODE_RELEASE=6.x
         - STABILITY=dev
-    - php: 7.1
-      env: STABILITY=dev SYMFONY_VERSION=^4.0@dev
-    - php: 7.1
-      env: STABILITY=dev SYMFONY_VERSION=^3.4@dev
+    - php: 7.2
+      env: STABILITY=dev SYMFONY_VERSION=4.0.*
+    - php: 7.2
+      env: STABILITY=dev SYMFONY_VERSION=3.4.*
     - php: 7.1
       env: STABILITY=dev COMPOSER_FLAGS="--prefer-lowest" SYMFONY_VERSION=2.8.* SYMFONY_DEPRECATIONS_HELPER=weak
     - php: 7.1
@@ -42,8 +42,8 @@ matrix:
     - env: TEST_INSTALLATION=true
   fast_finish: true
   allow_failures:
-    - php: 7.1
-      env: STABILITY=dev SYMFONY_VERSION=^4.0@dev
+    - php: 7.2
+      env: STABILITY=dev SYMFONY_VERSION=4.0.*
     - env: TEST_INSTALLATION=true
 
 before_install:
