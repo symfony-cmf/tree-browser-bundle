@@ -28,20 +28,14 @@ matrix:
   include:
     - php: 7.2
       dist: trusty
-      env:
-        - LANG=js
-        - NODE_RELEASE=6.x
-    - php: 7.2
+      env: LANG=js NODE_RELEASE=6.x
+    - php: 7.0
       dist: trusty
-      env:
-        - LANG=js
-        - NODE_RELEASE=7.x
-    - php: 7.2
-      dist: trusty
-      env:
-        - LANG=js
-        - NODE_RELEASE=8.x
+      env: LANG=js NODE_RELEASE=7.x
     - php: 7.1
+      dist: trusty
+      env: LANG=js NODE_RELEASE=8.x
+    - php: 7.2
       env: COMPOSER_FLAGS="--prefer-lowest" SYMFONY_VERSION=2.8.* SYMFONY_DEPRECATIONS_HELPER=weak
     - php: 7.2
       env: SYMFONY_VERSION=3.3.*
