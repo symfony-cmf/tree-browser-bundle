@@ -31,7 +31,7 @@ env:
 
 matrix:
   include:
-    - php: 7.12
+    - php: 7.1
       dist: trusty
       node_js: 6
       env: LANG=js
