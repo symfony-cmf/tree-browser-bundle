@@ -31,9 +31,13 @@ matrix:
       env:
         - LANG=js
         - NODE_RELEASE=6.x
+    - php: 7.2
+      dist: trusty
       env:
         - LANG=js
         - NODE_RELEASE=7.x
+    - php: 7.2
+      dist: trusty
       env:
         - LANG=js
         - NODE_RELEASE=8.x
