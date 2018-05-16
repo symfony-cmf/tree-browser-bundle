@@ -24,7 +24,7 @@
     "webpack": "^1.12.9"
   },
   "scripts": {
-    "update:nodejs": "sudo rm -rf ~/.nvm - curl -sL 'https://deb.nodesource.com/setup_${NODE_RELEASE}' | sudo -E bash && sudo apt-get install -y nodejs",
+    "update:nodejs": "sudo rm -rf ~/.nvm && curl -sL 'https://deb.nodesource.com/setup_${NODE_RELEASE}' | sudo -E bash && sudo apt-get install -y nodejs",
     "pretravis:install": "npm run update:nodejs && npm install -g bower && npm set progress=false",
     "travis:install": "npm install && bower install",
     "test": "\"node_modules/karma/bin/karma\" start --single-run --browsers PhantomJS",
