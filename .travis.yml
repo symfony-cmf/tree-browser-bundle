@@ -54,6 +54,8 @@ before_install:
   - if [ "$LANG" = "js" ]; then npm run travis:install; fi
   - if [ "$LANG" = "php" ]; then phpenv config-rm xdebug.ini || true; fi
   - phpenv config-rm xdebug.ini || true
+  - phpenv config-add travis.php.ini
+  - php -ini | grep memory_limit
   - composer self-update
   - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; composer config prefer-stable true; fi;
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION} --no-update; fi
