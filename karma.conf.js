@@ -1,8 +1,8 @@
 var path = require('path');
 var webpackConfig = require('./webpack.config.js');
 webpackConfig.devtool = 'inline-source-map';
-webpackConfig.resolve.alias.bundle = path.join(__dirname, 'src/Resources/assets/js');
-webpackConfig.entry = {};
+webpackConfig.resolve.alias.bundle = path.resolve(__dirname, 'src/Resources/assets/js');
+
 
 module.exports = function(config) {
   config.set({
@@ -48,7 +48,7 @@ module.exports = function(config) {
     reporters: ['dots'],
 
     webpack: webpackConfig,
-    webpackMiddleware: { noInfo: true, stats: 'errors-only'},
+    webpackMiddleware: {stats: 'errors-only'},
 
     // web server port
     port: 9876,

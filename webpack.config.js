@@ -3,34 +3,47 @@ var path = require('path');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-  debug : true,
   context : path.join(__dirname, 'src/Resources/assets/'),
   entry : {
     fancytree : './js/jquery.cmf_tree.js'
   },
   output : {
-    path : path.join(__dirname, 'src/Resources/public/js'),
+    path : path.resolve(__dirname, 'src/Resources/public/js'),
     filename : 'cmf_tree_browser.[name].js'
   },
   externals : {
     'jquery' : 'jQuery'
   },
   module : {
-    loaders : [
+    rules: [
       {
-        test : /\.css$/i,
-        loader : ExtractTextPlugin.extract('style', 'css', {publicPath : '../js/'})
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader"
+        }
       },
       {
-        test : /(assets|Tests).+?\.js$/i, loader : 'babel-loader', query : {presets : ['es2015']}
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract(
+          {
+            fallback: 'style-loader',
+            use: ['css-loader']
+          })
       },
       {
-        test : /\.(jpe?g|png|gif|svg)$/i, loader : 'file?name=../img/[hash].[ext]'
+        test : /(assets|Tests).+?\.js$/i,
+        use: {
+          loader : 'babel-loader', query : {presets : ['es2015']}
+        }
+      },
+      {
+        test : /\.(jpe?g|png|gif|svg)$/i,
+        use:  'file-loader?name=../img/[hash].[ext]&context=default'
       }
     ]
   },
   resolve : {
-    root : __dirname,
     alias : {
       jquery : path.join(__dirname, 'bower_components/jquery/dist/jquery.js'),
       'jquery-ui' : path.join(__dirname, 'bower_components/jquery-ui/jquery-ui.js'),
@@ -38,12 +51,7 @@ module.exports = {
       'core-js' : path.join(__dirname, 'node_modules/core-js')
     }
   },
-  resolveLoader : {
-    modulesDirectories : [path.join(__dirname, 'node_modules')]
-  },
   plugins : [
-    // required once multiple entry files are used (e.g. for different adapters)
-    //new webpack.optimize.CommonsChunkPlugin('common.cmf_tree_browser.js')
-    new ExtractTextPlugin('../css/cmf_tree_browser.[name].css')
+    new ExtractTextPlugin({filename: '../css/cmf_tree_browser.[name].css'})
   ]
 };
