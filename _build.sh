@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
+MODE=$1||development
+
 echo " * Installing Bower dependencies..."
 bower install
 
 echo ""
 echo " * Executing webpack..."
 # Compile all javascript files and minify them together with Fancytree
-webpack -p --progress
+webpack --mode ${MODE} -p --progress
 
 echo ""
 echo " * Copying required vendor files to public directory..."
