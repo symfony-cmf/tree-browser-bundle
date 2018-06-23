@@ -24,7 +24,8 @@
     "karma-webpack": "^3.0.0",
     "style-loader": "^0.13.2",
     "webpack": "^4.0.1",
-    "webpack-cli": "^3.0.8"
+    "webpack-cli": "^3.0.8",
+    "webpack-dev-middleware": "^2.0.6"
   },
   "scripts": {
     "pretravis:install": "npm install -g bower && npm set progress=false",
@@ -37,8 +38,5 @@
     "type": "git",
     "url": "https://github.com/symfony-cmf/TreeBrowserBundle.git"
   },
-  "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle",
-  "dependencies": {
-    "webpack-dev-middleware": "^2.0.6"
-  }
+  "homepage": "https://github.com/symfony-cmf/TreeBrowserBundle"
 }

@@ -60,7 +60,7 @@ before_install:
   - if ! [ -z "$STABILITY" ]; then composer config minimum-stability ${STABILITY}; composer config prefer-stable true; fi;
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require symfony/symfony:${SYMFONY_VERSION} --no-update; fi
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
-
+ 
 install: travis_wait composer update --prefer-dist $COMPOSER_FLAGS
 
 script:
