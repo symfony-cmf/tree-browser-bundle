@@ -27,7 +27,6 @@ env:
     - TEST_INSTALLATION=false
     - LANG=php
     - NODE_RELEASE=6.x
-    - STABILITY=dev
 
 matrix:
   include:
