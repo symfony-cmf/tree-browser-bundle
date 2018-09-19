@@ -28,7 +28,7 @@ The TreeBrowserBundle provides tree navigation for the Content Repository.
 
 For the install guide and reference, see:
 
-* [symfony-cmf/tree-browser-bundle Documentation](http://symfony.com/doc/master/cmf/bundle/tree-browser-bundle/index.html)
+* [symfony-cmf/tree-browser-bundle Documentation](https://symfony.com/doc/current/cmf/bundles/tree_browser/index.html)
 
 See also:
 
