@@ -32,7 +32,7 @@ class CmfTreeBrowserExtension extends Extension implements PrependExtensionInter
 
         $container->prependExtensionConfig('twig', [
             'form_themes' => [
-                'CmfTreeBrowserBundle:Form:fields.html.twig',
+                '@CmfTreeBrowser/Form/fields.html.twig',
             ],
         ]);
     }
