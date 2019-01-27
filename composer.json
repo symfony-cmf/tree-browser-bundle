@@ -22,7 +22,7 @@
     "require-dev": {
         "symfony/form": "^2.8 || ^3.3 || ^4.0",
         "symfony-cmf/testing": "^2.1.8",
-        "symfony/phpunit-bridge": "^3.3 || ^4.0"
+        "symfony/phpunit-bridge": "^4.2.2"
     },
     "autoload": {
         "psr-4": {
