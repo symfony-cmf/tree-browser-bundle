@@ -25,9 +25,8 @@ list:
 	@echo 'unit_tests:               will run unit tests only'
 
 
-	@echo 'test_installation:    will run installation test'
+
 include ${TESTING_SCRIPTS_DIR}/make/unit_tests.mk
-include ${TESTING_SCRIPTS_DIR}/make/test_installation.mk
 
 .PHONY: test
 test: unit_tests
