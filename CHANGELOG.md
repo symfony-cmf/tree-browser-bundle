@@ -1,7 +1,18 @@
 Changelog
 =========
 
+2.1.1
+-----
+
+* **2019-01-29**: Adjust Twig template reference syntax for Symfony 4.2
+
+2.1.0
+-----
+
+* **2018-08-18**: Allow Symfony 4
+
 2.0.1
+-----
 
 * **2017-07-31**: Fix reorder on client side. No reorder call on droping an node on an other. Better error handling
 
