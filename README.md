@@ -10,8 +10,8 @@
 
 Branch | Travis | Coveralls | Scrutinizer |
 ------ | ------ | --------- | ----------- |
-master   | [![Build Status][travis_stable_badge]][travis_stable_link]     | [![Coverage Status][coveralls_stable_badge]][coveralls_stable_link]     | [![Scrutinizer Status][scrutinizer_stable_badge]][scrutinizer_stable_link] |
-master | [![Build Status][travis_unstable_badge]][travis_unstable_link] | [![Coverage Status][coveralls_unstable_badge]][coveralls_unstable_link] | [![Scrutinizer Status][scrutinizer_unstable_badge]][scrutinizer_unstable_link] |
+3.0-dev   | [![Build Status][travis_stable_badge]][travis_stable_link]     | [![Coverage Status][coveralls_stable_badge]][coveralls_stable_link]     | [![Scrutinizer Status][scrutinizer_stable_badge]][scrutinizer_stable_link] |
+3.0-dev | [![Build Status][travis_unstable_badge]][travis_unstable_link] | [![Coverage Status][coveralls_unstable_badge]][coveralls_unstable_link] | [![Scrutinizer Status][scrutinizer_unstable_badge]][scrutinizer_unstable_link] |
 
 
 This package is part of the [Symfony Content Management Framework (CMF)](http://cmf.symfony.com/) and licensed
@@ -30,12 +30,12 @@ The TreeBrowserBundle provides tree navigation for the Content Repository.
 
 For the install guide and reference, see:
 
-* [symfony-cmf/tree-browser-bundle Documentation](http://symfony.com/doc/master/cmf/bundle/tree-browser-bundle/index.html)
+* [symfony-cmf/tree-browser-bundle Documentation](https://symfony.com/doc/master/cmf/bundle/tree-browser-bundle/index.html)
 
 See also:
 
-* [All Symfony CMF documentation](http://symfony.com/doc/master/cmf/index.html) - complete Symfony CMF reference
-* [Symfony CMF Website](http://cmf.symfony.com/) - introduction, live demo, support and community links
+* [All Symfony CMF documentation](https://symfony.com/doc/master/cmf/index.html) - complete Symfony CMF reference
+* [Symfony CMF Website](https://cmf.symfony.com/) - introduction, live demo, support and community links
 
 ## Support
 
@@ -58,17 +58,17 @@ Thanks to
 
 This package is available under the [MIT license](src/Resources/meta/LICENSE).
 
-[travis_stable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master
+[travis_stable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=3.0-dev
 [travis_stable_link]: https://travis-ci.org/symfony-cmf/tree-browser-bundle
-[travis_unstable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=master
+[travis_unstable_badge]: https://travis-ci.org/symfony-cmf/tree-browser-bundle.svg?branch=3.0-dev
 [travis_unstable_link]: https://travis-ci.org/symfony-cmf/tree-browser-bundle
 
-[coveralls_stable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=master
-[coveralls_stable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=master
-[coveralls_unstable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=master
-[coveralls_unstable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=master
+[coveralls_stable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=3.0-dev
+[coveralls_stable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=3.0-dev
+[coveralls_unstable_badge]: https://coveralls.io/repos/github/symfony-cmf/tree-browser-bundle/badge.svg?branch=3.0-dev
+[coveralls_unstable_link]: https://coveralls.io/github/symfony-cmf/tree-browser-bundle?branch=3.0-dev
 
-[scrutinizer_stable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/badges/quality-score.png?b=master
-[scrutinizer_stable_link]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/?branch=master
-[scrutinizer_unstable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/badges/quality-score.png?b=master
-[scrutinizer_unstable_link]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/?branch=master
+[scrutinizer_stable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/badges/quality-score.png?b=3.0-dev
+[scrutinizer_stable_link]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/?branch=3.0-dev
+[scrutinizer_unstable_badge]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/badges/quality-score.png?b=3.0-dev
+[scrutinizer_unstable_link]: https://scrutinizer-ci.com/g/symfony-cmf/tree-browser-bundle/?branch=3.0-dev
