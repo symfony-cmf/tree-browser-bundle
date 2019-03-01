@@ -69,4 +69,4 @@ install:
 
 script:
   - if [ "$LANG" = "js" ]; then npm test; fi
-  - if [ "$LANG" = "php" ]; make $TARGET; fi
+  - if [ "$LANG" = "php" ]; then make $TARGET; fi
