@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Symfony CMF package.
  *
- * (c) 2011-2017 Symfony CMF
+ * (c) Symfony CMF
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -34,7 +36,7 @@ class IconEnhancer implements DescriptionEnhancerInterface
 
     public function enhance(Description $description)
     {
-        $class = get_class($description->getResource()->getPayload());
+        $class = \get_class($description->getResource()->getPayload());
         if (isset($this->classMap[$class])) {
             $class = $this->classMap[$class];
         }
@@ -49,7 +51,7 @@ class IconEnhancer implements DescriptionEnhancerInterface
         }
 
         $payload = $resource->getPayload();
-        $payloadClass = get_class($payload);
+        $payloadClass = \get_class($payload);
 
         if (isset($this->iconMap[$payloadClass]) || isset($this->classMap[$payloadClass])) {
             return true;
